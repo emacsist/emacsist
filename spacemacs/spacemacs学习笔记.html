@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2017-03-10 五 23:18 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title></title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="emacsist">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/css/org-mode.css"/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org682b6b2">Emacs 杂项</a>
+<ul>
+<li><a href="#org1aa302e">启动 spacemacs 时，显示 agenda buffer</a></li>
+<li><a href="#org8262c5f">添加自定义的 layer</a></li>
+<li><a href="#org53c9279">多光标编辑</a></li>
+<li><a href="#org01e025a">Emacs中使用 restclient 报  <b>url-http-create-request: Multibyte text in HTTP request</b></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org682b6b2" class="outline-2">
+<h2 id="org682b6b2">Emacs 杂项</h2>
+<div class="outline-text-2" id="text-org682b6b2">
+</div><div id="outline-container-org1aa302e" class="outline-3">
+<h3 id="org1aa302e">启动 spacemacs 时，显示 agenda buffer</h3>
+<div class="outline-text-3" id="text-org1aa302e">
+<p>
+在 <b>~/.spacemacs</b> 配置文件中的 <b>dotspacemacs/user-config</b> 位置加入以下配置内容即可.
+</p>
+
+<pre class="example">
+(org-agenda-list)
+(switch-to-buffer "*Org Agenda*")
+(spacemacs/toggle-maximize-buffer)
+</pre>
+
+<p>
+<a href="https://www.reddit.com/r/spacemacs/comments/5lxwog/how_to_display_orgagenda_list_at_startup/">reddit</a>
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org8262c5f" class="outline-3">
+<h3 id="org8262c5f">添加自定义的 layer</h3>
+<div class="outline-text-3" id="text-org8262c5f">
+<p>
+这里以一个具体的场景来说明一下。例如，我现在想安装 <a href="https://github.com/bcbcarl/emacs-wttrin">wttrin</a> 这个emacs插件。（默认情况下，你通过 <b>M-x package-install RET wttrin RET</b> 安装后，如果重启了emacs，就没有效果了。）
+下面是具体的步骤（这里，我创建的layer名为 <b>life-layer</b> ）
+</p>
+<ol class="org-ol">
+<li>M-x configuration-layer/create-layer &lt;RET&gt; life-layer &lt;RET&gt;</li>
+<li>默认情况下，就保存在 <b>~/.emacs.d/private/</b> 就可以了</li>
+<li><p>
+然后它会打开配置文件（日后想编辑也可是，路径在 <b>~/.emacs.d/private/life-layer/packages.el</b> ）内容如下:
+</p>
+
+<pre class="example">
+;;; packages.el --- life-layer layer packages file for Spacemacs.
+;;
+;; Copyright (c) 2012-2016 Sylvain Benner &amp; Contributors
+;;
+;; Author: yangzhiyong &lt;emacsist@yangzhiyongs-MacBook-Pro.local&gt;
+;; URL: https://github.com/syl20bnr/spacemacs
+;;
+;; This file is not part of GNU Emacs.
+;;
+;;; License: GPLv3
+
+;;; Commentary:
+
+;; See the Spacemacs documentation and FAQs for instructions on how to implement
+;; a new layer:
+;;
+;;   SPC h SPC layers RET
+;;
+;; Briefly, each package to be installed or configured by this layer should be
+;; added to `life-layer-packages'. Then, for each package PACKAGE:
+;;
+;; 注意这里的说明，如果你的 layer 是不依赖于 spacemacs 的其他 layer，就为每一个包（在下面 life-layer-packages ）定义一个名为 'life-layer/init-包名'的函数来初始化它
+;; 注意, init-包名 是必须一致的，不然会导致加载该包失败
+;; - If PACKAGE is not referenced by any other Spacemacs layer, define a
+;;   function `life-layer/init-PACKAGE' to load and initialize the package.
+
+
+;; 如果你的某些包是要依赖于 spacemacs 的其他 layer 的，那定义的函数名为 'life-layer/pre-init-包名' 或者 'life-layer/post-init-包名'
+;; - Otherwise, PACKAGE is already referenced by another Spacemacs layer, so
+;;   define the functions `life-layer/pre-init-PACKAGE' and/or
+;;   `life-layer/post-init-PACKAGE' to customize the package as it is loaded.
+
+;;; Code:
+
+(defun life-layer/init-wttrin()
+  (use-package wttrin)
+  )
+
+;;; 这里填写该 layer 依赖的包名
+(defconst life-layer-packages
+  '(wttrin)
+  "The list of Lisp packages required by the life-layer layer.
+
+Each entry is either:
+
+1. A symbol, which is interpreted as a package to be installed, or
+
+2. A list of the form (PACKAGE KEYS...), where PACKAGE is the
+    name of the package to be installed or loaded, and KEYS are
+    any number of keyword-value-pairs.
+
+    The following keys are accepted:
+
+    - :excluded (t or nil): Prevent the package from being loaded
+      if value is non-nil
+
+    - :location: Specify a custom installation location.
+      The following values are legal:
+
+      - The symbol `elpa' (default) means PACKAGE will be
+        installed using the Emacs package manager.
+
+      - The symbol `local' directs Spacemacs to load the file at
+        `./local/PACKAGE/PACKAGE.el'
+
+      - A list beginning with the symbol `recipe' is a melpa
+        recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
+
+
+;;; packages.el ends here
+</pre></li>
+<li><p>
+定义完后，在 <b>~/.spacemacs</b> （如果的话，可以调用 <b>M-x dotspacemacs/install</b> 来安装一个模板的配置文件）中的 <b>dotspacemacs-configuration-layers()</b> 里加上你的 layer 名。比如:
+</p>
+
+<pre class="example">
+dotspacemacs-configuration-layers
+'(
+  ;; ----------------------------------------------------------------
+  ;; Example of useful layers you may want to use right away.
+  ;; Uncomment some layer names and press &lt;SPC f e R&gt; (Vim style) or
+  ;; &lt;M-m f e R&gt; (Emacs style) to install them.
+  ;; ----------------------------------------------------------------
+  spacemacs-helm
+  auto-completion
+  better-defaults
+  emacs-lisp
+  git
+  markdown
+  org
+  life-layer
+  ;; (shell :variables
+  ;;        shell-default-height 30
+  ;;        shell-default-position 'bottom)
+  ;; spell-checking
+  ;; syntax-checking
+  version-control
+  (colors :variables
+          colors-enable-nyan-cat-progress-bar t)
+
+  )
+</pre></li>
+<li>重启后即可（或调用 <b>spacemacs/restart-emacs</b> ）</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-org53c9279" class="outline-3">
+<h3 id="org53c9279">多光标编辑</h3>
+<div class="outline-text-3" id="text-org53c9279">
+<p>
+这里，以一个具体的例子来进行多光标编辑。假设有一段文本：
+</p>
+<pre class="example">
+hello world
+hello1 world
+hello2 world
+</pre>
+
+<p>
+现在想在每个 <b>hello</b> 字符串进行多光标编辑如下:
+</p>
+
+<ol class="org-ol">
+<li>将光标移动到第一行的 <b>hello</b> 开头。然后调用( <b>M-x set-mark-command RET</b> ),选取 <b>hello</b></li>
+<li>这时，再调用 ( <b>M-x iedit-mode RET</b> )</li>
+<li>这时，就是多光标编辑环境了，随便输入什么，它都会在所有匹配到 <b>hello</b> 字符串所在的位置进行同时编辑了。</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-org01e025a" class="outline-3">
+<h3 id="org01e025a">Emacs中使用 restclient 报  <b>url-http-create-request: Multibyte text in HTTP request</b></h3>
+<div class="outline-text-3" id="text-org01e025a">
+<p>
+发现emacs里有个非常好用的 HTTP 客户端: <a href="https://github.com/pashky/restclient.el">restclient</a> 但是在emacs 25.1中发现使用中文请求参数时，报 'multibyte' 的问题。
+然后Google了一下，有篇文章帮忙解决了这个问题：<a href="http://www.cnblogs.com/yangwen0228/p/6238528.html">cnblogs</a> 下面是具体的步骤（这里以 Mac 下的 emacs 25.1为例）
+</p>
+<ol class="org-ol">
+<li><p>
+定位到emacs的库文件 <b>url-http.el.gz</b> （因为我使用的是 <b>brew</b> 来安装的）, 它的文件在:
+</p>
+
+<pre class="example">
+[12:47:03] emacsist:lisp $ ls -alh /usr/local/Cellar/emacs/25.1/share/emacs/25.1/lisp/url/url-http.el*
+-rw-r--r-- 1 emacsist admin 17K  3  9 12:32 /usr/local/Cellar/emacs/25.1/share/emacs/25.1/lisp/url/url-http.el.gz
+-rw-r--r-- 1 emacsist admin 37K  3  9 12:34 /usr/local/Cellar/emacs/25.1/share/emacs/25.1/lisp/url/url-http.elc
+[12:47:05] emacsist:lisp $
+</pre></li>
+
+<li><p>
+用 <b>emacs</b> 编辑文件 <b>url-http.el.gz</b> （ <b>url-http.elc</b> 是编译之后的文件），将下面的内容:
+</p>
+<pre class="example">
+;; Bug#23750
+(unless (= (string-bytes request)
+     (length request))
+     (error "Multibyte text in HTTP request: %s" request))
+</pre>
+<p>
+修改为如下:
+</p>
+<pre class="example">
+;; Bug#23750
+(setq request (url-http--encode-string request))
+(unless (= (string-bytes request)
+     (length request))
+     (error "Multibyte text in HTTP request: %s" request))
+</pre>
+<p>
+然后保存（注意不要退出）
+</p></li>
+
+<li><p>
+编译文件（当前 <b>emacs</b> 已经打开了该文件）:
+直接输入下在的命令即可: <b>M-x byte-compile-file RET</b> 这样子 <b>emacs</b> 就会将当前文件编译好了。
+重启 <b>emacs</b> 即可生效。下面是 <b>restclient</b> 修改后的输出例子:
+</p>
+
+<pre class="example">
+中文
+// GET http://localhost:8380/av?text=中文
+// HTTP/1.1 200 
+// Content-Type: text/plain;charset=UTF-8
+// Content-Length: 6
+// Date: Thu, 09 Mar 2017 04:39:51 GMT
+// Request duration: 0.282388s
+</pre></li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">&#20316;&#32773;: emacsist</p>
+<p class="date">Created: 2017-03-10 五 23:18</p>
+<p class="validation"></p>
+</div>
+</body>
+</html>
