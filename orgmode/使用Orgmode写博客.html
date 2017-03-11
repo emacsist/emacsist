@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2017-03-10 五 23:39 -->
+<!-- 2017-03-11 Sat 12:59 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title></title>
@@ -236,43 +236,257 @@ for the JavaScript code in this tag.
 <div id="text-table-of-contents">
 <ul>
 <li><a href="#org8c5de13">使用 Orgmode 写博客</a></li>
+<li><a href="#org660028f">使用 org-publish-project</a>
+<ul>
+<li><a href="#orga96963d">选项说明</a>
+<ul>
+<li><a href="#orgc219768">常用选项</a></li>
+<li><a href="#org21f4fad">与 sitemap 相关的选项</a></li>
+<li><a href="#org99c725a">与 HTML 相关的选项</a></li>
+<li><a href="#org3740dfc">元数据选项</a></li>
+</ul>
+</li>
+<li><a href="#org86885e7">组成</a></li>
+<li><a href="#orgac1981b">完整的目录结例子</a></li>
+</ul>
+</li>
+<li><a href="#org93dee4f">参考资料</a></li>
 </ul>
 </div>
 </div>
 <div id="outline-container-org8c5de13" class="outline-2">
 <h2 id="org8c5de13">使用 Orgmode 写博客</h2>
 <div class="outline-text-2" id="text-org8c5de13">
+<blockquote>
 <p>
-这个是内容哈
+最近又重回到 <b>emacs</b> 了，试过 <b>Hexo</b> 和 <b>hugo</b> 这两个静态博客，也比较主流。但在尝试各种 <b>GTD</b> 工具后，最后还是觉得 <b>emacs</b> 的 <b>orgmode</b> 最好。所以，索性将写博客的习惯也改为用 <b>orgmode</b> 来写了
+</p>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-org660028f" class="outline-2">
+<h2 id="org660028f">使用 org-publish-project</h2>
+<div class="outline-text-2" id="text-org660028f">
+<p>
+我使用的是 <b>spacemacs</b> <sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup> + <b>orgmode</b> <sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup> 
 </p>
 
-<table>
+<p>
+将下面的配置写到 <b>spacemacs</b> 的配置文件中 <b>~/.spacemacs</b> 的 <b>(defun dotspacemacs/user-config ()</b> 代码块里。例如下面:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #2aa1ae; background-color: #292e34;">;;</span><span style="color: #2aa1ae; background-color: #292e34;">Org publish</span>
+<span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> org-publish-project-alist
+    '<span style="color: #bc6ec5;">(</span>
+      <span style="color: #2d9574;">(</span><span style="color: #2d9574;">"blog-notes"</span>
+       <span style="color: #4f97d7;">:base-directory</span> <span style="color: #2d9574;">"~/git/org-blog/org-sources/"</span>
+       <span style="color: #4f97d7;">:base-extension</span> <span style="color: #2d9574;">"org"</span>
+       <span style="color: #4f97d7;">:publishing-directory</span> <span style="color: #2d9574;">"~/git/org-blog/publish/"</span>
+       <span style="color: #4f97d7;">:recursive</span> t
+       <span style="color: #4f97d7;">:publishing-function</span> org-html-publish-to-html
+       <span style="color: #4f97d7;">:headline-levels</span> <span style="color: #a45bad;">4</span>
+       <span style="color: #4f97d7;">:section-numbers</span> nil
+       <span style="color: #4f97d7;">:auto-preamble</span> t
+       <span style="color: #4f97d7;">:with-toc</span> t
+
+       <span style="color: #4f97d7;">:sitemap-file-entry-format</span> <span style="color: #2d9574;">"%d ====&gt; %t"</span>
+       <span style="color: #4f97d7;">:sitemap-sort-files</span> anti-chronologically
+       <span style="color: #4f97d7;">:sitemap-filename</span> <span style="color: #2d9574;">"index.org"</span>
+       <span style="color: #4f97d7;">:sitemap-title</span> <span style="color: #2d9574;">"Emacsist"</span>
+       <span style="color: #4f97d7;">:auto-sitemap</span> t
+
+       <span style="color: #4f97d7;">:html-doctype</span> <span style="color: #2d9574;">"html5"</span>
+       <span style="color: #4f97d7;">:html-validation-link</span> nil
+       <span style="color: #4f97d7;">:html-link-home</span> <span style="color: #2d9574;">"/emacsist/index.html"</span>
+       <span style="color: #4f97d7;">:html-link-up</span> <span style="color: #2d9574;">"/emacsist/index.html"</span>
+
+       <span style="color: #4f97d7;">:author</span> <span style="color: #2d9574;">"emacsist"</span>
+       <span style="color: #4f97d7;">:email</span> <span style="color: #2d9574;">"emacsist@.qq.com"</span>
+       <span style="color: #4f97d7;">:html-head</span> <span style="color: #2d9574;">"&lt;link rel=\"stylesheet\" type=\"text/css\" href=\"/emacsist/css/org-mode.css\"/&gt;"</span>
+       <span style="color: #4f97d7;">:language</span> <span style="color: #2d9574;">"zh-CN"</span>
+       <span style="color: #2d9574;">)</span>
+      <span style="color: #2d9574;">(</span><span style="color: #2d9574;">"blog-static"</span>
+       <span style="color: #4f97d7;">:base-directory</span> <span style="color: #2d9574;">"~/git/org-blog/asserts/"</span>
+       <span style="color: #4f97d7;">:base-extension</span> <span style="color: #2d9574;">"css</span><span style="color: #2d9574; font-weight: bold;">\\</span><span style="color: #2d9574; font-weight: bold;">|</span><span style="color: #2d9574;">js</span><span style="color: #2d9574; font-weight: bold;">\\</span><span style="color: #2d9574; font-weight: bold;">|</span><span style="color: #2d9574;">png</span><span style="color: #2d9574; font-weight: bold;">\\</span><span style="color: #2d9574; font-weight: bold;">|</span><span style="color: #2d9574;">jpg</span><span style="color: #2d9574; font-weight: bold;">\\</span><span style="color: #2d9574; font-weight: bold;">|</span><span style="color: #2d9574;">gif</span><span style="color: #2d9574; font-weight: bold;">\\</span><span style="color: #2d9574; font-weight: bold;">|</span><span style="color: #2d9574;">pdf</span><span style="color: #2d9574; font-weight: bold;">\\</span><span style="color: #2d9574; font-weight: bold;">|</span><span style="color: #2d9574;">mp3</span><span style="color: #2d9574; font-weight: bold;">\\</span><span style="color: #2d9574; font-weight: bold;">|</span><span style="color: #2d9574;">ogg</span><span style="color: #2d9574; font-weight: bold;">\\</span><span style="color: #2d9574; font-weight: bold;">|</span><span style="color: #2d9574;">swf"</span>
+       <span style="color: #4f97d7;">:publishing-directory</span> <span style="color: #2d9574;">"~/git/org-blog/publish/"</span>
+       <span style="color: #4f97d7;">:recursive</span> t
+       <span style="color: #4f97d7;">:publishing-function</span> org-publish-attachment
+       <span style="color: #2d9574;">)</span>
+      <span style="color: #2d9574;">(</span><span style="color: #2d9574;">"blog"</span> <span style="color: #4f97d7;">:components</span> <span style="color: #67b11d;">(</span><span style="color: #2d9574;">"blog-notes"</span> <span style="color: #2d9574;">"blog-static"</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span>
+      <span style="color: #2aa1ae; background-color: #292e34;">;;</span>
+      <span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orga96963d" class="outline-3">
+<h3 id="orga96963d">选项说明</h3>
+<div class="outline-text-3" id="text-orga96963d">
+</div><div id="outline-container-orgc219768" class="outline-4">
+<h4 id="orgc219768">常用选项</h4>
+<div class="outline-text-4" id="text-orgc219768">
+<dl class="org-dl">
+<dt>base-directory</dt><dd>这个是你用 <b>org</b> 写博客的文件所存放的目录</dd>
+<dt>base-extension</dt><dd>这个是只处理以该后缀的文件</dd>
+<dt>recursive</dt><dd>是否递归处理</dd>
+<dt>publishing-function</dt><dd>使用发布的函数，这个在新版的 <b>orgmode</b> 中与以前名字不太一样了，这点要注意。</dd>
+<dt>headline-levels</dt><dd>处理的标题的最大层级（这个用在 <b>toc</b> 决定显示的层数）</dd>
+<dt>section-numbers</dt><dd>在 <b>toc</b> 和内容的节点中，是否用数字来表示。比如 <code>* 标题</code> 标题，如果该选项为 <b>t</b> 的话，那它就会显示为 <b>1. 标题</b> ，否则就显示为 <code>标题</code></dd>
+<dt>with-toc</dt><dd>是否显示目录(table of content)</dd>
+</dl>
+</div>
+</div>
 
 
-<colgroup>
-<col  class="org-left">
+<div id="outline-container-org21f4fad" class="outline-4">
+<h4 id="org21f4fad">与 sitemap 相关的选项</h4>
+<div class="outline-text-4" id="text-org21f4fad">
+<p>
+sitemap 类似首页里的导航。这可以利用它来生成博客的首页。
+</p>
 
-<col  class="org-left">
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">name</th>
-<th scope="col" class="org-left">desc</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left">你</td>
-<td class="org-left">好</td>
-</tr>
-</tbody>
-</table>
+<dl class="org-dl">
+<dt>sitemap-file-entry-format</dt><dd>首页里导航入口显示的格式</dd>
+<dt>sitemap-sort-files</dt><dd>每个入口排序的方式</dd>
+<dt>sitemap-filename</dt><dd>sitemap 的文件名。因为我们想用它来作为首页，所以这一般为 <b>index.org</b></dd>
+<dt>sitemap-titile</dt><dd>sitemap内容的标题。填写你的博客名咯</dd>
+<dt>auto-sitemap</dt><dd>是否自动生成 sitemap</dd>
+</dl>
+</div>
+</div>
+
+
+<div id="outline-container-org99c725a" class="outline-4">
+<h4 id="org99c725a">与 HTML 相关的选项</h4>
+<div class="outline-text-4" id="text-org99c725a">
+<dl class="org-dl">
+<dt>html-doctype</dt><dd>使用的 HTML 文档类型。那肯定用最流行的 HTML5 啦</dd>
+<dt>html-validation-link</dt><dd>是否显示 <b>validation</b> 的链接。看你自己喜欢了。我这不显示。</dd>
+<dt>html-link-home</dt><dd>首页的链接</dd>
+<dt>html-link-up</dt><dd>上一级的链接</dd>
+<dt>html-head</dt><dd>在HTML文件里，插入这些内容。这里使用了自定义的CSS，所以可以在这里加上。</dd>
+</dl>
+</div>
+</div>
+
+
+<div id="outline-container-org3740dfc" class="outline-4">
+<h4 id="org3740dfc">元数据选项</h4>
+<div class="outline-text-4" id="text-org3740dfc">
+<dl class="org-dl">
+<dt>author</dt><dd>作者</dd>
+<dt>email</dt><dd>邮箱</dd>
+<dt>language</dt><dd>使用的语言</dd>
+</dl>
 </div>
 </div>
 </div>
+
+
+
+<div id="outline-container-org86885e7" class="outline-3">
+<h3 id="org86885e7">组成</h3>
+<div class="outline-text-3" id="text-org86885e7">
+<p>
+可以看到，该配置分成两部分:
+</p>
+
+<dl class="org-dl">
+<dt>blog</dt><dd>我们的项目名
+<dl class="org-dl">
+<dt>blog-notes</dt><dd>这些是负责处理你博客内容的，所以使用的函数为 <b>org-html-publish-to-html</b></dd>
+<dt>blog-static</dt><dd>这些是负责处理你的静态文件的，比如 CSS, JS，图片等。所以使用的函数为 <b>org-publish-attachment</b></dd>
+</dl></dd>
+</dl>
+</div>
+</div>
+
+
+
+<div id="outline-container-orgac1981b" class="outline-3">
+<h3 id="orgac1981b">完整的目录结例子</h3>
+<div class="outline-text-3" id="text-orgac1981b">
+<p>
+这个结构是基于上面的配置的，所以自己再根据上面的说明再作小修改即可:
+</p>
+
+<pre class="example">
+[12:48:24] emacsist:org-blog $ tree -N
+.
+├── asserts
+│   └── css
+│       └── org-mode.css
+├── org-sources
+│   ├── index.org
+│   ├── orgmode
+│   │   ├── Org-mode发布项目缓存说明.org
+│   │   ├── orgmode杂项.org
+│   │   ├── orgmode手册学习笔记.org
+│   │   └── 使用Orgmode写博客.org
+│   └── spacemacs
+│       └── spacemacs学习笔记.org
+└── publish
+    ├── css
+    │   └── org-mode.css
+    ├── index.html
+    ├── orgmode
+    │   ├── Org-mode发布项目缓存说明.html
+    │   ├── orgmode杂项.html
+    │   ├── orgmode手册学习笔记.html
+    │   └── 使用Orgmode写博客.html
+    └── spacemacs
+        └── spacemacs学习笔记.html
+
+9 directories, 14 files
+</pre>
+
+<dl class="org-dl">
+<dt><b>publish</b></dt><dd>该目录的内容是自动生成的。</dd>
+<dt><b>asserts</b></dt><dd>该目录是用来存放博客的静态文件的，比如 CSS， JS，图片等。</dd>
+<dt><b>org-sources</b></dt><dd>该目录是用来存放博客的 <b>org</b> 源文件的。</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org93dee4f" class="outline-2">
+<h2 id="org93dee4f">参考资料</h2>
+<div class="outline-text-2" id="text-org93dee4f">
+<p>
+在这学习的过程中，还是比较艰苦的，苦于资料太少，而且使用起来云里雾里的，所以自己就记录下这个详细的过程了。
+非常感谢下面这些资料，使自己在使用 <b>orgmode</b> 发布博客时得到不少帮助。
+</p>
+
+<ul class="org-ul">
+<li><a href="http://www.kuqin.com/shuoit/20150804/347399.html">kuqin</a></li>
+<li><a href="https://github.com/tuhaihe/blog/blob/master/emacs-blog/www/emacs-org-mode-make-static-webpage.org">tuhaihe github</a></li>
+<li><a href="http://guidao.github.io/emacs_blog.html">guidao</a> 我的CSS内容也是使用该网站的，表示感谢</li>
+<li><a href="http://wiki.houye.xyz/blogwithorg-mode.html">houye</a></li>
+<li><a href="https://yuyang0.github.io/articles/org-mode-dropbox-blog.html">yuyang0 github</a></li>
+</ul>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">&#33050;&#27880;: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+<a href="http://spacemacs.org/">spacemacs</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
+版本为 <b>9.0.5</b>
+</p></div></div>
+
+
+</div>
+</div></div>
 <div id="postamble" class="status">
 <p class="author">&#20316;&#32773;: emacsist</p>
-<p class="date">Created: 2017-03-10 五 23:39</p>
+<p class="date">Created: 2017-03-11 Sat 12:59</p>
 <p class="validation"></p>
 </div>
 </body>
