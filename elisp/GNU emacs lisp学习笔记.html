@@ -1,0 +1,4599 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2017-03-15 Wed 16:58 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GNU Emacs Lisp 学习笔记</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="emacsist">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/emacsist/css/org-mode.css"/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="/emacsist/index.html"> UP </a>
+ |
+ <a accesskey="H" href="/emacsist/index.html"> HOME </a>
+</div><div id="content">
+<h1 class="title">GNU Emacs Lisp 学习笔记</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org3d67195">list处理</a>
+<ul>
+<li><a href="#org13219e1">LISP list</a>
+<ul>
+<li><a href="#orga1f2acd">数字，list中的list</a></li>
+<li><a href="#org3d34b5d">Lisp Atom</a>
+<ul>
+<li><a href="#org27ef871">Atom 的类型</a></li>
+</ul>
+</li>
+<li><a href="#org1fe9b93">list中的空格</a></li>
+<li><a href="#org54621dc">GNU Emacs 帮你输入 list</a></li>
+</ul>
+</li>
+<li><a href="#orgbdd6f68">执行一个程序</a></li>
+<li><a href="#org2588ecb">产生一个错误信息</a></li>
+<li><a href="#org3ff9d70">Symbol 名字 和 Function 定义</a></li>
+<li><a href="#org1e224fb">Lisp 解析器</a>
+<ul>
+<li><a href="#orga468d83">复杂性</a>
+<ul>
+<li><a href="#org1e568f4">第一个复杂性</a></li>
+<li><a href="#org6163742">第二个复杂性</a></li>
+<li><a href="#orge218d9d">最后一个复杂性</a></li>
+</ul>
+</li>
+<li><a href="#org812cfa5">字节编译</a></li>
+</ul>
+</li>
+<li><a href="#org8b9ba4e">Evaluation</a>
+<ul>
+<li><a href="#org460d8b3">解析器是如何工作的</a></li>
+<li><a href="#org4c53407">evaluating 内部  list</a></li>
+</ul>
+</li>
+<li><a href="#orgfc39379">Variables 变量</a>
+<ul>
+<li><a href="#orgef69e0f">fill-column，一个示例 Variable</a></li>
+<li><a href="#orgf1bbf28">一个没有 Function 的 Symbol 错误消息</a></li>
+<li><a href="#orgededfdc">一个没有 Value 的 Symbol 错误消息</a></li>
+</ul>
+</li>
+<li><a href="#org8bb1f18">Arguments 参数</a>
+<ul>
+<li><a href="#org95bbccf">Arguments 的数据类型</a></li>
+<li><a href="#org1beccd5">作为 Value 或 List 的 Argument</a></li>
+<li><a href="#orgd0795ae">可变数量的 Argument</a></li>
+<li><a href="#org7bbbb9a">使用一个错误类型的对象作为 Argument</a></li>
+<li><a href="#orgc1e16ca">message Function</a></li>
+</ul>
+</li>
+<li><a href="#org82e09ee">设置一个 Variable 的 Value</a>
+<ul>
+<li><a href="#org19f92f5">使用 set</a></li>
+<li><a href="#orgc960e94">使用 setq</a></li>
+<li><a href="#org939884d">统计 Counting</a></li>
+</ul>
+</li>
+<li><a href="#org98b62f9">总结</a></li>
+</ul>
+</li>
+<li><a href="#org5569d4f">实践 Evaluation</a>
+<ul>
+<li><a href="#org1fe134e">如何 Evaluate</a></li>
+<li><a href="#org06c59cc">Buffer 名字</a></li>
+<li><a href="#orgbf991d9">获取 Buffer</a></li>
+<li><a href="#org80335ab">切换 Buffer</a></li>
+<li><a href="#org53448f4">Buffer 大小 和 位置点</a></li>
+</ul>
+</li>
+<li><a href="#org57598ec">如何写 Function 定义</a>
+<ul>
+<li><a href="#orgcd1d4a7">原生函数</a></li>
+<li><a href="#orgdfb4f24">The defun Macro</a></li>
+<li><a href="#org542cffa">安装一个 Function 定义</a></li>
+<li><a href="#org3bd8f32">创建一个 Interactive Function</a>
+<ul>
+<li><a href="#orgc9965ae">multiply-by-seven 的 interactive 版本</a></li>
+<li><a href="#org76d525c">multiply-by-seven 细节</a></li>
+</ul>
+</li>
+<li><a href="#orgbcff485">interactive 的不同选项</a></li>
+<li><a href="#orgd2b6dcd">持久化地安装 Code</a></li>
+<li><a href="#org1d7a1a5">let</a>
+<ul>
+<li><a href="#orgf51510a">let 防止混淆</a></li>
+<li><a href="#org67e3b41">let expression 部分</a></li>
+<li><a href="#org6dd1634">let expression 例子</a></li>
+<li><a href="#orgf952ccd">let 语句中没有初始化的 variable</a></li>
+</ul>
+</li>
+<li><a href="#org11dfcbc">特殊的 form : if</a>
+<ul>
+<li><a href="#org567ca2b">if 的更多细节</a></li>
+<li><a href="#org36151ab">type-of-animal 细节</a></li>
+</ul>
+</li>
+<li><a href="#orgd2f6346">if-then-else</a></li>
+<li><a href="#org1c4214b">Emacs Lisp 中的 true 和  false</a>
+<ul>
+<li><a href="#org49a6076">nil 解释</a></li>
+</ul>
+</li>
+<li><a href="#org397aa23">save-excursion</a>
+<ul>
+<li><a href="#orgb67ca35">point 和 mark</a></li>
+<li><a href="#orgd675583">save-excursion 模板</a></li>
+</ul>
+</li>
+<li><a href="#org7510974">回顾</a></li>
+</ul>
+</li>
+<li><a href="#org739e645">一些 buffer 相关的 Functions</a>
+<ul>
+<li><a href="#org86d00ee">查找更多信息</a></li>
+<li><a href="#orgd0a5977">精简版的 beginning-of-buffer 定义</a></li>
+<li><a href="#orgac757d4">mark-whole-buffer 的定义</a>
+<ul>
+<li><a href="#orge128a39">mark-whole-buffer 概述</a></li>
+<li><a href="#orge73165e">mark-whole-buffer 的 body</a></li>
+<li><a href="#org1556f11">append-to-buffer 的定义</a>
+<ul>
+<li><a href="#orgd57a96b">append-to-buffer 概述</a></li>
+<li><a href="#org46d56ae">append-to-buffer 的 Interactive 部分</a></li>
+<li><a href="#org7c4431f">append-to-buffer 的 Body 部分</a></li>
+<li><a href="#org8fba304">append-to-buffer 的 save-excursion 部分</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org1760046">回顾</a></li>
+</ul>
+</li>
+<li><a href="#org25d69a5">一些更复杂的 Functions</a>
+<ul>
+<li><a href="#org4450533">copy-to-buffer 的定义</a></li>
+<li><a href="#org5a748b5">insert-buffer 的定义</a>
+<ul>
+<li><a href="#org6802e02">insert-buffer 的代码</a>
+<ul>
+<li><a href="#orgfd0d31c">insert-buffer 中的 interactive 部分</a></li>
+<li><a href="#orgb137a65">insert-buffer 中的 body 部分</a></li>
+<li><a href="#org61bb1cb">用 if 来代替 insert-buffer 中的 or</a></li>
+<li><a href="#org755f9b5">body 中的 or 部分</a></li>
+<li><a href="#org36d7ccf">insert-buffer 中的 let 部分</a></li>
+<li><a href="#org2d00b42">insert-buffer 的新 body</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orge362987">beginning-of-buffer 的完整定义</a>
+<ul>
+<li><a href="#orgf2e6bf3">可选 argument</a></li>
+<li><a href="#org1f36948">beginning-of-buffer 带有 argument</a>
+<ul>
+<li><a href="#orga37c5ff">分解 beginning-of-buffer</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org8a9fb0d">回顾</a></li>
+</ul>
+</li>
+<li><a href="#orge6dbab8">Narrowing 和 Widening</a>
+<ul>
+<li><a href="#orgf55fa9c">Narrowing 的优点</a></li>
+<li><a href="#org769896c">save-restriction 特殊的 form</a></li>
+<li><a href="#org86261cd">what-line</a></li>
+</ul>
+</li>
+<li><a href="#org7a060b1">基本的 Function: car, cdr, cons</a>
+<ul>
+<li><a href="#org0f7545d">奇怪的名字</a></li>
+<li><a href="#org169afca">car 和 cdr</a></li>
+<li><a href="#org6f2fdc6">cons</a>
+<ul>
+<li><a href="#org87d2b7b">构建一个 list</a></li>
+<li><a href="#org302584b">list 的长度: length</a></li>
+</ul>
+</li>
+<li><a href="#org38d2bd8">nthcdr</a></li>
+<li><a href="#orgba80eae">nth</a></li>
+<li><a href="#org524b588">setcar</a></li>
+<li><a href="#org0cae771">setcdr</a></li>
+</ul>
+</li>
+<li><a href="#orgb29d05f">剪切(cut)和保存(store)文本</a>
+<ul>
+<li>
+<ul>
+<li><a href="#orgee7e472">store 文本到一个 list 中</a></li>
+<li><a href="#orgda0b7fa">zap-to-char</a>
+<ul>
+<li><a href="#orgc8540a7">zap-to-char 的完整实现</a></li>
+<li><a href="#org51c2d1c">interactive 部分</a></li>
+<li><a href="#org0148662">zap-to-char 的 body 部分</a></li>
+<li><a href="#org44b2205">search-forward function</a></li>
+<li><a href="#org2af1007">特殊的 Form ： progn</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orga498377">List 是如何实现的</a>
+<ul>
+<li><a href="#orgf01dc16">List 的示意图</a></li>
+<li><a href="#org4629f91">symbol 作为抽屉柜</a></li>
+</ul>
+</li>
+<li><a href="#orge32e3f9">Yanking 回文本</a>
+<ul>
+<li><a href="#org1131831">Kill Ring 概述</a></li>
+<li><a href="#org2b4dad5">kill-ring-yank-pointer variable</a></li>
+</ul>
+</li>
+<li><a href="#org4add21f">loops 和  recursion</a>
+<ul>
+<li><a href="#orgc6e3eb5">while</a>
+<ul>
+<li><a href="#org5cf8fcf">用 while 来进行 loop</a></li>
+<li><a href="#org1c255fc">一个 while loop 和一个 List</a></li>
+<li><a href="#org8505cb7">例子： print-elements-of-list</a></li>
+<li><a href="#org7545c56">带有增量计数器的 Loop</a>
+<ul>
+<li><a href="#orgc93ccfd">增量 Loop 的细节</a></li>
+<li><a href="#orga5a1f45">例如用计数器的 loop 来统计星星数:</a></li>
+<li><a href="#org385e981">完整代码</a></li>
+</ul>
+</li>
+<li><a href="#orgc74546b">带有减量计数器的 Loop</a></li>
+</ul>
+</li>
+<li><a href="#org5be210a">recursion</a>
+<ul>
+<li><a href="#orgfcbb09d">构建 robots</a></li>
+<li><a href="#org850a256">recursion 定义部分</a>
+<ul>
+<li><a href="#org87019f9">使用 recursion 来处理 list</a></li>
+<li><a href="#org3dc805b">使用 recursion 来替代 counter</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org0c504c7">regular expression 搜索</a>
+<ul>
+<li><a href="#orgb5ed887">sentence-end 的 regular expression</a></li>
+<li><a href="#orgaf87f6b">re-search-forward function</a></li>
+<li><a href="#org82e7f01">forward-sentence</a>
+<ul>
+<li><a href="#org76bd798">完整代码</a></li>
+</ul>
+</li>
+<li><a href="#org977eac3">forward-paragraph</a></li>
+</ul>
+</li>
+<li><a href="#org6e445a6">通过 regexp 和 累计 来统计单词</a>
+<ul>
+<li><a href="#orgec2b045">Counting words</a>
+<ul>
+<li><a href="#org7a92e8c">count-words-example function</a>
+<ul>
+<li><a href="#org9bcbbe5">设计 count-words-example</a></li>
+<li><a href="#orgafc59ff">空格的 bug</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgcc715e3">你的 .emacs 文件</a>
+<ul>
+<li><a href="#org9bee455">Emacs 的默认配置</a></li>
+<li><a href="#org86a27a8">初始化文件</a></li>
+<li><a href="#orgd573dca">使用 defcustom 来指定 variables</a></li>
+<li><a href="#orgf10443f">开始 .emacs 文件</a></li>
+<li><a href="#org1a3d46b">Text 和 Auto fill mode</a></li>
+<li><a href="#org8358603">mail aliases</a></li>
+<li><a href="#orgcd5fcfe">indent tabs mode</a></li>
+<li><a href="#org29df897">keybindings</a></li>
+<li><a href="#org473743d">Keymaps</a></li>
+<li><a href="#org5c66206">loading files</a></li>
+<li><a href="#org0d931a8">Autoloading</a></li>
+</ul>
+</li>
+<li><a href="#orgae00cc2">Debugging</a>
+<ul>
+<li><a href="#orgfc0b608">debug</a></li>
+<li><a href="#org5ec52da">debug-on-entry</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org3d67195" class="outline-2">
+<h2 id="org3d67195">list处理</h2>
+<div class="outline-text-2" id="text-org3d67195">
+<blockquote>
+<p>
+List 是 lisp 的基础。从名字应该就可以知道了，LISP（LISt Processing）
+</p>
+</blockquote>
+</div>
+
+<div id="outline-container-org13219e1" class="outline-3">
+<h3 id="org13219e1">LISP list</h3>
+<div class="outline-text-3" id="text-org13219e1">
+<p>
+一个 <b>list</b> 看起来像这样子:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">'<span style="color: #4f97d7;">(</span>rose violet daisy buttercup<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+它是通过单引号开头的。它也可以写成下面这样子:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">'<span style="color: #4f97d7;">(</span>rose
+violet
+daisy
+buttercup
+<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+list的元素是4种不同的花名，每个通过空格来分隔并且用括号包着。就像有个石头墙包围着它们一样。
+</p>
+</div>
+
+
+<div id="outline-container-orga1f2acd" class="outline-4">
+<h4 id="orga1f2acd">数字，list中的list</h4>
+<div class="outline-text-4" id="text-orga1f2acd">
+<p>
+<b>list</b> 中也可以有数字，例如这个 <b>list</b> :
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>+ <span style="color: #a45bad;">2</span> <span style="color: #a45bad;">2</span> <span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+在 <b>Lisp</b> 中，数据和程序是以相同的方式表示的，也就是说，它们都是 <b>list</b> 中的 <b>word</b> , <b>numbers</b>  或其他的 <b>list</b> ，通过空格分隔并且用括号包着。
+</p>
+
+<p>
+list中的list:
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">'<span style="color: #4f97d7;">(</span>this list has <span style="color: #bc6ec5;">(</span>a list inside of it <span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3d34b5d" class="outline-4">
+<h4 id="org3d34b5d">Lisp Atom</h4>
+<div class="outline-text-4" id="text-org3d34b5d">
+<p>
+在 Lisp 中，我们称 <b>words</b> 为 <b>atoms</b> ， <b>atom</b> 的意思是不可分割的。对 <b>Lisp</b> 而言，*words* 是用在 <b>list</b> 中的，并且是不可以被再分割为其他再小部分的仍然是作为程序的一部分的。
+</p>
+
+<p>
+在一个 list 中， <b>atoms</b> 之间是通过空格来分隔的。
+</p>
+
+<p>
+从技术上讲，一个 <b>list</b> 是由括号包围着由空格分隔的 <b>atoms</b> 或由其他的 <b>list</b> 或 <b>atoms</b> 和其他 <b>list</b> 一起组成的。一个 <b>list</b> 可以仅有一个 <b>atom</b> 或什么都没有。一个什么也没有的 <b>list</b> 看起来像这样子： <code>()</code> ，它称为空 <b>list</b>. 不同于其他，一个空 <b>list</b> 是可以同时看作是一个 <b>atom</b> 和 一个 <b>list</b> 的。
+</p>
+
+<p>
+以人类可读的文本形式表达半结构化数据的(原文为 The printed representation of ，我采用维基百科的定义来意译) <sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup> <b>atom</b> 和 <b>list</b> 都被称为 <b>symbolic expressions</b> 或更简洁地称为 <b>S-expressions</b> . 单词 <b>expression</b> 它自身可以指人类可读的文本形式，或者指 <b>atom</b> 又或者是 <b>list</b> . 通常是使用 <b>expression</b> 来统称它们（在文本上，*form* 是 <b>expression</b> 的同义词）
+</p>
+</div>
+
+<div id="outline-container-org27ef871" class="outline-5">
+<h5 id="org27ef871">Atom 的类型</h5>
+<div class="outline-text-5" id="text-org27ef871">
+<dl class="org-dl">
+<dt>numbers</dt><dd>1,2,3,4,5</dd>
+<dt>symbols</dt><dd>'+', 'foor', '-'</dd>
+<dt>string</dt><dd>"hello world"</dd>
+</dl>
+
+
+<p>
+在 Lisp 中，所有引号的文本包括标点符号和空格是一个 <b>atom*，这种 *atom</b> 称为 <b>string</b> . <b>string</b> 是不同于 <b>numbers</b> 或 <b>symbols</b> 的 <b>atom</b> ，并且与它们的使用方式也不同。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1fe9b93" class="outline-4">
+<h4 id="org1fe9b93">list中的空格</h4>
+<div class="outline-text-4" id="text-org1fe9b93">
+<p>
+对于 Lisp 语言来说，在 list 中的空格的个数是无关紧要的（但 <b>atom</b> 之间，至少要有一个空格）。比如:
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">'<span style="color: #4f97d7;">(</span>this list
+looks like this<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+与下面的是一样的:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">'<span style="color: #4f97d7;">(</span>this list looks like this<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+额外的空格和换行，只是设计于对人类更可读而已。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org54621dc" class="outline-4">
+<h4 id="org54621dc">GNU Emacs 帮你输入 list</h4>
+<div class="outline-text-4" id="text-org54621dc">
+<dl class="org-dl">
+<dt>TAB</dt><dd>自动帮你缩进</dd>
+<dt>代码块的缩进</dt><dd><code>M-c-\</code></dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgbdd6f68" class="outline-3">
+<h3 id="orgbdd6f68">执行一个程序</h3>
+<div class="outline-text-3" id="text-orgbdd6f68">
+<p>
+在 Lisp 中的 list 或者任何的 list ，都是一个可以准备好执行的程序。计算机将做以下三件事之一:
+</p>
+<ul class="org-ul">
+<li>仅返回 list 自身</li>
+<li>给出一个错误</li>
+<li>将第一个 symbol 作为命令来做一些事件（通常这个是你真正想要的）</li>
+</ul>
+
+
+<p>
+单撇号, <code>'</code> 表示一个引用。
+</p>
+<ul class="org-ul">
+<li>当它在一个 list 前面时，它告诉 Lisp 不要处理那个 list ，仅仅只是当作 list 自身。</li>
+<li>如果一个 list 前面没有这个单撇号，那 list 中的第一个项是特殊的 ，它是一个命令 （在 Lisp 里，这些命令称为 <b>functions</b> ）.比如 <code>(+ 2 2)</code> ，它前面没有单撇号，所以，Lisp 理解 +  是一个指令。</li>
+</ul>
+
+
+<p>
+在 GNU Emacs 里，将光标放在下面的指令里，然后执行 <b>C-x C-e</b> 就表示执行当前光标所在的 lisp 代码：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>+ <span style="color: #a45bad;">2</span> <span style="color: #a45bad;">2</span><span style="color: #4f97d7;">)</span>
+
+'<span style="color: #4f97d7;">(</span>this is a quoted list<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org2588ecb" class="outline-3">
+<h3 id="org2588ecb">产生一个错误信息</h3>
+<div class="outline-text-3" id="text-org2588ecb">
+<p>
+我们将去 eval 一个没有单撇号并且第一个元素也是没有意义的命令的 list ，这时就会产生一个错误信息。在下面的代码里，将光标放在那里，然后按 <b>C-x C-e</b> :
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>this is an unquoted list
+</pre>
+</div>
+
+<p>
+这时在 <code>*Bracktrace*</code> 窗口将会打开并且你会看到如下的信息:
+</p>
+
+<pre class="example">
+---------- Buffer: *Backtrace* ----------
+Debugger entered--Lisp error: (void-function this)
+(this is an unquoted list)
+eval((this is an unquoted list))
+eval-last-sexp-1(nil)
+eval-last-sexp(nil)
+call-interactively(eval-last-sexp)
+---------- Buffer: *Backtrace* ----------
+</pre>
+
+<p>
+在该窗口中，按 <b>q</b> 即可退出。
+</p>
+
+<p>
+<b>sexp</b> 它是 <b>symbol expression</b> 的缩写
+</p>
+
+<p>
+<b>Debugger entered&#x2013;Lisp error: (void-function this)</b> 表示没有 <b>this</b> 这个函数，上面说了，如果一个list开头没有单撇号，那么 Lisp 会将第一个元素当作是命令（或称为 function）来处理。
+</p>
+
+<p>
+从技术上讲，*symbol*  告诉计算机去查找指令。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org3ff9d70" class="outline-3">
+<h3 id="org3ff9d70">Symbol 名字 和 Function 定义</h3>
+<div class="outline-text-3" id="text-org3ff9d70">
+<p>
+<b>symbol</b> ，可能是临时地，是定义的地方或者是指令集。与人们起名字类似。
+在 Lisp 中，同一个指令集可以附加在几个不同的名字上。比如两个数相加的指令集，它被同时链接到 <b>symbol</b> 中的 <b>plus</b> 与 <b>+</b> .
+</p>
+
+<p>
+在另一方面，一个 <b>symbol</b> 在同一时间，仅仅只有一个函数定义附于它。否则，计算机不知道到底使用哪一个定义。
+</p>
+
+<p>
+由于 Emacs Lisp 是非常大的，习惯上命名 <b>symbol</b> 的方式是标识这些 <b>function</b> 是属于 Emacs 哪部分的。因此，所有处理 <b>Textinfo</b> 的函数都以 <b>textinfo-</b> 开头来命名。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org1e224fb" class="outline-3">
+<h3 id="org1e224fb">Lisp 解析器</h3>
+<div class="outline-text-3" id="text-org1e224fb">
+<p>
+解析器所做的事：
+</p>
+<ol class="org-ol">
+<li>首先查看 list 开头是否有一个引号。</li>
+<li>如果有，则将这个 list 返回给我们</li>
+<li>如果没有这个引号，解析器则查找 list 中的第一个元素，并且查看是否有一个与之相关联的 <b>function</b> 定义。如果有该函数的定义的话，则执行这些指令；否则打印出错误信息。</li>
+</ol>
+
+
+<p>
+这就是 Lisp 的工作方式。
+</p>
+</div>
+
+<div id="outline-container-orga468d83" class="outline-4">
+<h4 id="orga468d83">复杂性</h4>
+<div class="outline-text-4" id="text-orga468d83">
+</div><div id="outline-container-org1e568f4" class="outline-5">
+<h5 id="org1e568f4">第一个复杂性</h5>
+<div class="outline-text-5" id="text-org1e568f4">
+<p>
+除了 list, Lisp 解析器可以 <b>eval</b> 一个没有引号并且没有括号包围的 <b>symbol</b> 。 Lisp 解析器将试图把 <b>symbol</b> 的值作为 <b>variable</b> 
+</p>
+</div>
+</div>
+<div id="outline-container-org6163742" class="outline-5">
+<h5 id="org6163742">第二个复杂性</h5>
+<div class="outline-text-5" id="text-org6163742">
+<p>
+因为一些 <b>function</b> 是不同寻常的并且在通常方式下是没有生效的。它们不被称为特殊的 <b>forms</b> ，它们用于特别的工作，例如: 定义一个 <b>function</b> 
+有一些特殊的 <b>forms</b> ，称为 <b>macros</b> ，它是 eval 为替换原 <b>expression</b> 的，而 <b>function</b> 是将一个 <b>expression</b> 转换为另一个 <b>expression</b> 。
+</p>
+
+<p>
+介绍这些的目的，你不需要太担心哪些是特殊的 <b>form</b> ，哪些是 <b>macro</b> 或者 <b>function</b> 例如 <b>if</b> 是一个特殊的 <b>form</b> ，但 <b>when</b> 是一个 <b>macro</b> 。在早期的 Emacs 版本中，*defun* 是一个特殊的 <b>form</b> ，但现在它是一个 <b>macro</b> .
+</p>
+</div>
+</div>
+<div id="outline-container-orge218d9d" class="outline-5">
+<h5 id="orge218d9d">最后一个复杂性</h5>
+<div class="outline-text-5" id="text-orge218d9d">
+<ol class="org-ol">
+<li>如果 Lisp 解析器查找的 <b>function</b> 并不是一个特殊的 <b>form</b> 并且它是 list 的一部分，Lisp 解析器会查看它是否包含了另一个 list . （如此递归下去，它总是首先处理最里面的那个 list）。</li>
+<li>否则，解析器会从左到右工作，从一个 <b>expression</b> 到另一个 <b>expression</b></li>
+</ol>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org812cfa5" class="outline-4">
+<h4 id="org812cfa5">字节编译</h4>
+<div class="outline-text-4" id="text-org812cfa5">
+<p>
+Lisp 解析器可以解析两种形式的代码:
+</p>
+<ol class="org-ol">
+<li>人类可读的代码（通常以 <b>.el</b> 结尾）</li>
+<li>字节编译的代码 (byte compiled code)，它并不是人类可读的，但它执行的速度比上一种更快。（通常以 <b>.elc</b> 结尾）</li>
+</ol>
+
+
+<p>
+你可以将第一种人类可读的代码，转换为字节编译的代码，通过执行类似 <b>byte-compile-file</b> 的编译命令来转换。
+你可以在 <b>emacs/lisp</b> （即emacs安装目录下的 lisp 目录）看到以上两种代码。
+</p>
+</div>
+</div>
+</div>
+
+
+
+
+
+<div id="outline-container-org8b9ba4e" class="outline-3">
+<h3 id="org8b9ba4e">Evaluation</h3>
+<div class="outline-text-3" id="text-org8b9ba4e">
+<p>
+当 Lisp 解析器在一个 <b>expression</b> 上工作时，这些活动的术语就称为 <b>evaluation</b> 。 这个词的意思是 <b>评估它，以查明值或数量</b>
+</p>
+</div>
+
+<div id="outline-container-org460d8b3" class="outline-4">
+<h4 id="org460d8b3">解析器是如何工作的</h4>
+<div class="outline-text-4" id="text-org460d8b3">
+<p>
+在 evaluation 一个 <b>expression</b> 后，Lisp 解析器将最可能返回执行完这些指令的结果值或产生一个错误消息。
+在解析器返回一个值的同时，它也可能做一些其他的事，比如移动光标或复制一个文件等等，这些动作就称为 <b>side effect</b> .
+</p>
+
+<p>
+总结： evaluation 一个 <b>symbol expression</b> 最常见的是导致 Lisp 解析器返回一个值以及可能执行一个 <b>side effect</b>; 或者产生一个错误。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4c53407" class="outline-4">
+<h4 id="org4c53407">evaluating 内部  list</h4>
+<div class="outline-text-4" id="text-org4c53407">
+<p>
+当 <b>evaluation</b> 应用到一个 list 包含另一个 list 的 list 时，外部的 list 可能使用 第一个 <b>evaluation</b> 返回的值作为外部的 list 的信息。这就解析了，为什么内部的 <b>expression</b> 会首先被 <b>evaluation*，它们返回的值会被外部的 *expression</b> 使用。请将光标放到下面的 <b>expression</b> 中，然后按 <b>C-x C-e</b> :
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>+ <span style="color: #a45bad;">2</span> <span style="color: #bc6ec5;">(</span>+ <span style="color: #a45bad;">3</span> <span style="color: #a45bad;">3</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+执行完后，数字8将会在 <b>echo area</b> 中出现。
+</p>
+
+<p>
+Lisp 解析器执行的情况是首先 <b>evaluation</b> 内部 <b>expression</b> , <code>(+ 3 3)</code> ，它返回的值是数字6；然后 <b>evaluation</b> 外部的 <b>expression</b> ，它将被重写为 <code>(+ 2 6)</code> ，然后返回的值是数字8 。由于这里没有更多 <b>expression</b> 要 <b>evaluation</b> 了，解析器就会将这值显示在 <b>echo area</b> 里。
+</p>
+
+<p>
+<b>C-x C-e</b> 绑定的命令是 <b>eval-last-sexp</b> ，这个命令的意思是 <b>evaluates the last symbol expression</b>  。注意，如果你将光标放在最开始的位置或最后一个括号，执行这条命令时，返回的是8. 但如果你的光标是放在倒数第二个括号后面时，再执行这命令，它返回的是6.
+</p>
+</div>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-orgfc39379" class="outline-3">
+<h3 id="orgfc39379">Variables 变量</h3>
+<div class="outline-text-3" id="text-orgfc39379">
+<p>
+在 Emacs Lisp 中， 一个 <b>symbol</b> 可以有一个 <b>value</b> 附于它，就像有一个 <b>function</b> 定义附于它一样。它们是不同的，*function* 定义是一个指令集；一个 <b>value</b> ，是一些东西，例如是 <b>number</b> 或 <b>name</b> ，它们是多样的，这就是为什么叫它做 <b>variable</b> 的原因。
+</p>
+
+<p>
+<b>symbol</b> 的 <b>value</b> 可以是任何 Lisp 的 <b>expression</b> ，比如 <b>number</b> , <b>list</b> 或 <b>string</b> . 一个 <b>symbol</b> 有一个 <b>value</b> 通常称为 <b>variable</b> .
+</p>
+
+<p>
+一个 <b>symbol</b> 可以同时拥有 <b>function</b> 定义和 <b>value</b> 附于它，又或者是它们之一。这有点类似 <b>Cambridge</b> 可以指 <b>Massachusetts</b> 的一个城市，并且也带有一些附加信息到这个名字上，例如是伟大的编程中心。
+另一种思考的方式是，想像 <b>symbol</b> 是一堆抽屉，*function* 定义放在其中一个抽屉中，而 <b>value</b> 放在另一个抽屉，以此类推。
+</p>
+</div>
+
+<div id="outline-container-orgef69e0f" class="outline-4">
+<h4 id="orgef69e0f">fill-column，一个示例 Variable</h4>
+<div class="outline-text-4" id="text-orgef69e0f">
+<p>
+为了找出该 <b>symbol</b> 的 <b>value</b> ， 可以 <b>evaluate</b> 它自身即可。即，将光标放在该 <b>symbol</b> 上，然后输入 <b>C-x C-e</b> :
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">fill-column
+</pre>
+</div>
+
+<p>
+这时可以看到 <b>echo area</b> 显示出一个数值（我这里是80）
+</p>
+
+<p>
+一个 <b>symbol</b> 可以有任意的值附于它，用术语来说就是，我们 <b>bind</b> 一个 <b>variable</b> 到一个 <b>value</b> : 可以是 <b>number</b> ，例如 72; 可以是 <b>string</b> ，例如 "such as this"；可以是 <b>list</b> ，例如 <code>(spruce pine oak)</code> ；我们甚至可以 <b>bind</b> 一个 <b>function</b> 定义给它。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgf1bbf28" class="outline-4">
+<h4 id="orgf1bbf28">一个没有 Function 的 Symbol 错误消息</h4>
+<div class="outline-text-4" id="text-orgf1bbf28">
+<p>
+当我们 <b>evaluated</b> <b>fill-column</b> 查看它的 <b>value</b> 时，是把它作为一个 <b>variable</b> ，我们没有用括号包着它。这是因为我们不想把它当作是一个 <b>function</b> 名。
+如果 <b>fill-column</b> 是 lisp 中的第一个或 list 中仅有一个元素时， Lisp 解析器会试图查找附于它的 <b>function</b> 定义。但 <b>fill-column</b> 并没有 <b>function</b> 定义，试图 <b>evaluating</b> 下面时:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>fill-column<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+会导致产生一个 <b>Backtrace</b> buffer，如:
+</p>
+
+<pre class="example">
+---------- Buffer: *Backtrace* ----------
+Debugger entered--Lisp error: (void-function fill-column)
+(fill-column)
+eval((fill-column))
+eval-last-sexp-1(nil)
+eval-last-sexp(nil)
+call-interactively(eval-last-sexp)
+---------- Buffer: *Backtrace* ----------
+</pre>
+</div>
+</div>
+
+
+<div id="outline-container-orgededfdc" class="outline-4">
+<h4 id="orgededfdc">一个没有 Value 的 Symbol 错误消息</h4>
+<div class="outline-text-4" id="text-orgededfdc">
+<p>
+当我们 <b>evaluate</b> 一个没有 <b>value</b> 附加于它的 <b>symbol</b> 时，你将会收到一个错误消息。比如下面的 <b>expression</b> :
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>+ <span style="color: #a45bad;">2</span> <span style="color: #a45bad;">2</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+将你的光标放到 <b>+</b> 号后面，第一个数字2前面，然后 <b>C-x C-e</b> 
+</p>
+
+<p>
+这时，在 <b>Backtrace</b> buffer 中显示 :
+</p>
+
+<pre class="example">
+---------- Buffer: *Backtrace* ----------
+Debugger entered--Lisp error: (void-variable +)
+eval(+)
+eval-last-sexp-1(nil)
+eval-last-sexp(nil)
+call-interactively(eval-last-sexp)
+---------- Buffer: *Backtrace* ----------
+</pre>
+
+<p>
+在这个例子里，我们试图将 <b>+</b> 当作一个 <b>variable</b> 来 <b>evaluate</b> 它的 <b>value</b> 而不是 <b>function</b> 定义 ，但并没有找到该 <b>value</b> ，所以就报了该错误消息。
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org8bb1f18" class="outline-3">
+<h3 id="org8bb1f18">Arguments 参数</h3>
+<div class="outline-text-3" id="text-org8bb1f18">
+<p>
+下面的例子:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>+ <span style="color: #a45bad;">2</span> <span style="color: #a45bad;">2</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+Lisp 解析器做的是，将 <b>+</b> 后面的 <b>number</b> 进行相加。这些通过 <b>+</b> 相加的 <b>number</b> 称为 <b>function</b> 的 <b>arguments</b> 
+在 Lisp 里，*function* 的 <b>arguments</b> 是 <b>atoms</b> 或 <b>list</b> .
+</p>
+</div>
+
+<div id="outline-container-org95bbccf" class="outline-4">
+<h4 id="org95bbccf">Arguments 的数据类型</h4>
+<div class="outline-text-4" id="text-org95bbccf">
+<p>
+传递什么样的数据类型，取决于一个 <b>function</b> 用它们来做什么。
+<b>string</b> 的字符是从 <b>0</b> 开始算起的，而不是 <b>1</b>.
+</p>
+</div>
+</div>
+
+
+
+<div id="outline-container-org1beccd5" class="outline-4">
+<h4 id="org1beccd5">作为 Value 或 List 的 Argument</h4>
+<div class="outline-text-4" id="text-org1beccd5">
+<p>
+一个 <b>argument</b> 可以是一个 <b>symbol</b> 进行 <b>evaluate</b> 之后返回的 <b>value</b> 。例如，*fill-column* 进行 <b>evaluated</b> 时，它返回一个 <b>number</b> ，这个 <b>number</b> 可以用在加法中。例如下面:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>+ <span style="color: #a45bad;">2</span> fill-column<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+此外，一个 <b>argument</b> 也可以是一个 <b>list</b> 进行 <b>evaluated</b> 之后返回的 <b>value</b> .例如下面的 <b>expression</b> :
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>concat <span style="color: #2d9574;">"The "</span> <span style="color: #bc6ec5;">(</span>number-to-string <span style="color: #2d9574;">(</span>+ <span style="color: #a45bad;">2</span> fill-column<span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span> <span style="color: #2d9574;">" red foxes."</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-orgd0795ae" class="outline-4">
+<h4 id="orgd0795ae">可变数量的 Argument</h4>
+<div class="outline-text-4" id="text-orgd0795ae">
+<p>
+一些 <b>function</b> ，例如 <code>concat</code> , <code>+</code> 或 <code>*</code> ，可以带有任意数量的 <b>arguments</b> 例如下面的:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>+<span style="color: #4f97d7;">)</span> <span style="color: #2aa1ae; background-color: #292e34;">;;</span><span style="color: #2aa1ae; background-color: #292e34;">&#32467;&#26524;&#20026;0</span>
+<span style="color: #4f97d7;">(</span>*<span style="color: #4f97d7;">)</span> <span style="color: #2aa1ae; background-color: #292e34;">;;</span><span style="color: #2aa1ae; background-color: #292e34;">&#32467;&#26524;&#20026;1</span>
+
+
+<span style="color: #4f97d7;">(</span>+ <span style="color: #a45bad;">3</span><span style="color: #4f97d7;">)</span> <span style="color: #2aa1ae; background-color: #292e34;">;;</span><span style="color: #2aa1ae; background-color: #292e34;">&#32467;&#26524;&#20026;3</span>
+<span style="color: #4f97d7;">(</span>* <span style="color: #a45bad;">3</span><span style="color: #4f97d7;">)</span> <span style="color: #2aa1ae; background-color: #292e34;">;;</span><span style="color: #2aa1ae; background-color: #292e34;">&#32467;&#26524;&#20026;3</span>
+
+<span style="color: #4f97d7;">(</span>+ <span style="color: #a45bad;">3</span> <span style="color: #a45bad;">4</span> <span style="color: #a45bad;">5</span><span style="color: #4f97d7;">)</span> <span style="color: #2aa1ae; background-color: #292e34;">;;</span><span style="color: #2aa1ae; background-color: #292e34;">&#32467;&#26524;&#20026;12</span>
+<span style="color: #4f97d7;">(</span>* <span style="color: #a45bad;">3</span> <span style="color: #a45bad;">4</span> <span style="color: #a45bad;">5</span><span style="color: #4f97d7;">)</span> <span style="color: #2aa1ae; background-color: #292e34;">;;</span><span style="color: #2aa1ae; background-color: #292e34;">&#32467;&#26524;&#20026;60</span>
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org7bbbb9a" class="outline-4">
+<h4 id="org7bbbb9a">使用一个错误类型的对象作为 Argument</h4>
+<div class="outline-text-4" id="text-org7bbbb9a">
+<p>
+当传递一个错误类型的 <b>argument</b> 给一个 <b>function</b> 时， Lisp 解析器会产生一个错误消息。例如 , <code>+</code> 函数期待它们的 <b>arguments</b> 都是 <b>numbers</b> . 作为一个例子，我们传递一个引号的 <b>symbol</b> <code>hello</code> 来代替一个 <b>number</b> 。然后 <b>C-x C-e</b> :
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>+ <span style="color: #a45bad;">2</span> 'hello<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+执行完后，将会产生一个错误消息。在 <b>Backtrace</b> buffer 中会显示:
+</p>
+
+<pre class="example">
+---------- Buffer: *Backtrace* ----------
+Debugger entered--Lisp error:
+(wrong-type-argument number-or-marker-p hello)
++(2 hello)
+eval((+ 2 (quote hello)))
+eval-last-sexp-1(nil)
+eval-last-sexp(nil)
+call-interactively(eval-last-sexp)
+---------- Buffer: *Backtrace* ----------
+</pre>
+
+<p>
+错误消息的第一部分是比较直接的，它说 <b>wrong type argument</b>
+<b>number-or-marker-p</b> 表示 <code>+</code> 期待的 <b>argument</b> 类型，这个 <b>symbol</b> 告诉我们，它期待的 <b>Argument</b> 是一个 <b>number</b> 或一个 <b>marker</b> （它是一个特殊的对象，表示 buffer 的 position）.
+</p>
+
+<p>
+在 Emacs 中， buffer 中的 <b>locations</b> 是作为 <b>markers</b> 来记录的，*marker* 可以看作是一个 <b>number*，表示从 buffer 的开始位置到该 *marker</b> 的字符数。
+</p>
+
+<p>
+<b>number-or-marker-p</b> 中的 <b>p</b> 表示 <b>predicate</b> （谓词），在早期 Lisp 研究员中使用的术语，它指的是一个 <b>function</b> 决定一些 <b>property</b> 是 <b>true</b> 还是 <b>false</b> .
+</p>
+
+<p>
+所以，*p* 告诉我们， <b>number-or-marker-p</b> 是一个判断 <b>arguments</b> 是否是一个 <b>number</b> 或 <b>marker</b> 是 <b>true</b> 还是 <b>false</b> 的 <b>function</b> 名字。
+</p>
+
+
+<p>
+最后一部分的错误消息是 <b>symbol</b> <b>hello</b> .
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgc1e16ca" class="outline-4">
+<h4 id="orgc1e16ca">message Function</h4>
+<div class="outline-text-4" id="text-orgc1e16ca">
+<p>
+一个 <b>message</b> 是打印在 <b>echo area</b> 的。例如: 
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>message <span style="color: #2d9574;">"This message appears in the echo area!"</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+如果双引号里的字符中有 <b>%s</b> ，那么 <b>message</b> function 不打直接打印出来，而是查找该双引号字符串后面的 <b>argument</b> ，它会 <b>evaluate</b> 第二个参数，然后将 <b>value</b> 替换到 <b>%s</b> 所在的位置。例如下面:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>message <span style="color: #2d9574;">"The name of this buffer is : %s"</span> <span style="color: #bc6ec5;">(</span>buffer-name<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+如果这里有多个 <b>%s</b> ，它会依此类推下去。例如下面:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>message <span style="color: #2d9574;">"There are %d %s in the office!"</span>
+     <span style="color: #bc6ec5;">(</span>- fill-column <span style="color: #a45bad;">14</span><span style="color: #bc6ec5;">)</span> <span style="color: #2d9574;">"pink elephants"</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-org82e09ee" class="outline-3">
+<h3 id="org82e09ee">设置一个 Variable 的 Value</h3>
+<div class="outline-text-3" id="text-org82e09ee">
+<p>
+方式:
+</p>
+<ol class="org-ol">
+<li>使用 <b>set</b> function</li>
+<li>使用 <b>setq</b> function</li>
+<li>使用 <b>let</b></li>
+</ol>
+</div>
+
+
+<div id="outline-container-org19f92f5" class="outline-4">
+<h4 id="org19f92f5">使用 set</h4>
+<div class="outline-text-4" id="text-org19f92f5">
+<p>
+例如下面:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>set 'flowers '<span style="color: #bc6ec5;">(</span>rose violet daisy buttercup<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+<b>evaluate</b> 上面的 <b>expression</b> （ <b>C-x C-e</b> ）可以看到 <b>(rose violet daisy buttercup)</b> 在 <b>echo area</b> 中显示。作为一个 <b>side effect</b> ，*flowers* symbol 现在是绑定了 list，这时 <b>flowers</b> 可以被视作一个 <b>variable</b> 了。它的值是后面的 list.
+设置完之后，你可以 <b>evaluate</b> 这个 <b>symbol</b> <b>flowers</b> ：例如:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">flowers
+</pre>
+</div>
+
+<p>
+另外，如果你 <b>evaluate</b> 的是前面带有一个引号的 <b>variable</b> ： <b>'flowers*，在 *echo area</b> 中你会看到该 <b>symbol</b> 自身。
+也要注意，当你使用 <b>set</b> 时，你需要将所有的 <b>arguments</b> 都要带有引号，除非它想它们进行 <b>evaluated</b> .
+</p>
+
+<p>
+当 <b>set</b> 的第一个参数没有带有引号时，那么第一个参数将首先进行 <b>evaluated</b> 后再继续，如果这时它并没有一个 <b>value</b> 绑定到 <b>flowers</b> ，这时就会产生一个错误消息： "Symbol's value as variable is void"。
+如果这时 <b>evaluated</b> 后， 它是有一个 <b>value</b> 的，那么 <b>set</b> 将调图设置的是这个返回的 <b>value</b> 
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgc960e94" class="outline-4">
+<h4 id="orgc960e94">使用 setq</h4>
+<div class="outline-text-4" id="text-orgc960e94">
+<p>
+实际情况下，你几乎总是将 <b>set</b> 的第一个参数用引号引起来的。组合 <b>set</b> 和第一个参数使用引号的情况是如此常见，所以，它有一个自己的特别 <b>form</b> 为：*setq* 。即：*setq* == <b>set</b> + <b>quote</b> 。所以下面是等价的:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> carnivores '<span style="color: #bc6ec5;">(</span>lion tiger leopard<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+
+<span style="color: #4f97d7;">(</span>set 'carnivores '<span style="color: #bc6ec5;">(</span>lion tiger leopard<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+并且 <b>setq</b> 可以同时进行多个绑定，例如:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> trees '<span style="color: #bc6ec5;">(</span>pine fir oak maple<span style="color: #bc6ec5;">)</span>
+  herbivores '<span style="color: #bc6ec5;">(</span>gazelle antelope zebra<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org939884d" class="outline-4">
+<h4 id="org939884d">统计 Counting</h4>
+<div class="outline-text-4" id="text-org939884d">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> counter <span style="color: #a45bad;">0</span><span style="color: #4f97d7;">)</span>                <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">Let&#8217;s call this the initializer.</span>
+
+<span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> counter <span style="color: #bc6ec5;">(</span>+ counter <span style="color: #a45bad;">1</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>    <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">This is the incrementer.</span>
+
+counter                         <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">This is the counter.</span>
+</pre>
+</div>
+
+<p>
+第一个 <b>expression</b> 表示初始化一个 <b>variable</b> 为 <b>counter</b> 并且它的 <b>value</b> 为 0。
+第二个 <b>expression</b> 表示进行累加，每执行一次，都会在上一次的基础上累加1
+第三个 <b>expression</b> 显示该 <b>variable</b>  <b>counter</b> 的值
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org98b62f9" class="outline-3">
+<h3 id="org98b62f9">总结</h3>
+<div class="outline-text-3" id="text-org98b62f9">
+<ul class="org-ul">
+<li>Lisp 程序是由 <b>expression</b> 组成的，它们是 <b>list</b> 或 <b>atoms</b></li>
+<li>List 是由0个或多个 <b>atoms</b> 或内部 list 组成的，通过空格分隔并且用括号包着的。一个 list 可以为空。</li>
+<li>Atoms 是多个字符的 <b>symbol</b> ，例如: <b>forward-paragraph</b> ；或单个字符的 <b>symbol</b> ，例如: <b>+</b> ；或是在双引号之间字符串的字符，如 "hello world"；或者是 <b>numbers</b> ，如：1,2,3。</li>
+<li>一个 <b>number</b> evaluate 后是它自身</li>
+<li>一个由双引号包着的字符串进行 evaluate 后，也是它自身</li>
+<li>当你进行 <b>symbol</b> 的 evaluate 后，它会返回它的 <b>value</b></li>
+<li>当你 evaluate 一个 list 时， Lisp解析器会查找 list 中的第一个 <b>symbol</b> ，然后查找该 <b>symbol</b> 所绑定到的 <b>function</b> 定义。然后执行这些 <b>function</b> 定义的指令集</li>
+<li>一个单引号 <b>'</b> 告诉 Lisp 解析器应该返回该 <b>expression</b> 自身，而不是进行 <b>evaluate</b></li>
+<li>Arguments 是传递给 <b>function</b> 的信息。参数是 list 中第一个元素的 <b>function</b> 的其余元素。如 <code>(+ 2 2 )</code> ，第一个元素为 <b>+</b> , 并且没有引号，那么它就会看作是 <b>function</b> , 后面两个2就是该 <b>function</b> 的参数。</li>
+<li>一个 <b>function</b> 进行 <b>evaluate</b> 后总是返回一个 <b>value</b> （除非它产生了一个错误）。另外，它也会执行一些动作，称为 <b>side effect</b> 。通常情况下，一个 <b>function</b> 的主要目的就是产生一个 <b>side effect</b></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org5569d4f" class="outline-2">
+<h2 id="org5569d4f">实践 Evaluation</h2>
+<div class="outline-text-2" id="text-org5569d4f">
+</div><div id="outline-container-org1fe134e" class="outline-3">
+<h3 id="org1fe134e">如何 Evaluate</h3>
+<div class="outline-text-3" id="text-org1fe134e">
+<p>
+无论何时给出一个编辑的命令到 Emacs Lisp ，例如这些命令：移动光标或滚动屏幕，你都是正在进行 <b>evaluating</b> 一个 <b>expression</b> ，它的第一个元素是一个 <b>function</b> 。这就是 Emacs 如何工作的。
+当你输入按键时，你会导致 Lisp 解析器去 <b>evaluate</b> 一个 <b>expression</b> 然后你就获得你的结果。甚至输入纯文本时也需要 <b>evaluate</b> 一个 <b>expression</b> ，在这个例子里，就是 <b>self-insert-command</b> ，它只是简单地插入你输入的字符。
+那些通过输入按键来进行 <b>evaluate</b> 的 <b>function</b> 称为 <b>interactive</b> function 或 command.
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org06c59cc" class="outline-3">
+<h3 id="org06c59cc">Buffer 名字</h3>
+<div class="outline-text-3" id="text-org06c59cc">
+<p>
+有两个 <b>function</b> ： <b>buffer-name</b> 和 <b>buffer-file-name</b> ，区别了 <b>file</b> 和 <b>buffer</b> 之间的不同。
+通常情况下， <b>(buffer-name)</b> 与文件的名字相同. <b>(buffer-file-name)</b> 返回的是文件的绝对路径。
+</p>
+
+<p>
+<b>file</b> 和 <b>buffer</b> 是两个不同的实体。*file* 是计算机持久化记录的。 <b>buffer</b> 是 Emacs 内部的信息，它会在结束一个 <b>session</b> 时（或 <b>kill</b> 掉 buffer）而消失。
+通常，一个 <b>buffer</b> 包含了一份已经从 <b>file</b> 里 <b>copy</b> 的信息了的，这时我们说，该 <b>buffer</b> 正访问该 <b>file</b> 。这份 <b>copy</b> 就是你工作或修改的。对 <b>buffer</b> 进行修改，并不会改变 <b>file</b> ，除非你保存该 <b>buffer</b> 。
+当你保存 <b>buffer</b> 时，该 <b>file</b> 的 <b>copy</b> 就会持久化到 <b>file</b> 里。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>buffer-name<span style="color: #4f97d7;">)</span>
+<span style="color: #4f97d7;">(</span>buffer-file-name<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+<b>nil</b> 对应的拉丁文是 <b>nothing</b> 。在 Lisp中， <b>nil</b> 也用作 <b>false</b> 的意思，它的同义词是空 list，即 <b>()</b>
+</p>
+
+<p>
+单词 <b>buffer</b> ，来自生活中的减弱碰撞力的词：*cushion* （垫子）的意思。在早期的计算机中，缓冲器缓冲了文件和计算机的中央处理单元之间的交互。 保持文件的鼓或磁带和中央处理单元是彼此非常不同的设备，它们以自己的速度以喷射工作。 缓冲区使他们能够有效地协同工作。
+</p>
+
+<p>
+并不所有的 <b>buffer</b> 都会关联 <b>file</b> 的。比如 <b>scratch</b> buffer 就没有访问任何文件。同样地， <b>Help</b> buffer 也没有。
+</p>
+
+<ul class="org-ul">
+<li>如果你想将 <b>evaluate</b> 的结果显示在 <b>buffer</b> 自身里面，而不是显示在 <b>echo area</b> ，你可以使用 <b>C-u C-x C-e</b> 来代替 <b>C-x C-e</b></li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-orgbf991d9" class="outline-3">
+<h3 id="orgbf991d9">获取 Buffer</h3>
+<div class="outline-text-3" id="text-orgbf991d9">
+<p>
+为了获取 <b>buffer</b> 自身而不是 <b>buffer</b> 的名字，可以使用 <b>current-buffer</b> function 。
+但是，如果你 <b>evaluate</b> 该 <b>expression</b> : <b>(current-buffer)</b> ，你会看到，它也是打印该 <b>buffer</b> 的名字在 <b>echo area</b> 中。 Emacs 这样子做的原因有2：
+</p>
+<ol class="org-ol">
+<li><b>buffer</b> 可能有成千上万行，太长的话，不方便显示</li>
+<li>可能有相同的内容，但不同的名字。区别它们是非常重要的。</li>
+</ol>
+
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>current-buffer<span style="color: #4f97d7;">)</span>#&lt;buffer GNU emacs lisp&#23398;&#20064;&#31508;&#35760;.org&gt;
+<span style="color: #4f97d7;">(</span>buffer-name<span style="color: #4f97d7;">)</span><span style="color: #2d9574;">"GNU emacs lisp&#23398;&#20064;&#31508;&#35760;.org"</span>
+<span style="color: #4f97d7;">(</span>other-buffer<span style="color: #4f97d7;">)</span>#&lt;buffer org-blog&gt;
+</pre>
+</div>
+
+<p>
+可以看到，如果是 <b>(current-buffer)</b> 返回的话，它显示的是 <b>#&lt;buffer GNU emacs lisp学习笔记.org&gt;</b> 而 <b>(buffer-name)</b> 返回的是 <b>GNU emacs lisp学习笔记.org</b>
+</p>
+
+<p>
+另一个相关的 <b>function</b> 是 <b>(other-buffer)</b> 。它返回的是最近选择过的非当前的 <b>buffer</b> .
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org80335ab" class="outline-3">
+<h3 id="org80335ab">切换 Buffer</h3>
+<div class="outline-text-3" id="text-org80335ab">
+<p>
+<b>other-buffer</b> function 可以用在一个 <b>function</b> 中需要 <b>buffer</b> 作为参数时，提供一个 <b>buffer</b> 。我们可以看到使用 <b>other-buffer</b> 和 <b>switch-to-buffer</b> 来进行切换 <b>buffer</b> .
+通常按 <b>C-x b</b> 然后在提示框中输入 <b>scratch</b> 来切换 <b>buffer</b> 。*C-x b* 会导致 Lisp 解析器去 <b>evaluate</b> 一个 <b>interactive function</b> : <b>switch-to-buffer</b> 。正如之前说过，这就是 Emacs 的工作方式，不同的按键会调用或执行不同的 <b>function</b> 。例如 <b>C-f</b> 调用 <b>forward-char</b> ， <b>M-e</b> 调用 <b>forward-sentence</b> 等等
+</p>
+
+<p>
+下面是一个进行切换的例子:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>switch-to-buffer <span style="color: #bc6ec5;">(</span>other-buffer<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+<p>
+<b>evaluate</b> 上面的例子，就可发现 emacs 进行了切换 <b>buffer</b> 了。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org53448f4" class="outline-3">
+<h3 id="org53448f4">Buffer 大小 和 位置点</h3>
+<div class="outline-text-3" id="text-org53448f4">
+<p>
+<b>buffer-size</b> function ，它告诉你当前 <b>buffer</b> 的大小。它返回的是 <b>buffer</b> 当字符的总数。
+</p>
+
+<p>
+在 Emacs 中，光标的当前位置称为 <b>point</b> 。*(point)* 返回的是从当前 <b>buffer</b> 中距离整个 <b>buffer</b> 最开始的位置到当前光标所在的位置的字符数。
+</p>
+
+<p>
+<b>point-mini</b> 与 <b>point</b> 类似，但是，它返回的是当前 <b>buffer</b> 允许的最小的 <b>point</b> 值。它的值是1，除非 <b>narrowing</b> 是生效的。（narrowing，它是一种机制，允许你限制自己或程序，仅仅能操作 buffer 其中的一部分）
+</p>
+
+<p>
+<b>point-max</b> 与 <b>point-min</b> 类似，只是它返回的是最大的 <b>point</b> 值。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>buffer-size<span style="color: #4f97d7;">)</span><span style="color: #a45bad;">16365</span>
+<span style="color: #4f97d7;">(</span>point<span style="color: #4f97d7;">)</span><span style="color: #a45bad;">16363</span>
+<span style="color: #4f97d7;">(</span>point-min<span style="color: #4f97d7;">)</span><span style="color: #a45bad;">1</span>
+<span style="color: #4f97d7;">(</span>point-max<span style="color: #4f97d7;">)</span><span style="color: #a45bad;">16716</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org57598ec" class="outline-2">
+<h2 id="org57598ec">如何写 Function 定义</h2>
+<div class="outline-text-2" id="text-org57598ec">
+</div><div id="outline-container-orgcd1d4a7" class="outline-3">
+<h3 id="orgcd1d4a7">原生函数</h3>
+<div class="outline-text-3" id="text-orgcd1d4a7">
+<p>
+它们是用 C 语言写的函数。
+</p>
+
+<p>
+重新强调一次：当你用 Emacs Lisp 写代码时，你不用区分这些 <b>function</b> 是用 C 语言写的，还是用 Emacs Lisp 写的。这些差别是无关紧要的。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgdfb4f24" class="outline-3">
+<h3 id="orgdfb4f24">The defun Macro</h3>
+<div class="outline-text-3" id="text-orgdfb4f24">
+<p>
+在 Lisp 中，比如 <b>mark-whole-buffer</b> 有附于它的代码，它告诉计算机当调用该 <b>function</b> 时要做的是什么。这些代码，就称为 <b>function</b> 定义，它是通过 <b>evaluate</b> 一个 Lisp 的以 <b>defun</b> （它是 define function 的缩写） 开始的 <b>symbol</b> 的 <b>expression</b>  来创建的。
+</p>
+
+<p>
+<b>function</b> 的定义在单词 <b>defun</b> 后面有以下5部分：
+</p>
+<ol class="org-ol">
+<li><b>symbol</b> 的 <b>name</b></li>
+<li>一个 <b>argument</b> 列表。如果不需要的话，这部分为空list，即： <b>()</b></li>
+<li>描述该 <b>function</b> 的文档（技术上是可选的，但强烈建议写）</li>
+<li>可选的。一个 <b>expression</b> ，它使该 <b>function</b> 变成一个 <b>interactive function</b> ，因此，你可以通过 <b>M-x</b> 来调用该 <b>function</b> 或输入适合的按键来调用。</li>
+<li>计算机要进行操作的指令代码，即该 <b>function</b> 的 <b>body</b></li>
+</ol>
+
+
+<p>
+下面是一个伪代码:
+</p>
+
+<pre class="example">
+(defun function-name (arguments…)
+"optional-documentation…" ;; 文档会在 C-h f 查看时显示
+(interactive argument-passing-info)     ; optional
+body…)
+</pre>
+
+<p>
+下面是一个具体的例子，该 <b>function</b> 是将 <b>argument</b> 乘以 7 :
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">defun</span> <span style="color: #bc6ec5; font-weight: bold;">multiply-by-seven</span> <span style="color: #bc6ec5;">(</span>number<span style="color: #bc6ec5;">)</span>
+<span style="color: #2aa1ae;">"Multiply NUMBER by seven."</span>
+<span style="color: #bc6ec5;">(</span>* <span style="color: #a45bad;">7</span> number<span style="color: #bc6ec5;">)</span>
+<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+下面展示了如何使用上面例子的 <b>function</b> ，但是不要尝试进行 <b>evaluate</b> 它！
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>multiply-by-seven <span style="color: #a45bad;">3</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+<p>
+注意，传递 <b>argument</b> 时，是不需要括号的，虽然在 <b>function</b> 定义时使用了括号，但调用时并不需要。定义时需要，是因为要告诉计算机 <b>argument</b> 从哪里开始以及结束。
+</p>
+</div>
+</div>
+
+
+
+<div id="outline-container-org542cffa" class="outline-3">
+<h3 id="org542cffa">安装一个 Function 定义</h3>
+<div class="outline-text-3" id="text-org542cffa">
+<p>
+安装一个 <b>function</b> 定义，你可以在该 <b>function</b> 定义的最后一个括号后面，按下 <b>C-x C-e</b> 来进行 <b>evaluate</b> 它，这时你可以看到 <b>multiply-by-seven</b> 会出现在 <b>echo area</b> 里。同时，该动作会进行安装该 <b>function</b> 的定义了。
+</p>
+
+<p>
+<b>function</b> 必须要先安装后才能使用。
+</p>
+
+<p>
+通过这种方式安装的 <b>function</b> 定义，但当你退出 Emacs 时，就不会保留了。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org3bd8f32" class="outline-3">
+<h3 id="org3bd8f32">创建一个 Interactive Function</h3>
+<div class="outline-text-3" id="text-org3bd8f32">
+<p>
+你可以使一个 <b>function</b> 变成 <b>interactive</b> 的，通过在 <b>function</b> 文档后面的 list 中，以特殊的 form <b>interactive</b> 开始。这样子，就可以在 <b>M-x</b> 中调用该 <b>function</b> ，或者通过按下绑定到该 <b>function</b> 的按键来调用，像 <b>C-n</b> 是调用 <b>next-line</b> 或 <b>C-x h</b> 是调用 <b>mark-while-buffer</b> 一样。
+</p>
+
+<p>
+当你调用一个 <b>interactive function</b> 时，返回的 <b>value</b> 并不会自动显示在 <b>echo area</b> 。这是因为你会经常调用一个 <b>interactive function</b> 来作为一个 <b>side effect</b> ，比如将光标移动到下一个单词或下一行，并没有 <b>value</b> 返回。如果返回的 <b>value</b> 每次都显示在 <b>echo area</b> ，这会使你分心的。
+</p>
+</div>
+
+
+<div id="outline-container-orgc9965ae" class="outline-4">
+<h4 id="orgc9965ae">multiply-by-seven 的 interactive 版本</h4>
+<div class="outline-text-4" id="text-orgc9965ae">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">defun</span> <span style="color: #bc6ec5; font-weight: bold;">multiply-by-seven</span> <span style="color: #bc6ec5;">(</span>number<span style="color: #bc6ec5;">)</span>       <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">Interactive version.</span>
+<span style="color: #2aa1ae;">"Multiply NUMBER by seven."</span>
+<span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">interactive</span> <span style="color: #2d9574;">"p"</span><span style="color: #bc6ec5;">)</span>
+<span style="color: #bc6ec5;">(</span>message <span style="color: #2d9574;">"The result is %d"</span> <span style="color: #2d9574;">(</span>* <span style="color: #a45bad;">7</span> number<span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+安装完上面的 <b>function</b> 后，你就可以通过 <b>M-x multiply-by-seven RET</b> 来调用了。这时，你可以看到 <b>The result is 7</b> 在 <b>echo area</b> 里了。
+</p>
+
+<p>
+你可以通过以下2种方式来进行传递 <b>argument</b> 来调用该 <b>function</b> :
+</p>
+<ol class="org-ol">
+<li>先输入 <b>argument</b> 前缀，然后再通过 <b>M-x</b> 来调用。例如：*C-u 3 M-x multiply-by-seven* 或者</li>
+<li>输入绑定到该函数的按键，假设它绑定到 <b>M-e</b> ，这时可以这样子调用： <b>C-u 3 M-e</b></li>
+</ol>
+</div>
+</div>
+
+
+<div id="outline-container-org76d525c" class="outline-4">
+<h4 id="org76d525c">multiply-by-seven 细节</h4>
+<div class="outline-text-4" id="text-org76d525c">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">defun</span> <span style="color: #bc6ec5; font-weight: bold;">multiply-by-seven</span> <span style="color: #bc6ec5;">(</span>number<span style="color: #bc6ec5;">)</span>       <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">Interactive version.</span>
+<span style="color: #2aa1ae;">"Multiply NUMBER by seven."</span>
+<span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">interactive</span> <span style="color: #2d9574;">"p"</span><span style="color: #bc6ec5;">)</span>
+<span style="color: #bc6ec5;">(</span>message <span style="color: #2d9574;">"The result is %d"</span> <span style="color: #2d9574;">(</span>* <span style="color: #a45bad;">7</span> number<span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+<b>(interactive "p")</b> 是一个带有2个元素的 list 。"p" 告诉 Emacs 传递前缀 <b>argument</b> 给该 <b>function</b> 并且使用它的 <b>value</b> 作为 <b>function</b> 的 <b>argument</b> 。
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgbcff485" class="outline-3">
+<h3 id="orgbcff485">interactive 的不同选项</h3>
+<div class="outline-text-3" id="text-orgbcff485">
+<p>
+思考一下 <b>zap-to-char</b> function，它的 <b>interactive</b> 部分的 <b>expression</b> 为:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">interactive</span> <span style="color: #2d9574;">"p\ncZap to char: "</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<dl class="org-dl">
+<dt>"p"</dt><dd>该 <b>argument</b> 告诉 Emacs 解析它个前缀 <b>argument</b> ，并作为一个 <b>number</b> 传递给该 <b>function</b> 。</dd>
+<dt>"c"</dt><dd>告诉该 <b>function</b> 要删除的字符的名字</dd>
+</dl>
+
+
+<p>
+更多的形式地，它可以传递多个这些选项给 <b>interactive</b> ，每一个之间，是通过 <b>\n</b> 来分隔的。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgd2b6dcd" class="outline-3">
+<h3 id="orgd2b6dcd">持久化地安装 Code</h3>
+<div class="outline-text-3" id="text-orgd2b6dcd">
+<p>
+当你是通过 <b>evaluate</b> 来安装 <b>function</b> 时，它会一直保留直到退出 Emacs 。下次打开 Emacs 时，该 <b>function</b> 并不会被安装，再到再次进行  <b>evaluate</b> 
+当你想要在启动 Emacs 时，自动安装这些 <b>function</b> ，你可以有以下几种方式来达到目的
+</p>
+<ul class="org-ul">
+<li>如果你的这些 code 仅是为你自己工作的，你可以将它们放到 <b>.emacs</b> 初始化文件中。该文件会在 Emacs 启动时，自动地进行 <b>evaluate</b> 的</li>
+<li>或者，你可以将这些 <b>function</b> 定义放到一个或多个文件中，然后使用 <b>load</b> function 来使 Emacs 进行 <b>evaluate</b></li>
+<li>如果你想你的代码，在整个 <b>site</b> 中都可用，你可以将它们放到一个名为 <b>site-init.el</b> 的文件中，该文件会在 Emacs 构建时加载。这可使这些 code 在你的计算机中每个人都是可用的。</li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-org1d7a1a5" class="outline-3">
+<h3 id="org1d7a1a5">let</h3>
+<div class="outline-text-3" id="text-org1d7a1a5">
+<p>
+<b>let</b> expression 是一个特别的 <b>form</b> ，你将会在 <b>function</b> 定义时经常使用它。
+</p>
+
+<p>
+<b>let</b> 用于附加或绑定一个*value* 到一个 <b>symbol</b> 中。
+</p>
+
+<p>
+理解它是必须的。考虑一下以下这情况，你有一个自己的家，在语句 <b>The house needs painting</b> ，你通常用 <b>the house</b> 来引用它。如果你正在你的一个朋友的家中进行拜访，然后你再次说 "the house* ，他会认为正在引用的是你朋友的 <b>house</b> ，而不是你自己的 <b>house</b> .
+</p>
+</div>
+
+<div id="outline-container-orgf51510a" class="outline-4">
+<h4 id="orgf51510a">let 防止混淆</h4>
+<div class="outline-text-4" id="text-orgf51510a">
+<p>
+<b>let</b> 会创建一个 <b>local variable</b> 无论在 <b>let</b> 外部的 <b>expression</b> 是否有相同的名字的 <b>variable</b> ，它都可以让内部的 <b>expression</b> 
+通过 <b>let</b> expression* 创建的 <b>local variable</b> 仅仅在 <b>let</b> expression 自身和调用 <b>let</b> 的 <b>expression</b> 内保留这些 <b>variable</b> ，在这之外，*let* expression 是其他地方是不生效的。
+用计算机术语来说就是，绑定的 <b>symbol</b> 是仅仅在 <b>function</b> 中调用 <b>let</b> 的 <b>form</b> 才是可见的，在此之外是不可见的。
+</p>
+
+<p>
+<b>let</b> 可以一次性创建多个 <b>variable</b> 。*let* 会为每个 <b>variable</b> 创建一个初始 <b>value</b> ，该 <b>value</b> 可以是你指定的，或者是 <b>nil</b> 
+</p>
+
+<p>
+<b>let</b> 创建和绑定 <b>variable</b> 后，它就会 <b>execute</b> 这些 <b>code</b> ，然后返回 <b>let</b> body 中的 <b>最后一个</b> expression 的 <b>value</b> 作为整个 <b>let</b> expression 的 <b>value</b> .
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org67e3b41" class="outline-4">
+<h4 id="org67e3b41">let expression 部分</h4>
+<div class="outline-text-4" id="text-org67e3b41">
+<p>
+<b>let</b> expression 有3部分:
+</p>
+<ol class="org-ol">
+<li>第一部分是 symbol <b>let</b></li>
+<li>第二部分是一个 list, 称为 <b>varlist</b> ，每个元素是一个 <b>symbol</b> 自身或者是一个2元素的 list, list中的第一个元素是一个 <b>symbol</b></li>
+<li>第三部分是 <b>let</b> expression 的 body，通常由一个或多个 list 组成</li>
+</ol>
+
+
+<p>
+一个 <b>let</b> expression 的模板看起来像这样子:
+</p>
+
+<pre class="example">
+(let varlist body…)
+</pre>
+
+<p>
+在 <b>varlist</b> 中的 <b>variable symbol</b> 是由 <b>let</b> 进行初始化值的。*symbol* 自身的话，就会初始化为 <b>nil</b> ；如果是一个2元素的 list，它就会将第一个元素作为 <b>symbol</b> ，然后将 <b>evaluate</b> 第二个元素返回的 <b>value</b> 绑定到第一个元素上。
+</p>
+
+<p>
+因此，一个 <b>varlist</b> 看起来像这样子： <code>(thread (needles 3))</code> 。在这个例子里，*thread* 会被 <b>let</b> 初始化为 <b>nil</b> , 并且 <b>needles</b> 被初始化为3.
+</p>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-org6dd1634" class="outline-4">
+<h4 id="org6dd1634">let expression 例子</h4>
+<div class="outline-text-4" id="text-org6dd1634">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">let</span> <span style="color: #bc6ec5;">(</span><span style="color: #2d9574;">(</span>zebra <span style="color: #2d9574;">"stripes"</span><span style="color: #2d9574;">)</span>
+  <span style="color: #2d9574;">(</span>tiger <span style="color: #2d9574;">"fierce"</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span>
+  <span style="color: #bc6ec5;">(</span>message <span style="color: #2d9574;">"One kind of animal has %s and another is %s."</span>
+       zebra tiger<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span> <span style="color: #2d9574;">"One kind of animal has stripes and another is fierce."</span>
+</pre>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-orgf952ccd" class="outline-4">
+<h4 id="orgf952ccd">let 语句中没有初始化的 variable</h4>
+<div class="outline-text-4" id="text-orgf952ccd">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">let</span> <span style="color: #bc6ec5;">(</span><span style="color: #2d9574;">(</span>birch <span style="color: #a45bad;">3</span><span style="color: #2d9574;">)</span>
+  pine
+  fir
+  <span style="color: #2d9574;">(</span>oak 'some<span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span>
+  <span style="color: #bc6ec5;">(</span>message
+  <span style="color: #2d9574;">"Here are %d variables with %s, %s, and %s value."</span>
+  birch pine fir oak<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span> <span style="color: #2d9574;">"Here are 3 variables with nil, nil, and some value."</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org11dfcbc" class="outline-3">
+<h3 id="org11dfcbc">特殊的 form : if</h3>
+<div class="outline-text-3" id="text-org11dfcbc">
+<p>
+除了 <b>defun</b> 和 <b>let</b> 之外，第三个特殊的 <b>form</b> 是条件 <b>if</b> .它是用于训练计算机进行决定的。
+<b>if</b> 的基本思想是， <b>if</b> 测试为 <b>true</b> ，则 evaluate <b>then</b> 的 expression 。如果测试为 <b>not true</b> ，则不进行 <b>evaluate</b> 
+</p>
+</div>
+
+<div id="outline-container-org567ca2b" class="outline-4">
+<h4 id="org567ca2b">if 的更多细节</h4>
+<div class="outline-text-4" id="text-org567ca2b">
+<p>
+<b>if</b> expression，第一个元素为 <b>if</b> ，第二个元素为 <b>test</b> ，第三个元素为 <b>action</b> 。尽管如此，*test* 部分经常被称为 <b>if-part</b> ，*action* 部分经常被称为 <b>then-part</b> 下面是伪代码:
+</p>
+
+<pre class="example">
+(if true-or-false-test
+action-to-carry-out-if-test-is-true)
+</pre>
+
+<p>
+下面是具体的例子：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">if</span> <span style="color: #bc6ec5;">(</span>&gt; <span style="color: #a45bad;">5</span> <span style="color: #a45bad;">4</span><span style="color: #bc6ec5;">)</span>
+    <span style="color: #bc6ec5;">(</span>message <span style="color: #2d9574;">"5 is greater than 4!"</span><span style="color: #bc6ec5;">)</span>
+    <span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+
+<p>
+下面是另一个例子:
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">defun</span> <span style="color: #bc6ec5; font-weight: bold;">type-of-animal</span> <span style="color: #bc6ec5;">(</span>characteristic<span style="color: #bc6ec5;">)</span>
+<span style="color: #2aa1ae;">"Print message in echo area depending on CHARACTERISTIC.</span>
+<span style="color: #2aa1ae;">If the CHARACTERISTIC is the string \"fierce\",</span>
+<span style="color: #2aa1ae;">then warn of a tiger."</span>
+<span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">if</span> <span style="color: #2d9574;">(</span>equal characteristic <span style="color: #2d9574;">"fierce"</span><span style="color: #2d9574;">)</span>
+  <span style="color: #2d9574;">(</span>message <span style="color: #2d9574;">"It is a tiger!"</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+安装完上面的 <b>function</b> ,就可以执行下面的例子了:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>type-of-animal <span style="color: #2d9574;">"fierce"</span><span style="color: #4f97d7;">)</span>  
+<span style="color: #4f97d7;">(</span>type-of-animal <span style="color: #2d9574;">"striped"</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org36151ab" class="outline-4">
+<h4 id="org36151ab">type-of-animal 细节</h4>
+<div class="outline-text-4" id="text-org36151ab">
+<p>
+<b>function</b> 的名为 <b>type-of-animal</b> ，并且接受一个 <b>argument</b> 。*function* 模板为
+</p>
+
+<pre class="example">
+(defun name-of-function (argument-list)
+"documentation…"
+body…)
+</pre>
+
+<pre class="example">
+(defun type-of-animal (characteristic)
+"Print message in echo area depending on CHARACTERISTIC.
+If the CHARACTERISTIC is the string \"fierce\",
+then warn of a tiger."
+body: the if expression)
+</pre>
+
+<p>
+<b>if</b> 模板为 :
+</p>
+
+<pre class="example">
+if true-or-false-test
+    action-to-carry-out-if-the-test-returns-true)
+</pre>
+
+<p>
+所以，在 <b>type-of-animal</b> 里， <b>if</b> 的代码如下:
+</p>
+
+<pre class="example">
+(if (equal characteristic "fierce")
+(message "It is a tiger!")))
+</pre>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-orgd2f6346" class="outline-3">
+<h3 id="orgd2f6346">if-then-else</h3>
+<div class="outline-text-3" id="text-orgd2f6346">
+<p>
+<b>if</b> expression 有一个可选的第三部分，称为 <b>else-part</b> ，它是在 <b>test-part</b> 为 <b>false</b> 时才调用的。下面是伪代码:
+</p>
+
+<pre class="example">
+(if true-or-false-test
+    action-to-carry-out-if-the-test-returns-true
+  action-to-carry-out-if-the-test-returns-false)
+</pre>
+
+<p>
+具体例子:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"> <span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">if</span> <span style="color: #bc6ec5;">(</span>&gt; <span style="color: #a45bad;">4</span> <span style="color: #a45bad;">5</span><span style="color: #bc6ec5;">)</span>                               <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">if-part</span>
+  <span style="color: #bc6ec5;">(</span>message <span style="color: #2d9574;">"4 falsely greater than 5!"</span><span style="color: #bc6ec5;">)</span> <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">then-part</span>
+<span style="color: #bc6ec5;">(</span>message <span style="color: #2d9574;">"4 is not greater than 5!"</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>   <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">else-part</span>
+</pre>
+</div>
+
+<p>
+为 <b>type-of-animal</b> 添加 <b>else-part</b>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">defun</span> <span style="color: #bc6ec5; font-weight: bold;">type-of-animal</span> <span style="color: #bc6ec5;">(</span>characteristic<span style="color: #bc6ec5;">)</span>  <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">Second version.</span>
+<span style="color: #2aa1ae;">"Print message in echo area depending on CHARACTERISTIC.</span>
+<span style="color: #2aa1ae;">If the CHARACTERISTIC is the string \"fierce\",</span>
+<span style="color: #2aa1ae;">then warn of a tiger; else say it is not fierce."</span>
+<span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">if</span> <span style="color: #2d9574;">(</span>equal characteristic <span style="color: #2d9574;">"fierce"</span><span style="color: #2d9574;">)</span>
+   <span style="color: #2d9574;">(</span>message <span style="color: #2d9574;">"It is a tiger!"</span><span style="color: #2d9574;">)</span>
+ <span style="color: #2d9574;">(</span>message <span style="color: #2d9574;">"It is not fierce!"</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-org1c4214b" class="outline-3">
+<h3 id="org1c4214b">Emacs Lisp 中的 true 和  false</h3>
+<div class="outline-text-3" id="text-org1c4214b">
+<p>
+<b>false</b> 与 <b>nil</b> （空 list 也是 <b>nil</b> 的一种） 在 <b>test-part</b> 里，都是 <b>false</b> 。除此之外，其他的都是 <b>true</b> 
+</p>
+</div>
+
+<div id="outline-container-org49a6076" class="outline-4">
+<h4 id="org49a6076">nil 解释</h4>
+<div class="outline-text-4" id="text-org49a6076">
+<p>
+在 Emacs Lisp 中 , <b>nil</b> 有两种意思:
+</p>
+<ol class="org-ol">
+<li>表示 <b>空 list</b> ，即 <code>()</code></li>
+<li>在 <b>test-part</b> 中，表示 <b>false</b></li>
+</ol>
+
+
+<p>
+除了 <b>not nil</b> 的 <b>value</b> 之外，其他都被视作为 <b>true</b> 。下面是一些例子:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">if</span> <span style="color: #a45bad;">4</span>
+    'true
+ 'false<span style="color: #4f97d7;">)</span><span style="color: #dc752f; background-color: #292b2e;">true</span>
+
+ <span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">if</span> nil
+       'true
+   'false<span style="color: #4f97d7;">)</span><span style="color: #dc752f; background-color: #292b2e;">false</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org397aa23" class="outline-3">
+<h3 id="org397aa23">save-excursion</h3>
+<div class="outline-text-3" id="text-org397aa23">
+<p>
+<b>save-excursion</b> ，它用于保存 <b>point</b> 的位置，*function* 的执行 <b>body</b> ，和 当它的位置变了的时候，可以恢复该 <b>point</b> 之前的位置。（即执行完 <b>body</b> 后，又将光标恢复到之前的位置）
+</p>
+</div>
+
+<div id="outline-container-orgb67ca35" class="outline-4">
+<h4 id="orgb67ca35">point 和 mark</h4>
+<div class="outline-text-4" id="text-orgb67ca35">
+<p>
+<b>point</b> 指的是当前光标的位置。无论光标在哪里，哪里就称为 <b>point</b> 。在 Emacs Lisp 中， <b>point</b> 是一个整数，在 <b>buffer</b> 中第一个字符是数字1，第二个字符是数字2等等。*point* function 返回的是光标的当前位置距离最开始的第一个字符的字符数。
+</p>
+
+<p>
+<b>mark</b> 是 <b>buffer</b> 中的另一个位置。它的 <b>value</b> 可以通过 <b>C-SPC</b> （set-mark-command）命令来设置。
+</p>
+
+<p>
+如果你设置了一个 <b>mark</b> ，你可以使用命令 <b>C-x C-x</b> （exchange-point-and-mark）来使用光标跳转到 <b>mark</b> 的位置并且设置 <b>mark</b> 为光标的之前一个位置。
+另外，如果你设置了另一个 <b>mark</b> ，则之前的 <b>mark</b> 会保存到 <b>mark ring</b> 中。(M-x helm-mark-ring) 
+</p>
+
+<p>
+<b>region</b> : 在 <b>buffer</b> 中的 <b>point</b> 和 <b>mark</b> 之间的部分，就称为 <b>region</b> .这么多命令是在 <b>region</b> 上工作的，包括： <b>center-region</b>, <b>count-line-region</b>, <b>kill-region</b> 和 <b>print-region</b>
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgd675583" class="outline-4">
+<h4 id="orgd675583">save-excursion 模板</h4>
+<div class="outline-text-4" id="text-orgd675583">
+<pre class="example">
+(save-excursion
+body…)
+</pre>
+
+<p>
+body 部分是一个或多个 <b>expression</b> ，它们将会被 Lisp 解析器按顺序地进行 <b>evaluated</b> 。如果有多个 <b>expression</b> ，则最后一个 <b>expression</b> 的 <b>value</b> 将会作为整个 <b>save-excursion</b> function 的返回值。
+其他部分的 <b>expression</b> 仅进行 <b>evaluate</b> 来产生 <b>side effect</b> 。
+</p>
+
+<p>
+更详细的模板如下:
+</p>
+
+<pre class="example">
+(save-excursion
+first-expression-in-body
+second-expression-in-body
+third-expression-in-body
+…
+last-expression-in-body)
+</pre>
+
+<p>
+通常，它会与 <b>let</b> 一起工作:
+</p>
+
+<pre class="example">
+(let varlist
+(save-excursion
+body…))
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org7510974" class="outline-3">
+<h3 id="org7510974">回顾</h3>
+<div class="outline-text-3" id="text-org7510974">
+<ul class="org-ul">
+<li>eval-last-sexp</li>
+<li>defun</li>
+<li>interactive ，它的常用选项（选项之间通过 <b>\n</b> 来分隔）有：
+<dl class="org-dl">
+<dt>b</dt><dd>一个存在的 buffer 名字</dd>
+<dt>f</dt><dd>一个存在的 file 名字</dd>
+<dt>p</dt><dd>前缀的数字 <b>argument</b> （它是小写的 "p"）</dd>
+<dt>r</dt><dd><b>point</b> 和 <b>mark</b> , 作为2个数字 <b>argument</b> ，最小的在最开头。</dd>
+</dl></li>
+<li>let</li>
+<li>save-excursion</li>
+<li>if
+<ul class="org-ul">
+<li>&lt;</li>
+<li>&gt;</li>
+<li>&lt;=</li>
+<li>&gt;=</li>
+<li>=</li>
+<li>equal</li>
+<li>eq</li>
+<li>string&lt;</li>
+<li>string-lessp</li>
+<li>string=</li>
+<li>string-equal</li>
+</ul></li>
+<li>message</li>
+<li>message</li>
+<li>setq</li>
+<li>set</li>
+<li>buffer-name</li>
+<li>buffer-file-name</li>
+<li>current-buffer</li>
+<li>other-buffer</li>
+<li>switch-to-buffer</li>
+<li>set-buffer</li>
+<li>buffer-size</li>
+<li>point</li>
+<li>point-min</li>
+<li>point-max</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-org739e645" class="outline-2">
+<h2 id="org739e645">一些 buffer 相关的 Functions</h2>
+<div class="outline-text-2" id="text-org739e645">
+</div><div id="outline-container-org86d00ee" class="outline-3">
+<h3 id="org86d00ee">查找更多信息</h3>
+<div class="outline-text-3" id="text-org86d00ee">
+<p>
+<b>C-h f function-name RET</b> ： 查看 <b>function-name</b> 的详细文档
+</p>
+
+<p>
+<b>C-h v variable-name RET</b> ： 查看 <b>variable-name</b> 的详细说明
+</p>
+
+<p>
+<b>describe-function</b> ：查看 <b>function</b> 的定义
+</p>
+
+<p>
+<b>C-h p</b> 查看 Emacs Lisp libraries 
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgd0a5977" class="outline-3">
+<h3 id="orgd0a5977">精简版的 beginning-of-buffer 定义</h3>
+<div class="outline-text-3" id="text-orgd0a5977">
+<p>
+它将光标移动到 <b>buffer</b> 的开头。通常绑定到 <b>M-&lt;</b>
+首先，它必须是 <b>interactive</b> 的，这样我们才可以通过 <b>M-x beginning-of-buffer</b> 来调用或者使用快捷键 <b>M-&lt;</b> 来调用；必须离开 <b>buffer</b> 中的 <b>mark</b> 的原始位置；并且它必须移动光标到 <b>buffer</b> 的开头。
+下面是完整的精简版代码:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">defun</span> <span style="color: #bc6ec5; font-weight: bold;">simplified-beginning-of-buffer</span> <span style="color: #bc6ec5;">()</span>
+<span style="color: #2aa1ae;">"Move point to the beginning of the buffer;</span>
+<span style="color: #2aa1ae;">leave mark at previous position."</span>
+<span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">interactive</span><span style="color: #bc6ec5;">)</span>
+<span style="color: #bc6ec5;">(</span>push-mark<span style="color: #bc6ec5;">)</span>
+<span style="color: #bc6ec5;">(</span>goto-char <span style="color: #2d9574;">(</span>point-min<span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+<b>(push-mark)</b> 它会将当前光标的位置设置一个 <b>mark</b> ，该位置会保存到 <b>mark ring</b> 中。这样子，当你跳转到 <b>buffer</b> 的开头的时候，这时再按 <b>C-x C-x</b> 就可以恢复原来的位置了。
+</p>
+
+<p>
+以后，当你遇到没有见过的 <b>function</b> 时，你可以通过 <b>describe-function</b> 来详细了解它，或者用 <b>C-h f</b>
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgac757d4" class="outline-3">
+<h3 id="orgac757d4">mark-whole-buffer 的定义</h3>
+<div class="outline-text-3" id="text-orgac757d4">
+<p>
+它通常绑定到 <b>C-x h</b>
+</p>
+</div>
+
+<div id="outline-container-orge128a39" class="outline-4">
+<h4 id="orge128a39">mark-whole-buffer 概述</h4>
+<div class="outline-text-4" id="text-orge128a39">
+<p>
+在 GNU Emacs 22 中，它的源码如下:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">defun</span> <span style="color: #bc6ec5; font-weight: bold;">mark-whole-buffer</span> <span style="color: #bc6ec5;">()</span>
+<span style="color: #2aa1ae;">"Put point at beginning and mark at end of buffer.</span>
+<span style="color: #2aa1ae;">You probably should not use this function in Lisp programs;</span>
+<span style="color: #2aa1ae;">it is usually a mistake for a Lisp function to use any subroutine</span>
+<span style="color: #2aa1ae;">that uses or sets the mark."</span>
+<span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">interactive</span><span style="color: #bc6ec5;">)</span>
+<span style="color: #bc6ec5;">(</span>push-mark <span style="color: #2d9574;">(</span>point<span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span>
+<span style="color: #bc6ec5;">(</span>push-mark <span style="color: #2d9574;">(</span>point-max<span style="color: #2d9574;">)</span> nil t<span style="color: #bc6ec5;">)</span>
+<span style="color: #bc6ec5;">(</span>goto-char <span style="color: #2d9574;">(</span>poinnt-min<span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+可以看到，它与上面的 <b>simplified-beginning-of-buffer</b> 是相似的。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orge73165e" class="outline-4">
+<h4 id="orge73165e">mark-whole-buffer 的 body</h4>
+<div class="outline-text-4" id="text-orge73165e">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>push-mark <span style="color: #bc6ec5;">(</span>point<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+<span style="color: #4f97d7;">(</span>push-mark <span style="color: #bc6ec5;">(</span>point-max<span style="color: #bc6ec5;">)</span> nil t<span style="color: #4f97d7;">)</span>
+<span style="color: #4f97d7;">(</span>goto-char <span style="color: #bc6ec5;">(</span>point-min<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+<b>(push-mark (point))</b> 这一行与上面的 <b>simplified-beginning-of-buffer</b> 做的事情是一样的。都是将当前光标的位置设置一个 <b>mark</b>  。
+不过 <b>simplified-beginning-of-buffer</b> 的是 <b>(push-mark)</b> 而不是 <b>(push-mark (point))</b> 。
+虽然不知道为什么两个不同的函数，写法不一样。可能这个写代码的人不知道 <b>push-mark</b> 的 <b>argument</b> ，当没有传递 <b>argument</b> 给它时，它会自动地为当前光标设置一个 <b>mark</b> ，又或者是为了以下面的代码保持风格。
+</p>
+
+<p>
+<b>(push-mark (point-max) nil t)</b> ，这个 <b>exchange</b> 比较复杂。该 <b>expression</b> 与上一行的差不多一样。但这里多了2个 <b>argument</b> 。第二个 <b>argument</b> 为 <b>nil</b> ，表示当它设置了一个 <b>mark</b> 后，它应该显示一条消息："Mark set"。第三个参数为 <b>t</b> ，它告诉 <b>push-mark</b> 当 <b>Transient Mark mode</b> 是开启的时候，激活这个 <b>mark</b> 。*Transient Mark mode* 会高亮当前激活的 <b>region</b> 。通常情况下，它是关闭的。
+</p>
+
+<p>
+最后一行是 <b>(goto-char (point-min))</b> ，这样子的结果就是将光标移动到 <b>buffer</b> 的开头，并且在 <b>buffer</b> 的最后设置了一个 <b>mark</b> ，这样子就是 <b>mark</b> 了整个 <b>buffer</b> 了。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org1556f11" class="outline-4">
+<h4 id="org1556f11">append-to-buffer 的定义</h4>
+<div class="outline-text-4" id="text-org1556f11">
+<p>
+<b>append-to-buffer</b> ，它做的事就是，从当前 <b>buffer</b> copy 一个 <b>region</b> （即在 <b>point</b> 和 <b>mark</b> 之间的部分） 到另一个指定的 <b>buffer</b> 。
+</p>
+</div>
+
+<div id="outline-container-orgd57a96b" class="outline-5">
+<h5 id="orgd57a96b">append-to-buffer 概述</h5>
+<div class="outline-text-5" id="text-orgd57a96b">
+<p>
+它是使用 <b>insert-buffer-substring</b> 来进行 copy <b>region</b> 的。正如它的名字一样，它从一个 <b>buffer</b> 中获取 <b>substring</b> ，然后插入到另一个 <b>buffer</b> .
+下面是完整的定义:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">    <span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">defun</span> <span style="color: #bc6ec5; font-weight: bold;">append-to-buffer</span> <span style="color: #bc6ec5;">(</span>buffer start end<span style="color: #bc6ec5;">)</span>
+  <span style="color: #2aa1ae;">"Append to specified buffer the text of the region.</span>
+<span style="color: #2aa1ae;">It is inserted into that buffer before its point.</span>
+
+<span style="color: #2aa1ae;">When calling from a program, give three arguments:</span>
+<span style="color: #2aa1ae;">BUFFER (or buffer name), START and END.</span>
+<span style="color: #2aa1ae;">START and END specify the portion of the current buffer to be copied."</span>
+  <span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">interactive</span>
+   <span style="color: #2d9574;">(</span>list <span style="color: #67b11d;">(</span>read-buffer <span style="color: #2d9574;">"Append to buffer: "</span> <span style="color: #b1951d;">(</span>other-buffer
+                                            <span style="color: #4f97d7;">(</span>current-buffer<span style="color: #4f97d7;">)</span> t<span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span>
+         <span style="color: #67b11d;">(</span>region-beginning<span style="color: #67b11d;">)</span> <span style="color: #67b11d;">(</span>region-end<span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span>
+  <span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">let</span> <span style="color: #2d9574;">(</span><span style="color: #67b11d;">(</span>oldbuf <span style="color: #b1951d;">(</span>current-buffer<span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span>
+    <span style="color: #2d9574;">(</span><span style="color: #4f97d7; font-weight: bold;">save-excursion</span>
+      <span style="color: #67b11d;">(</span><span style="color: #4f97d7; font-weight: bold;">let*</span> <span style="color: #b1951d;">(</span><span style="color: #4f97d7;">(</span>append-to <span style="color: #bc6ec5;">(</span>get-buffer-create buffer<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+             <span style="color: #4f97d7;">(</span>windows <span style="color: #bc6ec5;">(</span>get-buffer-window-list append-to t t<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+             point<span style="color: #b1951d;">)</span>
+        <span style="color: #b1951d;">(</span>set-buffer append-to<span style="color: #b1951d;">)</span>
+        <span style="color: #b1951d;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> point <span style="color: #4f97d7;">(</span>point<span style="color: #4f97d7;">)</span><span style="color: #b1951d;">)</span>
+        <span style="color: #b1951d;">(</span>barf-if-buffer-read-only<span style="color: #b1951d;">)</span>
+        <span style="color: #b1951d;">(</span>insert-buffer-substring oldbuf start end<span style="color: #b1951d;">)</span>
+        <span style="color: #b1951d;">(</span><span style="color: #4f97d7; font-weight: bold;">dolist</span> <span style="color: #4f97d7;">(</span>window windows<span style="color: #4f97d7;">)</span>
+          <span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">when</span> <span style="color: #bc6ec5;">(</span>= <span style="color: #2d9574;">(</span>window-point window<span style="color: #2d9574;">)</span> point<span style="color: #bc6ec5;">)</span>
+            <span style="color: #bc6ec5;">(</span>set-window-point window <span style="color: #2d9574;">(</span>point<span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span><span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-org46d56ae" class="outline-5">
+<h5 id="org46d56ae">append-to-buffer 的 Interactive 部分</h5>
+<div class="outline-text-5" id="text-org46d56ae">
+<p>
+代码如下:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">interactive</span>
+<span style="color: #bc6ec5;">(</span>list <span style="color: #2d9574;">(</span>read-buffer
+   <span style="color: #2d9574;">"Append to buffer: "</span>
+   <span style="color: #67b11d;">(</span>other-buffer <span style="color: #b1951d;">(</span>current-buffer<span style="color: #b1951d;">)</span> t<span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span>
+  <span style="color: #2d9574;">(</span>region-beginning<span style="color: #2d9574;">)</span>
+  <span style="color: #2d9574;">(</span>region-end<span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+它是以一个带有3部分的 list 开始的。
+</p>
+<ol class="org-ol">
+<li>list 的第一部分是一个 <b>expression</b> ，用于读取一个 <b>buffer</b> 的 <b>name</b> ，并作为一个 <b>string</b> 返回。这就是 <b>read-buffer</b> 。该 <b>function</b> 需要一个提示来作为它的第一个 <b>argument</b> "Append to buffer: " 。第二个 <b>argument</b> 是告诉该 <b>command</b> 如果你不指定任何 <b>value</b> 时，就使用这个提供的 <b>value</b> 。
+在这个例子里，使用的是一个 <b>expression</b> ，它包含 <b>other-buffer</b> ，一个 <b>exception</b> 和一个表示 true 的 <b>t</b> 
+<b>other-buffer</b> 的第一个 <b>argument</b> 即 <b>exception</b> 部分，它是另一个 function <b>current-buffer</b> 。这不会返回。第二个 <b>argument</b> 是 <b>symbol</b> <b>t</b> ，它告诉 <b>other-buffer</b> ，它可以显示那些可见的 <b>buffers</b> （除了 <b>current-buffer</b> ）.该 <b>expression</b> 就是 <b>(other-buffer (current-buffer) t)</b></li>
+
+<li>第二部分是 <b>region-beginning</b></li>
+
+<li>第三部分是 <b>region-end</b></li>
+</ol>
+
+
+<p>
+刚开始时，该 <b>command</b> 是使用 <b>B</b> 和 <b>r</b> 的，这样整个 <b>interactive</b> 部分看起来像这样子:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">interactive</span> <span style="color: #2d9574;">"BAppend to buffer: \nr"</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org7c4431f" class="outline-5">
+<h5 id="org7c4431f">append-to-buffer 的 Body 部分</h5>
+<div class="outline-text-5" id="text-org7c4431f">
+<p>
+它是以 <b>let</b> 开头的。它有三个元素:
+</p>
+<ol class="org-ol">
+<li>symbol <b>let</b></li>
+<li><b>varlist</b></li>
+<li>body</li>
+</ol>
+
+
+<p>
+在这里， <b>varlist</b> 看起来像这样子： <b>(oldbuf (current-buffer))</b> 。在这部分中，有一个 <b>variable</b> 为 <b>oldbuf</b> ，它绑定了 <b>(current-buffer)</b> 的返回 <b>value</b> 。它用于保持跟踪 <b>buffer</b> 的。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org8fba304" class="outline-5">
+<h5 id="org8fba304">append-to-buffer 的 save-excursion 部分</h5>
+<div class="outline-text-5" id="text-org8fba304">
+<p>
+<b>save-excursion</b> 是保存当前光标的位置 <b>point</b> ，当 <b>save-excursion</b> 的 <b>expression</b> 执行完毕后，就恢复这个 <b>point</b> 的位置。另外，*save-excursion* 它会保持跟踪原来的 <b>buffer</b> ，然后恢复它。
+</p>
+
+<p>
+<b>save-excursion</b> 的模板如下:
+</p>
+
+<pre class="example">
+(save-excursion
+first-expression-in-body
+second-expression-in-body
+…
+last-expression-in-body)
+</pre>
+
+<p>
+在这个例子里， <b>save-excursion</b> 仅有一个 <b>expression</b> ，=let*= expression 。注意，这个 <code>let*</code> 与 <code>let</code> 不同的。 <code>let*</code> 可以让 Emacs 按顺序来设置每一个 <b>variable</b> 。
+</p>
+
+<p>
+<b>set-buffer</b> ，在以前，*set-buffer* 是比较简单地为：
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>set-buffer <span style="color: #bc6ec5;">(</span>get-buffer-create buffer<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+<p>
+但现在是
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>set-buffer append-to<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+<b>append-to</b> 在之前的 <code>let*</code> 已经绑定到 <b>(get-buffer-create buffer)</b> 了。
+</p>
+
+<p>
+<b>append-to-buffer</b> 的定义是，从当前的 <b>buffer</b> 中的 <b>region</b> 插入到另一个指定名字的 <b>buffer</b> 中。 <b>insert-buffer-substring</b> ，它是从另一个 <b>buffer</b> 中 copy 文本到 当前 <b>buffer</b> ，只不过 <b>append-to-buffer</b> 是反过来了，这就是为什么在定义的开始时，让 <b>let</b> 绑定了一个 local symbol <b>oldbuf</b> 来跟踪 <b>current-buffer</b> 。
+</p>
+
+<p>
+<b>insert-buffer-substring</b> 部分看起来是这样子: 
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>insert-buffer-substring oldbuf start end<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+<b>insert-buffer-substring</b> 从它的第一个 <b>buffer</b> 可 copy 文本，然后插入到当场所在的 <b>buffer</b> 中。当 <b>insert-buffer-substring</b> 工作完后，*save-excursion* 就会恢复原来的 <b>buffer</b> ，并且 <b>append-to-buffer</b> 也就完成了它的工作了。
+</p>
+
+<p>
+伪代码如下:
+</p>
+
+<pre class="example">
+     (let (bind-oldbuf-to-value-of-current-buffer)
+  (save-excursion                       ; Keep track of buffer.
+    change-buffer
+    insert-substring-from-oldbuf-into-buffer)
+
+  change-back-to-original-buffer-when-finished
+let-the-local-meaning-of-oldbuf-disappear-when-finished
+</pre>
+
+<p>
+总结一下 <b>append-to-buffer</b> 的工作原理：它保存当前 <b>buffer</b> 到一个名为 <b>oldbuf</b> 的 variable 中。然后获取一个新的 <b>buffer</b> （如果有需要的话，就创建一个）并且 Emacs 会切换到这个新的 <b>buffer</b> 中。使用 <b>oldbuf</b> 中的 <b>value</b> ，它从 <b>oldbuf</b> 中的 <b>region</b> 文本插入到该新的 <b>buffer</b> 中。最后使用 <b>save-excursion</b> ，它会带你回到原来的 <b>buffer</b> 中，（即 <b>oldbuf</b> ）.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-org1760046" class="outline-3">
+<h3 id="org1760046">回顾</h3>
+<div class="outline-text-3" id="text-org1760046">
+<ul class="org-ul">
+<li>describe-function</li>
+<li>describe-variable</li>
+<li>find-tag</li>
+<li>save-excursion</li>
+<li>push-mark</li>
+<li>goto-char</li>
+<li>insert-buffer-substring</li>
+<li>mark-whole-buffer</li>
+<li>set-buffer</li>
+<li>get-buffer-create</li>
+<li>get-buffer</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org25d69a5" class="outline-2">
+<h2 id="org25d69a5">一些更复杂的 Functions</h2>
+<div class="outline-text-2" id="text-org25d69a5">
+</div><div id="outline-container-org4450533" class="outline-3">
+<h3 id="org4450533">copy-to-buffer 的定义</h3>
+<div class="outline-text-3" id="text-org4450533">
+<p>
+理解了 <b>append-to-buffer</b> 之后，再理解  <b>copy-to-buffer</b> 就容易了。它 copy 文本到一个 <b>buffer</b> ，但它不是添加到第二个 <b>buffer</b> 中，而是代替第二个 <b>buffer</b> 的之前的所有文本。它的 body 部分看起来是这样子:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">...
+<span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">interactive</span> <span style="color: #2d9574;">"BCopy to buffer: \nr"</span><span style="color: #4f97d7;">)</span>
+<span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">let</span> <span style="color: #bc6ec5;">(</span><span style="color: #2d9574;">(</span>oldbuf <span style="color: #67b11d;">(</span>current-buffer<span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span>
+  <span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">with-current-buffer</span> <span style="color: #2d9574;">(</span>get-buffer-create buffer<span style="color: #2d9574;">)</span>
+    <span style="color: #2d9574;">(</span>barf-if-buffer-read-only<span style="color: #2d9574;">)</span>
+    <span style="color: #2d9574;">(</span>erase-buffer<span style="color: #2d9574;">)</span>
+    <span style="color: #2d9574;">(</span><span style="color: #4f97d7; font-weight: bold;">save-excursion</span>
+      <span style="color: #67b11d;">(</span>insert-buffer-substring oldbuf start end<span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span><span style="color: #e0211d; text-decoration: overline;">)</span>
+</pre>
+</div>
+
+<p>
+<b>get-buffer-create buffer</b> 它告诉计算机使用指定名的 <b>buffer</b> 来准备 copy ，如果该 <b>buffer</b> 不存在，则创建一个。然后 <b>with-current-buffer</b> evaluate 它的 body 。
+</p>
+
+<p>
+<b>barf-if-buffer-read-only</b> 如果 <b>buffer</b> 是 <b>read-only</b> 的话，就给出一条错误信息
+</p>
+
+<p>
+<b>erase-buffer</b> 即擦掉整个 <b>buffer</b> 的内容
+</p>
+
+<p>
+<b>save-excursion</b> 上面也详细说明了。
+</p>
+
+<p>
+这就是 <b>replacement</b> 的意思， Emacs 擦除掉原来的文本，然后插入新的文本。
+</p>
+
+<p>
+在 <b>copy-to-buffer</b> 的 body 看起来像这样子:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">let</span> <span style="color: #bc6ec5;">(</span>bind-oldbuf-to-value-of-current-buffer<span style="color: #bc6ec5;">)</span>
+ <span style="color: #bc6ec5;">(</span>with-the-buffer-you-are-copying-to
+   <span style="color: #2d9574;">(</span>but-do-not-erase-or-copy-to-a-read-only-buffer<span style="color: #2d9574;">)</span>
+   <span style="color: #2d9574;">(</span>erase-buffer<span style="color: #2d9574;">)</span>
+   <span style="color: #2d9574;">(</span><span style="color: #4f97d7; font-weight: bold;">save-excursion</span>
+     insert-substring-from-oldbuf-into-buffer<span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-org5a748b5" class="outline-3">
+<h3 id="org5a748b5">insert-buffer 的定义</h3>
+<div class="outline-text-3" id="text-org5a748b5">
+<p>
+它做的事就是，从其他的 <b>buffer</b> copy 文本到当前 <b>buffer</b> 。它是 <b>append-to-buffer</b> 或 <b>copy-to-buffer</b> 的相反操作，它们是从当前 <b>buffer</b> copy 到另一个 <b>buffer</b> 。
+</p>
+</div>
+
+<div id="outline-container-org6802e02" class="outline-4">
+<h4 id="org6802e02">insert-buffer 的代码</h4>
+<div class="outline-text-4" id="text-org6802e02">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">defun</span> <span style="color: #bc6ec5; font-weight: bold;">insert-buffer</span> <span style="color: #bc6ec5;">(</span>buffer<span style="color: #bc6ec5;">)</span>
+  <span style="color: #2aa1ae;">"Insert after point the contents of BUFFER.</span>
+<span style="color: #2aa1ae;">Puts mark after the inserted text.</span>
+<span style="color: #2aa1ae;">BUFFER may be a buffer or a buffer name."</span>
+  <span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">interactive</span> <span style="color: #2d9574;">"*bInsert buffer: "</span><span style="color: #bc6ec5;">)</span>
+  <span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">or</span> <span style="color: #2d9574;">(</span>bufferp buffer<span style="color: #2d9574;">)</span>
+      <span style="color: #2d9574;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> buffer <span style="color: #67b11d;">(</span>get-buffer buffer<span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span>
+  <span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">let</span> <span style="color: #2d9574;">(</span>start end newmark<span style="color: #2d9574;">)</span>
+    <span style="color: #2d9574;">(</span><span style="color: #4f97d7; font-weight: bold;">save-excursion</span>
+      <span style="color: #67b11d;">(</span><span style="color: #4f97d7; font-weight: bold;">save-excursion</span>
+        <span style="color: #b1951d;">(</span>set-buffer buffer<span style="color: #b1951d;">)</span>
+        <span style="color: #b1951d;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> start <span style="color: #4f97d7;">(</span>point-min<span style="color: #4f97d7;">)</span> end <span style="color: #4f97d7;">(</span>point-max<span style="color: #4f97d7;">)</span><span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span>
+      <span style="color: #67b11d;">(</span>insert-buffer-substring buffer start end<span style="color: #67b11d;">)</span>
+      <span style="color: #67b11d;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> newmark <span style="color: #b1951d;">(</span>point<span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span>
+    <span style="color: #2d9574;">(</span>push-mark newmark<span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgfd0d31c" class="outline-5">
+<h5 id="orgfd0d31c">insert-buffer 中的 interactive 部分</h5>
+<div class="outline-text-5" id="text-orgfd0d31c">
+<p>
+它有两部分: <code>*</code> 和  <code>bInsert buffer:</code> 
+</p>
+</div>
+
+<ul class="org-ul"><li><a id="orgf352837"></a>一个 read-only buffer<br><div class="outline-text-6" id="text-orgf352837">
+<p>
+星号 <code>*</code> 是当当前 <b>buffer</b> 是一个 read-only 或并不能修改时出现的。如果 <b>insert-buffer</b> 是在当前 <b>buffer</b> 为 read-only 的情况下调用的，就会有 <b>echo area</b> 中显示一条消息并且会嘟嘟噢或闪着光标，表示不允许你插入任何东西到当前 <b>buffer</b> 。星号并不需要与下一个 <b>argument</b> 通过换行来分隔。
+</p>
+</div></li>
+
+<li><a id="org424eb86"></a>interactive 中的 b 选项<br><div class="outline-text-6" id="text-org424eb86">
+<p>
+<b>b</b> 告诉 Lisp 解析器， <b>insert-buffer</b> 的 <b>argument</b> 应该是一个存在的 <b>buffer</b> 或者是它的名字。（"B" 选项则表示该 <b>buffer</b> 是可能不存在的）。这时 Emacs 会等待你输入 <b>buffer</b> 的名字，提供一个默认的 <b>buffer</b> ，并可以补全名字。如果该 <b>buffer</b> 并不存在，你会收到一个 "No match" 的消息，然后你的 <b>terminal</b> 可能又会嘟嘟响。
+</p>
+</div></li></ul>
+</div>
+
+
+<div id="outline-container-orgb137a65" class="outline-5">
+<h5 id="orgb137a65">insert-buffer 中的 body 部分</h5>
+<div class="outline-text-5" id="text-orgb137a65">
+<p>
+主要有2部分： <b>or</b> expression 和 <b>let</b> expression 。
+</p>
+
+<p>
+<b>or</b> expression 的上的是确保 argument <b>buffer</b> ，是绑定到一个 <b>buffer</b> 而不仅仅是一个 <b>buffer</b> 的名字。
+</p>
+
+<p>
+<b>let</b> expression 包含的代码是从其他 <b>buffer</b> copy 到当前 <b>buffer</b> 中。
+</p>
+
+<p>
+在框架上，这两部分如下:
+</p>
+
+<pre class="example">
+(defun insert-buffer (buffer)
+"documentation…"
+(interactive "*bInsert buffer: ")
+(or …
+…
+(let (varlist)
+body-of-let… )
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org61bb1cb" class="outline-5">
+<h5 id="org61bb1cb">用 if 来代替 insert-buffer 中的 or</h5>
+<div class="outline-text-5" id="text-org61bb1cb">
+<p>
+这部分的工作，就是确保 <b>buffer</b> 的 <b>value</b> 是一个 <b>buffer</b> 自身，而不仅仅是一个 <b>buffer</b> 的名字。
+这里，我们用 <b>predicate</b> （谓词）: <b>bufferp</b> 来告诉我们，到底是 <b>buffer</b> 自身，还是只是名字。可以这样子写:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">if</span> <span style="color: #bc6ec5;">(</span>not <span style="color: #2d9574;">(</span>bufferp buffer<span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span>              <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">if-part</span>
+    <span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> buffer <span style="color: #2d9574;">(</span>get-buffer buffer<span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>  <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">then-part</span>
+</pre>
+</div>
+
+<p>
+<b>not</b> 是一个 <b>function</b> ，即如果 <b>argument</b> 是 <b>true</b> ，则返回 <b>false</b> ； 如果是 <b>false</b> ，则返回 <b>true</b> 。
+</p>
+
+<p>
+<b>get-buffer</b> ：通过给定的名字，返回特定的 <b>buffer</b> 。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org755f9b5" class="outline-5">
+<h5 id="org755f9b5">body 中的 or 部分</h5>
+<div class="outline-text-5" id="text-org755f9b5">
+<p>
+上面我们用 <b>if</b> 来代替了 <b>or</b> ，但实际上，源码里是 <b>or</b> ，为了理解它，我们需要知道 <b>or</b> 是如何工作的。
+</p>
+
+<p>
+<b>or</b> 可以有任意个 <b>argument</b> ，它会一直为每个 <b>argument</b> 进行 <b>evaluate</b> 直到遇到第一个非 <b>nil</b> 的 <b>argument</b> 。（即遇到第一个非 <b>nil</b> 即返回，不会再继续进行后面的 evaluate 了）。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">or</span> <span style="color: #bc6ec5;">(</span>bufferp buffer<span style="color: #bc6ec5;">)</span>
+    <span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> buffer <span style="color: #2d9574;">(</span>get-buffer buffer<span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-org36d7ccf" class="outline-5">
+<h5 id="org36d7ccf">insert-buffer 中的 let 部分</h5>
+<div class="outline-text-5" id="text-org36d7ccf">
+<p>
+它有三个 <b>local variable</b> ： <b>start</b>, <b>end</b> 和 <b>newmark</b> ，都初始为 <b>nil</b> 。这些 <b>variable</b> 用于 <b>let</b> 的后面部分，并且会临时隐藏在 Emacs 的其他地方出现的同名 <b>variable</b> ，直到 <b>let</b> 结尾。
+它包含有两个 <b>save-excursion</b> ，首先我们看最里面的。它的代码如下:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">save-excursion</span>
+  <span style="color: #bc6ec5;">(</span>set-buffer buffer<span style="color: #bc6ec5;">)</span>
+  <span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> start <span style="color: #2d9574;">(</span>point-min<span style="color: #2d9574;">)</span> end <span style="color: #2d9574;">(</span>point-max<span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+<b>set-buffer buffer</b> 让 Emacs 从当前 <b>buffer</b> 切换到另一个被 <b>copy</b> 文本的 <b>buffer</b> 中，然后在那个 <b>buffer</b> （即被 copy 的 buffer）中，*start* 和 <b>end</b> 的 variable 被设置为那个 <b>buffer</b> 的开始和结束位置，*point-min* 和 <b>point-max</b> 。注意到，*setq* 同一个 <b>expression</b> 中，设置了2个 <b>variable</b> 。
+</p>
+
+<p>
+外部的 <b>save-excursion</b> 看起来像这样子:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">save-excursion</span>
+  <span style="color: #bc6ec5;">(</span>inner-save-excursion-expression
+   <span style="color: #2d9574;">(</span>go-to-new-buffer-and-set-start-and-end<span style="color: #2d9574;">)</span>
+   <span style="color: #2d9574;">(</span>insert-buffer-substring buffer start end<span style="color: #2d9574;">)</span>
+   <span style="color: #2d9574;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> newmark <span style="color: #67b11d;">(</span>point<span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span>
+</pre>
+</div>
+
+<p>
+<b>insert-buffer-substring</b> 从指定的 <b>buffer</b> 的 <b>start</b> 和 <b>end</b> 的 <b>region</b> 中copy文本到当前的 <b>buffer</b> 。
+然后，在被插入的文件的最后的位置，保存该 <b>point</b> 到 <b>newmark</b> 中。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org2d00b42" class="outline-5">
+<h5 id="org2d00b42">insert-buffer 的新 body</h5>
+<div class="outline-text-5" id="text-org2d00b42">
+<p>
+在 GNU Emacs 22 版中它比原来的更让人迷惑
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>push-mark
+ <span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">save-excursion</span>
+   <span style="color: #2d9574;">(</span>insert-buffer-substring <span style="color: #67b11d;">(</span>get-buffer buffer<span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span>
+   <span style="color: #2d9574;">(</span>point<span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+nil
+</pre>
+</div>
+
+<p>
+<b>save-excursion</b> 的返回值是最后一个 <b>expression</b> 的返回值。
+</p>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orge362987" class="outline-3">
+<h3 id="orge362987">beginning-of-buffer 的完整定义</h3>
+<div class="outline-text-3" id="text-orge362987">
+<p>
+如果没有带 <b>argument</b> 来调用它，则将光标移动到整个 <b>buffer</b> 的开头。如果带有一个 <b>1~10</b> 的 <b>argument</b> ，则会将光标移动到整个buffer 的 <b>argument/10</b> 的位置。如果大于10，再是到 <b>buffer</b> 的最后。
+比如，想移动到整个 <b>buffer</b> 的 <b>70%</b> 的位置: <b>C-u 7 M-&lt;</b>
+</p>
+</div>
+
+<div id="outline-container-orgf2e6bf3" class="outline-4">
+<h4 id="orgf2e6bf3">可选 argument</h4>
+<div class="outline-text-4" id="text-orgf2e6bf3">
+<p>
+除非告知，否则的话， Lisp 期待一个带有 <b>argument</b> 的 <b>function</b> 在调用时要传递该 <b>argument</b> ，如果不这样子的话，你就收到一条错误消息： "Wrong number of arguments" .
+</p>
+
+<p>
+不过，*optional argument* 是 Lisp 的一个特性，可以用特别的关键字来表明一个 <b>argument</b> 是 <b>optional</b> 的。这个关键字就是 <b>&amp;optional</b> （注意，*&amp;* 是关键字的一部分）。
+如果一个 <b>argument</b> 是跟在 <b>&amp;optional</b> 后面的话，则在调用该 <b>function</b> 时可不必传递该参数。
+</p>
+
+<p>
+因此，它的第一行代码是这样子:
+</p>
+
+<pre class="example">
+(defun beginning-of-buffer (&amp;optional arg)
+</pre>
+
+<p>
+框架上，整个 <b>function</b> 看起来像这样子:
+</p>
+
+<pre class="example">
+  (defun beginning-of-buffer (&amp;optional arg)
+"documentation…"
+(interactive "P")
+(or (is-the-argument-a-cons-cell arg)
+    (and are-both-transient-mark-mode-and-mark-active-true)
+    (push-mark))
+(let (determine-size-and-set-it)
+(goto-char
+  (if-there-is-an-argument
+      figure-out-where-to-go
+    else-go-to
+    (point-min))))
+ do-nicety
+</pre>
+
+<p>
+它与 <b>simplified-beginning-of-buffer</b> 相似，除了 <b>interactive</b> 有 "P" 选项和 <b>goto-char</b> 是在 <b>if-then-else</b> 后面的。
+</p>
+
+<p>
+"P" 表示接受一个 <b>prefix argument</b> 。
+</p>
+
+<p>
+<b>goto-char</b> 中有一个 <b>if-then-else</b> 来判断是否传递了 <b>argument</b> ，没有的话，就跳转到 <b>point-min</b> 中。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org1f36948" class="outline-4">
+<h4 id="org1f36948">beginning-of-buffer 带有 argument</h4>
+<div class="outline-text-4" id="text-org1f36948">
+<p>
+如果传递了一个 <b>argument</b> ，下面是完整的 <b>if</b> 部分:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">if</span> <span style="color: #bc6ec5;">(</span>&gt; <span style="color: #2d9574;">(</span>buffer-size<span style="color: #2d9574;">)</span> <span style="color: #a45bad;">10000</span><span style="color: #bc6ec5;">)</span>
+    <span style="color: #2aa1ae; background-color: #292e34;">;; </span><span style="color: #2aa1ae; background-color: #292e34;">Avoid overflow for large buffer sizes!</span>
+    <span style="color: #bc6ec5;">(</span>* <span style="color: #2d9574;">(</span>prefix-numeric-value arg<span style="color: #2d9574;">)</span>
+       <span style="color: #2d9574;">(</span>/ size <span style="color: #a45bad;">10</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span>
+  <span style="color: #bc6ec5;">(</span>/
+   <span style="color: #2d9574;">(</span>+ <span style="color: #a45bad;">10</span>
+      <span style="color: #67b11d;">(</span>*
+       size <span style="color: #b1951d;">(</span>prefix-numeric-value arg<span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span> <span style="color: #a45bad;">10</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span><span style="color: #e0211d; text-decoration: overline;">)</span>
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orga37c5ff" class="outline-5">
+<h5 id="orga37c5ff">分解 beginning-of-buffer</h5>
+<div class="outline-text-5" id="text-orga37c5ff">
+<p>
+像其他复杂的 <b>function</b> 一样， 上面的条件语句可以分解为下面的模板 :
+</p>
+
+<pre class="example">
+(if (buffer-is-large
+    divide-buffer-size-by-10-and-multiply-by-arg
+  else-use-alternate-calculation
+</pre>
+
+<p>
+首先检查 <b>buffer</b> 的大小。这是因为，在旧的 Emacs 18 中，能使用的 <b>number</b> 或后面的计算中，不能大于 800W ，如果 <b>buffer</b> 是非常大的话，程序员会强制 Emacs 去尝试超大的数字导致溢出。
+术语 <b>overflow</b> ，意味着数字是超级大的。
+</p>
+
+<p>
+这里有两种情况： <b>buffer</b> 是非常大的，或者比较小。
+</p>
+</div>
+
+<ul class="org-ul"><li><a id="org037229f"></a>非常大的 buffer 的情况<br><div class="outline-text-6" id="text-org037229f">
+<p>
+在以前，是使用 <b>buffer-size</b> 而不是 <code>(&gt; size 10000)</code> , 不仅是因为这这个 <b>function</b> 要调用多次，更因为它应该是不可访问的部分。
+</p>
+
+<p>
+如果符合该条件，则它会 <b>evaluate</b> 下面的 <b>expression</b> ：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>*
+ <span style="color: #bc6ec5;">(</span>prefix-numeric-value arg<span style="color: #bc6ec5;">)</span>
+ <span style="color: #bc6ec5;">(</span>/ size <span style="color: #a45bad;">10</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+因为在 <b>interactive</b> 里使用了 <b>P</b> 选项，它表示传递一个 <b>raw prefix argument</b> ，而不是一个 <b>number</b> 。为了执行算术操作，需要进行转换，这就是 <b>prefix-numeric-value</b> 要的事。
+</p>
+</div></li>
+
+
+<li><a id="org300d7d7"></a>在小的 buffer 的情况<br><div class="outline-text-6" id="text-org300d7d7">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>/ <span style="color: #bc6ec5;">(</span>+ <span style="color: #a45bad;">10</span> <span style="color: #2d9574;">(</span>* size <span style="color: #67b11d;">(</span>prefix-numeric-value arg<span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span> <span style="color: #a45bad;">10</span><span style="color: #4f97d7;">)</span><span style="color: #e0211d; text-decoration: overline;">)</span>
+</pre>
+</div>
+</div></li></ul>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org8a9fb0d" class="outline-3">
+<h3 id="org8a9fb0d">回顾</h3>
+<div class="outline-text-3" id="text-org8a9fb0d">
+<ul class="org-ul">
+<li>or</li>
+<li>and</li>
+<li>&amp;optional</li>
+<li>prefix-numeric-value</li>
+<li>forward-line</li>
+<li>erase-buffer</li>
+<li>bufferp</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orge6dbab8" class="outline-2">
+<h2 id="orge6dbab8">Narrowing 和 Widening</h2>
+<div class="outline-text-2" id="text-orge6dbab8">
+<p>
+Narrowing 可以使你专注于 <b>buffer</b> 的特定部分，而不会偶然修改了其他的部分。
+</p>
+</div>
+
+<div id="outline-container-orgf55fa9c" class="outline-3">
+<h3 id="orgf55fa9c">Narrowing 的优点</h3>
+<div class="outline-text-3" id="text-orgf55fa9c">
+<p>
+在 Narrowing 中，*buffer* 剩余的其他部分是不可见的，就像它不存在一样。例如，你仅想在 <b>buffer</b> 的一部分中进行单词替换时，narrowing 就有个好处了，它可以允许你仅替换 narrowing 的部分，而不包括其他部分。搜索也同样如此。
+</p>
+
+<p>
+由于 narrowing 会使 buffer 的剩余部分不可见，这可能会使一些人感到害怕，他们会认为已经删除了文件的这些部分，然后调用 <b>undo</b> 命令，但并没有关闭 narrowing , 因此，人们可能变得绝望了，如果不知道让这些部分变得可见是通过 <b>widen</b> （通常绑定以 <b>C-x n w</b> ）来返回可见性的话的。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org769896c" class="outline-3">
+<h3 id="org769896c">save-restriction 特殊的 form</h3>
+<div class="outline-text-3" id="text-org769896c">
+<p>
+你可以使用 <b>save-restriction</b> 这个特殊的 form 来跟踪 narrowing 中做了些什么。当 Lisp 解析器遇到 <b>save-restriction</b> 时，它会执行 <b>save-restriction</b> 的 body 代码，然后撤消这些代码导致的所有更改。
+<b>save-restriction</b> 的模板如下:
+</p>
+
+<pre class="example">
+(save-restriction
+  body… )
+</pre>
+
+<p>
+body 部分会被 Lisp 解析器按顺序地进行 <b>evaluate</b> 。
+</p>
+
+<p>
+如果你同时连着使用 <b>save-excursion</b> 和 <b>save-restriction</b> ，你应该在最外面使用 <b>save-excursion</b> 。如果弄反了顺序的话，你可能会导致记录 narrowing 失败。所以，当它们一起用时，模板应该是这样子:
+</p>
+
+<pre class="example">
+(save-excursion
+  (save-restriction
+    body…))
+</pre>
+
+
+<p>
+其他情况下，当并不是连着用时，它们的顺序应该为: <b>save-restriction</b> 再到 <b>save-excursion</b>
+</p>
+
+<pre class="example">
+(save-restriction
+ (widen)
+ (save-excursion
+ body…))
+</pre>
+</div>
+</div>
+
+
+<div id="outline-container-org86261cd" class="outline-3">
+<h3 id="org86261cd">what-line</h3>
+<div class="outline-text-3" id="text-org86261cd">
+<p>
+它告诉你当前光标在哪一行上。源码如下:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"> <span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">defun</span> <span style="color: #bc6ec5; font-weight: bold;">what-line</span> <span style="color: #bc6ec5;">()</span>
+<span style="color: #2aa1ae;">"Print the current line number (in the buffer) of point."</span>
+<span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">interactive</span><span style="color: #bc6ec5;">)</span>
+<span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">save-restriction</span>
+  <span style="color: #2d9574;">(</span>widen<span style="color: #2d9574;">)</span>
+  <span style="color: #2d9574;">(</span><span style="color: #4f97d7; font-weight: bold;">save-excursion</span>
+    <span style="color: #67b11d;">(</span>beginning-of-line<span style="color: #67b11d;">)</span>
+    <span style="color: #67b11d;">(</span>message <span style="color: #2d9574;">"Line %d"</span>
+             <span style="color: #b1951d;">(</span>1+ <span style="color: #4f97d7;">(</span>count-lines <span style="color: #a45bad;">1</span> <span style="color: #bc6ec5;">(</span>point<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span><span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+这个版本是比较旧的代码，最近版本的 GNU Emacs 则不太同，你可以通过 <b>C-h f</b> 来查看。
+</p>
+
+<p>
+<b>count-lines</b> 它返回的是在当前行之前一共有多少行。所以这里要 <b>+1</b> 
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org7a060b1" class="outline-2">
+<h2 id="org7a060b1">基本的 Function: car, cdr, cons</h2>
+<div class="outline-text-2" id="text-org7a060b1">
+<dl class="org-dl">
+<dt>cons</dt><dd>它用于构建 (construct) list</dd>
+<dt>car 和 cdr</dt><dd>用于获取list的部分元素</dd>
+</dl>
+</div>
+
+<div id="outline-container-org0f7545d" class="outline-3">
+<h3 id="org0f7545d">奇怪的名字</h3>
+<div class="outline-text-3" id="text-org0f7545d">
+<dl class="org-dl">
+<dt>cons</dt><dd>它是单词 <b>construct</b> 的缩写。</dd>
+<dt>car</dt><dd>这是下面的首字母缩写： <b>Contents of the Address part of the Register</b></dd>
+<dt>cdr</dt><dd>这是下面的首字母缩写：*Contents of the Decrement part of the Register*</dd>
+</dl>
+
+
+<p>
+这些用语是在早期开发 Lisp 的计算机硬件的一部分的。所以一直沿用至今。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org169afca" class="outline-3">
+<h3 id="org169afca">car 和 cdr</h3>
+<div class="outline-text-3" id="text-org169afca">
+<p>
+<b>car</b> list 是非常简单的，即获取list的第一个元素。因此 ，*car* 这个 list: (rose violet daisy buttercup) 的结果就是 rose .
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>car '<span style="color: #bc6ec5;">(</span>rose violet daisy buttercup<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+所以，一个更合理的 <b>car</b> function 的名字，应该是叫 <b>first</b> 。它并不会移除list的第一个元素，仅仅是报告第一个元素是什么。用术语来说，*car* 是非破坏性的。
+</p>
+
+<p>
+<b>cdr</b> list 则是list的剩余部分（即除了第一个元素之外的部分），因此 <b>cdr</b> 这个 list：*(rose violet daisy buttercup)* 的结果就是 <b>(violet daisy buttercup)</b> 
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>cdr '<span style="color: #bc6ec5;">(</span>rose violet daisy buttercup<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+同样地，*cdr* 也是不具破坏性的。一个更合理的 <b>cdr</b> 的名字，应该为 <b>rest</b> .
+</p>
+
+<p>
+所以说， 一个好的 <b>function</b> 名字是非常重要的。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org6f2fdc6" class="outline-3">
+<h3 id="org6f2fdc6">cons</h3>
+<div class="outline-text-3" id="text-org6f2fdc6">
+<p>
+它用来构建 list 。它与 <b>car</b> 和 <b>cdr</b> 是相反的。例如下面:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>cons 'pine '<span style="color: #bc6ec5;">(</span>fir oak maple<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+它会得到一个 list :
+</p>
+
+<pre class="example">
+(pine fir oak maple)
+</pre>
+
+<p>
+它不会影响已经存在的 list ，而是创建一个新的 list .
+</p>
+</div>
+
+<div id="outline-container-org87d2b7b" class="outline-4">
+<h4 id="org87d2b7b">构建一个 list</h4>
+<div class="outline-text-4" id="text-org87d2b7b">
+<p>
+<b>cons</b> 必须要有一个 list 附于它。你不能以没有任何东西就开始它。如果你想构建一个 list ，则开头至少要有一个空 list 。下面是一些例子:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>cons 'buttercup <span style="color: #bc6ec5;">()</span><span style="color: #4f97d7;">)</span>
+&#8658; <span style="color: #4f97d7;">(</span>buttercup<span style="color: #4f97d7;">)</span>
+
+<span style="color: #4f97d7;">(</span>cons 'daisy '<span style="color: #bc6ec5;">(</span>buttercup<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658; <span style="color: #4f97d7;">(</span>daisy buttercup<span style="color: #4f97d7;">)</span>
+
+<span style="color: #4f97d7;">(</span>cons 'violet '<span style="color: #bc6ec5;">(</span>daisy buttercup<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658; <span style="color: #4f97d7;">(</span>violet daisy buttercup<span style="color: #4f97d7;">)</span>
+
+<span style="color: #4f97d7;">(</span>cons 'rose '<span style="color: #bc6ec5;">(</span>violet daisy buttercup<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658; <span style="color: #4f97d7;">(</span>rose violet daisy buttercup<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-org302584b" class="outline-4">
+<h4 id="org302584b">list 的长度: length</h4>
+<div class="outline-text-4" id="text-org302584b">
+<p>
+你可以获取 list 有多少个元素，通过 Lisp 的 <b>length</b> function 。例如：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>length '<span style="color: #bc6ec5;">(</span>buttercup<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658; <span style="color: #a45bad;">1</span>
+
+<span style="color: #4f97d7;">(</span>length '<span style="color: #bc6ec5;">(</span>daisy buttercup<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658; <span style="color: #a45bad;">2</span>
+
+<span style="color: #4f97d7;">(</span>length <span style="color: #bc6ec5;">(</span>cons 'violet '<span style="color: #2d9574;">(</span>daisy buttercup<span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658; <span style="color: #a45bad;">3</span>
+</pre>
+</div>
+
+<p>
+你也可以传一个空 list：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>length <span style="color: #bc6ec5;">()</span><span style="color: #4f97d7;">)</span>
+ &#8658; <span style="color: #a45bad;">0</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-org38d2bd8" class="outline-3">
+<h3 id="org38d2bd8">nthcdr</h3>
+<div class="outline-text-3" id="text-org38d2bd8">
+<p>
+<b>nthcdr</b> 与 <b>cdr</b> 是相关联的。它做的事就是重复 <b>n</b> 次 <b>cdr</b> 的操作。下面是一系列的 <b>cdr</b> 操作:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>cdr '<span style="color: #bc6ec5;">(</span>pine fir oak maple<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658;<span style="color: #4f97d7;">(</span>fir oak maple<span style="color: #4f97d7;">)</span>
+
+<span style="color: #4f97d7;">(</span>cdr '<span style="color: #bc6ec5;">(</span>fir oak maple<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658; <span style="color: #4f97d7;">(</span>oak maple<span style="color: #4f97d7;">)</span>
+
+<span style="color: #4f97d7;">(</span>cdr '<span style="color: #bc6ec5;">(</span>oak maple<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658;<span style="color: #4f97d7;">(</span>maple<span style="color: #4f97d7;">)</span>
+
+<span style="color: #4f97d7;">(</span>cdr '<span style="color: #bc6ec5;">(</span>maple<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658; nil
+
+<span style="color: #4f97d7;">(</span>cdr 'nil<span style="color: #4f97d7;">)</span>
+&#8658; nil
+
+<span style="color: #4f97d7;">(</span>cdr <span style="color: #bc6ec5;">()</span><span style="color: #4f97d7;">)</span>
+&#8658; nil
+</pre>
+</div>
+
+<p>
+你也可以通过 <b>nthcdr</b> 来直接指定进行重复 <b>n</b> 次的 <b>cdr</b> 操作。例如:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #2aa1ae; background-color: #292e34;">;; </span><span style="color: #2aa1ae; background-color: #292e34;">Leave the list as it was.</span>
+<span style="color: #4f97d7;">(</span>nthcdr <span style="color: #a45bad;">0</span> '<span style="color: #bc6ec5;">(</span>pine fir oak maple<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658; <span style="color: #4f97d7;">(</span>pine fir oak maple<span style="color: #4f97d7;">)</span>
+
+<span style="color: #2aa1ae; background-color: #292e34;">;; </span><span style="color: #2aa1ae; background-color: #292e34;">Return a copy without the first element.</span>
+<span style="color: #4f97d7;">(</span>nthcdr <span style="color: #a45bad;">1</span> '<span style="color: #bc6ec5;">(</span>pine fir oak maple<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658; <span style="color: #4f97d7;">(</span>fir oak maple<span style="color: #4f97d7;">)</span>
+
+<span style="color: #2aa1ae; background-color: #292e34;">;; </span><span style="color: #2aa1ae; background-color: #292e34;">Return a copy of the list without three elements.</span>
+<span style="color: #4f97d7;">(</span>nthcdr <span style="color: #a45bad;">3</span> '<span style="color: #bc6ec5;">(</span>pine fir oak maple<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658; <span style="color: #4f97d7;">(</span>maple<span style="color: #4f97d7;">)</span>
+
+<span style="color: #2aa1ae; background-color: #292e34;">;; </span><span style="color: #2aa1ae; background-color: #292e34;">Return a copy lacking all four elements.</span>
+<span style="color: #4f97d7;">(</span>nthcdr <span style="color: #a45bad;">4</span> '<span style="color: #bc6ec5;">(</span>pine fir oak maple<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658; nil
+
+<span style="color: #2aa1ae; background-color: #292e34;">;; </span><span style="color: #2aa1ae; background-color: #292e34;">Return a copy lacking all elements.</span>
+<span style="color: #4f97d7;">(</span>nthcdr <span style="color: #a45bad;">5</span> '<span style="color: #bc6ec5;">(</span>pine fir oak maple<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658; nil
+</pre>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-orgba80eae" class="outline-3">
+<h3 id="orgba80eae">nth</h3>
+<div class="outline-text-3" id="text-orgba80eae">
+<p>
+<b>nth</b> 将 <b>nthcdr</b> 返回的结果进行 <b>car</b> 操作。它返回的是第 <b>N</b> 个元素。下面是 <b>nth</b> 可能的代码（实际上，它是用 C 写的，这里只是显示个 lisp 版本的）:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">defun</span> <span style="color: #bc6ec5; font-weight: bold;">nth</span> <span style="color: #bc6ec5;">(</span>n list<span style="color: #bc6ec5;">)</span>
+  <span style="color: #2aa1ae;">"Returns the Nth element of LIST.</span>
+<span style="color: #2aa1ae;">N counts from zero.  If LIST is not that long, nil is returned."</span>
+  <span style="color: #bc6ec5;">(</span>car <span style="color: #2d9574;">(</span>nthcdr n list<span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+下面是一些例子：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>nth <span style="color: #a45bad;">0</span> '<span style="color: #bc6ec5;">(</span><span style="color: #2d9574;">"one"</span> <span style="color: #2d9574;">"two"</span> <span style="color: #2d9574;">"three"</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658; <span style="color: #2d9574;">"one"</span>
+
+<span style="color: #4f97d7;">(</span>nth <span style="color: #a45bad;">1</span> '<span style="color: #bc6ec5;">(</span><span style="color: #2d9574;">"one"</span> <span style="color: #2d9574;">"two"</span> <span style="color: #2d9574;">"three"</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658; <span style="color: #2d9574;">"two"</span>
+</pre>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-org524b588" class="outline-3">
+<h3 id="org524b588">setcar</h3>
+<div class="outline-text-3" id="text-org524b588">
+<p>
+正如从名字猜测他们的意思一样， <b>setcar</b> 和 <b>setcdr</b> 会将 <b>car</b> 或 <b>cdr</b> 部分的 list 设置为一个新的 <b>value</b> 。它不像 <b>car</b> 或 <b>cdr</b> ，它会改变原来的 list 的。
+</p>
+
+<p>
+首先，我们用创建一个 list ，例如:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> animals '<span style="color: #bc6ec5;">(</span>antelope giraffe lion tiger<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span> 
+
+<span style="color: #4f97d7;">(</span>setcar animals 'hippopotamus<span style="color: #4f97d7;">)</span> 
+
+animals
+</pre>
+</div>
+
+<p>
+这时，*animals* 为 <b>(hippopotamus giraffe lion tiger)</b> 了。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org0cae771" class="outline-3">
+<h3 id="org0cae771">setcdr</h3>
+<div class="outline-text-3" id="text-org0cae771">
+<p>
+它与 <b>setcar</b> 类似，但它是代替 list 的除了第一个元素的后面的部分的。例如:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> domesticated-animals '<span style="color: #bc6ec5;">(</span>horse cow sheep goat<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+
+domesticated-animals =&gt; <span style="color: #4f97d7;">(</span>horse cow sheep goat<span style="color: #4f97d7;">)</span>
+
+<span style="color: #4f97d7;">(</span>setcdr domesticated-animals '<span style="color: #bc6ec5;">(</span>cat dog<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span> 
+
+domesticated-animals =&gt; <span style="color: #4f97d7;">(</span>horse cat dog<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgb29d05f" class="outline-2">
+<h2 id="orgb29d05f">剪切(cut)和保存(store)文本</h2>
+<div class="outline-text-2" id="text-orgb29d05f">
+<p>
+在 GNU Emacs 中，当你使用 <b>kill</b> command 来 cut 或 clip 文本时，它会保持到一个 list 中，然后你可以使用 <b>yank</b> command 返回这些文本。
+</p>
+
+<p>
+在 Emacs 中，单词 <b>kill</b> 处理的文本，它其实并不是摧毁这些 <b>value</b> ，这是由于历史原因才使用这个单词的。一个更合适的单词应该是使用 <b>clip</b> ，这就是 <b>kill</b> 所做的事。从 <b>buffer</b> 中 <b>clip</b> 文本到一个存储的地方，然后也可以从这个地方返回这些文本。
+</p>
+</div>
+
+<div id="outline-container-orgee7e472" class="outline-4">
+<h4 id="orgee7e472">store 文本到一个 list 中</h4>
+<div class="outline-text-4" id="text-orgee7e472">
+<p>
+当从 buffer 中 cut 掉一段文本时，它其实是保存在一个 list 中。看起来像这样子:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"a piece of text"</span> <span style="color: #2d9574;">"previous piece"</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+<b>cons</b> 可以用来创建一个新的 list 。像这样子:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>cons <span style="color: #2d9574;">"another piece"</span>
+  '<span style="color: #bc6ec5;">(</span><span style="color: #2d9574;">"a piece of text"</span> <span style="color: #2d9574;">"previous piece"</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+如果你 <b>evaluate</b> 上面的例子，你可以在 <b>echo area</b> 显示这些元素:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"another piece"</span> <span style="color: #2d9574;">"a piece of text"</span> <span style="color: #2d9574;">"previous piece"</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+通过 <b>car</b> 和 <b>nthcdr</b> ，你可以从 list 中获取任意的文本片段。例如:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>car <span style="color: #bc6ec5;">(</span>nthcdr <span style="color: #a45bad;">1</span> '<span style="color: #2d9574;">(</span><span style="color: #2d9574;">"another piece"</span>
+             <span style="color: #2d9574;">"a piece of text"</span>
+             <span style="color: #2d9574;">"previous piece"</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+ &#8658; <span style="color: #2d9574;">"a piece of text"</span>
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgda0b7fa" class="outline-4">
+<h4 id="orgda0b7fa">zap-to-char</h4>
+<div class="outline-text-4" id="text-orgda0b7fa">
+</div><div id="outline-container-orgc8540a7" class="outline-5">
+<h5 id="orgc8540a7">zap-to-char 的完整实现</h5>
+<div class="outline-text-5" id="text-orgc8540a7">
+<p>
+<b>zap-to-char</b> 会删除当前光标到下一个出现指定字符（包含）之间的 <b>region</b> 。被删除掉的文本，会放到 <b>kill ring</b> 中，然后可以通过 <b>C-y</b> （即 yank）来返回这些文本。如果给定一个 <b>argument</b> ，则它会删除到第N个指定个出现的地方。因此，如果当前光标是在行首，然后指定的字符为 's' ，那么 <b>Thus</b> 会被整个删除。如果 <b>argument</b> 是 2，则 "Thus, if the curs" 会删除到（包括s）"Thus , if the curs" 中 'cursor' 的 's' 处。
+</p>
+
+<p>
+如果不指定字符，则不会删除任意文本，并会报告 "Search failed" 。
+以下是完整的实现代码（基于 GNU Emacs 22）:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">defun</span> <span style="color: #bc6ec5; font-weight: bold;">zap-to-char</span> <span style="color: #bc6ec5;">(</span>arg char<span style="color: #bc6ec5;">)</span>
+  <span style="color: #2aa1ae;">"Kill up to and including ARG'th occurrence of CHAR.</span>
+<span style="color: #2aa1ae;">Case is ignored if `</span><span style="color: #a45bad;">case-fold-search</span><span style="color: #2aa1ae;">' is non-nil in the current buffer.</span>
+<span style="color: #2aa1ae;">Goes backward if ARG is negative; error if CHAR not found."</span>
+  <span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">interactive</span> <span style="color: #2d9574;">"p\ncZap to char: "</span><span style="color: #bc6ec5;">)</span>
+  <span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">if</span> <span style="color: #2d9574;">(</span>char-table-p translation-table-for-input<span style="color: #2d9574;">)</span>
+      <span style="color: #2d9574;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> char <span style="color: #67b11d;">(</span><span style="color: #4f97d7; font-weight: bold;">or</span> <span style="color: #b1951d;">(</span>aref translation-table-for-input char<span style="color: #b1951d;">)</span> char<span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span>
+  <span style="color: #bc6ec5;">(</span>kill-region <span style="color: #2d9574;">(</span>point<span style="color: #2d9574;">)</span> <span style="color: #2d9574;">(</span><span style="color: #4f97d7; font-weight: bold;">progn</span>
+                         <span style="color: #67b11d;">(</span>search-forward <span style="color: #b1951d;">(</span>char-to-string char<span style="color: #b1951d;">)</span>
+                                         nil nil arg<span style="color: #67b11d;">)</span>
+                         <span style="color: #67b11d;">(</span>point<span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org51c2d1c" class="outline-5">
+<h5 id="org51c2d1c">interactive 部分</h5>
+<div class="outline-text-5" id="text-org51c2d1c">
+<pre class="example">
+(interactive "p\ncZap to char: ")
+</pre>
+
+<p>
+"p" 选项表示接收一个 <b>prefix argument</b> 。因为选项之间是通过换行 <code>\n</code> 来分隔的。第二部分为 "cZap to char: " ，"c" 表示期待一个提示框输入并接受的是一个字符。
+</p>
+
+<p>
+在一个 <b>read-only</b> 的 buffer 中，*zap-to-buffer* 会 copy 这些文本到 <b>kill ring</b> 而不会移除它。
+</p>
+</div>
+</div>
+
+
+
+
+
+
+<div id="outline-container-org0148662" class="outline-5">
+<h5 id="org0148662">zap-to-char 的 body 部分</h5>
+<div class="outline-text-5" id="text-org0148662">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">if</span> <span style="color: #bc6ec5;">(</span>char-table-p translation-table-for-input<span style="color: #bc6ec5;">)</span>
+    <span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> char <span style="color: #2d9574;">(</span><span style="color: #4f97d7; font-weight: bold;">or</span> <span style="color: #67b11d;">(</span>aref translation-table-for-input char<span style="color: #67b11d;">)</span> char<span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+<span style="color: #4f97d7;">(</span>kill-region <span style="color: #bc6ec5;">(</span>point<span style="color: #bc6ec5;">)</span> <span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">progn</span>
+                       <span style="color: #2d9574;">(</span>search-forward <span style="color: #67b11d;">(</span>char-to-string char<span style="color: #67b11d;">)</span> nil nil arg<span style="color: #2d9574;">)</span>
+                       <span style="color: #2d9574;">(</span>point<span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+<b>char-table-p</b> 是一个到目前为止还没有见过的 function 。它会判断 <b>argument</b> 是否是一个 <b>character table</b> 如果是的话，则将它们之一传递到 <b>zap-to-char</b> 中（这对非欧语言来说是非常重要的）。*aref* 会从一个 <b>array</b> 取选出一个元素。
+</p>
+
+<p>
+学完 <b>search-foward</b> 后就容易理解  <b>progn</b> 了，所以先看下 <b>search-foward</b>
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org44b2205" class="outline-5">
+<h5 id="org44b2205">search-forward function</h5>
+<div class="outline-text-5" id="text-org44b2205">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>search-forward <span style="color: #bc6ec5;">(</span>char-to-string char<span style="color: #bc6ec5;">)</span> nil nil arg<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+<b>char-to-string</b> 将 char 转换为 string ，因为 <b>search-forward</b> 要的是 string .
+可以看到，它有4个 <b>argument</b> 
+</p>
+<ol class="org-ol">
+<li>第一个是 <b>target</b> ，它必须是 <b>string</b> ，例如: <b>"z"</b> 。Lisp 解析器可能会对 <b>single character</b> 与 <b>string of character</b> 有不同的对待。在计算机方面，*single character* 与 <b>string of character</b> 会有不同的电子格式。（single character 经常能被记录为一个字节，命令是 string 可能会用更多的字节，并且计算机需要为这做准备）</li>
+<li>第二个是指定一个 <b>buffer</b> 的 <b>position</b> 。在这个例子里，允许它搜索到 <b>buffer</b> 结尾，所以，这里为 <b>nil</b></li>
+<li>第三个是当搜索失败时，它应该做些什么。可以产生一些错误信息或为 <b>nil</b> 。如果为 <b>nil</b> ，则会产生一个错误信号。</li>
+<li>第四年是统计要查找的 string 出现的次数。这是可选的。如果不传的话，那么它就为 1 。如果是负数，则从后面开始搜索。</li>
+</ol>
+
+
+<p>
+它的模板为:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>search-forward <span style="color: #2d9574;">"target-string"</span>
+           limit-of-search
+           what-to-do-if-search-fails
+           repeat-count<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org2af1007" class="outline-5">
+<h5 id="org2af1007">特殊的 Form ： progn</h5>
+<div class="outline-text-5" id="text-org2af1007">
+<p>
+<b>progn</b> form，它会将它的所有 <b>argument</b> 按顺序进行 <b>evaluate</b> ，然后返回最后一个 expression 的 value 。主要用来执行它们，以产生 <b>side effect</b> 的。
+</p>
+
+<p>
+它的模板非常简单:
+</p>
+
+<pre class="example">
+(progn
+  body…)
+</pre>
+
+<p>
+在 <b>zap-to-char</b> 中，*progn* 做2件事：将光标放到正确的位置；返回光标的位置，以便 <b>kill-region</b> 知道要 <b>kill</b> 到哪里。
+</p>
+
+<p>
+<b>progn</b> 中第一个 argument 为 <b>search-forward</b> ，当 <b>search-foward</b> 查找 string 时，它会立即将光标放到 <b>target</b> string 的最后一个字符后面。如果是向后搜索的话，*search-foward* 就会将光标放到 <b>target</b> 的第一个字符中。光标的移动，就一个 <b>side effect</b> 。
+</p>
+
+<p>
+第二个也是最后一个 argument 是 <b>(point)</b> 。它返回光标的位置，它是 <b>search-forward</b> 后的光标的位置。然后， <b>progn</b> 将 <b>point</b> 的 value 返回，然后再传递到 <b>kill-region</b> 作为 <b>kill-region</b> 的第二个 argument 。
+</p>
+</div>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
+<div id="outline-container-orga498377" class="outline-2">
+<h2 id="orga498377">List 是如何实现的</h2>
+<div class="outline-text-2" id="text-orga498377">
+<p>
+在 Lisp 中，*atoms* 是以直接的方式来记录的，如果在实现上并不是直接的，尽管如此，在理论上也是直接的。例如一个 atom : <b>rose</b> ，它是记录为四个相邻的字母： 'r', 'o', 's', 'e' 。
+在另一方面，一个 List ，是与 atom 不同的。它的机制同样也是简单的，但需要一些时间来适应这种思想。一个 list ，是用一系列的 <b>pointer</b> 来跟踪使用的。在这一系列 <b>pointer</b> 中，每一对 <b>pointer</b> 的第一个 <b>pointer</b> 是指向一个 <b>atom</b> 或者另一个 <b>list</b> ，每一对 <b>pointer</b> 的第二个 <b>pointer</b> 是指向下一对的 <b>pointer</b> ，或者指向 symbol <b>nil</b> ，这表示达到了 list 的结尾。
+</p>
+
+<p>
+一个 <b>pointer</b> 自身只是简单地指向它的 <b>electronic address</b> 。因此，一个 list 是持有一系列的 <b>electronic address</b> 。
+</p>
+</div>
+
+<div id="outline-container-orgf01dc16" class="outline-3">
+<h3 id="orgf01dc16">List 的示意图</h3>
+<div class="outline-text-3" id="text-orgf01dc16">
+<p>
+例如，一个 list <b>(rose violet buttercup)</b> 有三个元素, 'rose', 'violet', 'buttercup' 。在计算机里，'rose' 的 <b>electronic address</b> 就是用一段(segment)计算机 <b>memory</b> 的 <b>address</b> 来记录了 <b>atom</b> violet 所在的 <b>electronic address</b> 。同样地, <b>violet</b> 的 <b>electronic address</b> 记录了 <b>atom</b> buttercup 所在的 <b>electronic address</b> . 我们用个示意图来更明了:
+</p>
+
+<pre class="example">
+___ ___      ___ ___      ___ ___
+|___|___|--&gt; |___|___|--&gt; |___|___|--&gt; nil
+  |            |            |
+  |            |            |
+  --&gt; rose     --&gt; violet   --&gt; buttercup
+</pre>
+
+<p>
+在示意图中，每一个 box 代表一个计算机 memory 持有的 Lisp Object 的单词，通常是一个 <b>memory address</b> 。Boxes ，例如，该 <b>addresses</b> 是成对出现的。每一个箭头指向下一个 <b>address</b> ，该 <b>address</b> 可以为 <b>atom</b> 或另一对 <b>address</b> 。第一个 box 就是 'rose' 的 <b>electronic address</b> ，并且箭头指向 'rose' ；第二个 box 是下一对 boxes 的 <b>address</b> 。如果最后一个 box 是指向 <b>nil</b> 则表示结束。
+</p>
+
+<p>
+当使用 <b>setq</b> 这样子的 function 来设置一个 <b>variable</b> 时，它保存了第一个 box 的 <b>address</b> 到 <b>variable</b> 中。因此， evaluate 下面的 expression 会创建这样的情况：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> bouquet '<span style="color: #bc6ec5;">(</span>rose violet buttercup<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<pre class="example">
+bouquet
+  |
+  |     ___ ___      ___ ___      ___ ___
+   --&gt; |___|___|--&gt; |___|___|--&gt; |___|___|--&gt; nil
+         |            |            |
+         |            |            |
+          --&gt; rose     --&gt; violet   --&gt; buttercup
+</pre>
+
+<p>
+在这个例子里，symbol <b>bouquet</b> 拥有第一对 boxes 的 <b>address</b> 。同样的 list ，可以用不种类型的 box 来加以说明，比如这：
+</p>
+
+<pre class="example">
+bouquet
+ |
+ |    --------------       ---------------       ----------------
+ |   | car   | cdr  |     | car    | cdr  |     | car     | cdr  |
+  --&gt;| rose  |   o-------&gt;| violet |   o-------&gt;| butter- |  nil |
+     |       |      |     |        |      |     | cup     |      |
+      --------------       ---------------       ----------------
+</pre>
+
+<p>
+如果一个 symbol 是由 <b>cdr</b> 设置的话，list 自身并不会导致改变；该 <b>symbol</b> 只是简单地拥有list剩余的部分的 <b>address</b> 。因此 evaluate 下面的 expression ,
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> flowers <span style="color: #bc6ec5;">(</span>cdr bouquet<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+会产生：
+</p>
+
+<pre class="example">
+bouquet        flowers
+  |              |
+  |     ___ ___  |     ___ ___      ___ ___
+  --&gt; |   |   |  --&gt; |   |   |    |   |   |
+      |___|___|----&gt; |___|___|--&gt; |___|___|--&gt; nil
+        |              |            |
+        |              |            |
+        --&gt; rose       --&gt; violet   --&gt; buttercup
+</pre>
+
+<p>
+一对 boxes 的 <b>address</b> 就称为一个 <b>cons cell</b> 或 <b>dotted pair</b> 。*cons* function 会添加一对新的 <b>addresses</b> 到这一系列的 <b>addresses</b> 前面。例如，evaluate 下面的 expression：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> bouquet <span style="color: #bc6ec5;">(</span>cons 'lily bouquet<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+会产生:
+</p>
+
+<pre class="example">
+bouquet                       flowers
+  |                             |
+  |    ___ ___        ___ ___  |     ___ ___       ___ ___
+  --&gt; |   |   |      |   |   |  --&gt; |   |   |     |   |   |
+      |___|___|----&gt; |___|___|----&gt; |___|___|----&gt;|___|___|--&gt; nil
+        |              |              |             |
+        |              |              |             |
+        --&gt; lily      --&gt; rose       --&gt; violet    --&gt; buttercup
+</pre>
+
+
+<p>
+然而，这并不会改变 symbol <b>flowers</b> 的 value ，例如 :
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>eq <span style="color: #bc6ec5;">(</span>cdr <span style="color: #2d9574;">(</span>cdr bouquet<span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span> flowers<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+它会返回 t ，表示 true. 
+</p>
+
+<p>
+除非 <b>reset</b> ，否则 <b>flowers</b> 会一直拥有 <b>(violet buttercup)</b> 的 value 。
+</p>
+
+<p>
+因此，在 Lisp 中，当你 <b>cdr</b> 一个 list 时，你只是获取了下一个 <b>cons cell</b> 的 <b>address</b> 。
+<b>car</b> 一个 list 时，你只是获取了 list 中第一个元素的 <b>address</b> 。
+使用 <b>cons</b> 添加一个新的元素时，你只是添加了一个新的 <b>cons cell</b> 到 list 的前面。
+</p>
+
+<p>
+这就是它们操作的全部！
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org4629f91" class="outline-3">
+<h3 id="org4629f91">symbol 作为抽屉柜</h3>
+<div class="outline-text-3" id="text-org4629f91">
+<p>
+在之前部分里，我建议你把 symbol 想象为一个抽屉柜。function 定义放在其中一个，value 放在另一个等等。放到抽屉里，持有的 value 的抽屉可以在不影响持有 function 定义抽屉的内容下被更改。反之亦然。
+实际上，每个放到抽屉里的是 value 或 function 定义的 <b>address</b> 。就像你在一个旧的楼阁里的柜子中，在其中一个抽屉里，你发现了一张藏宝图一样。
+</p>
+
+<p>
+除了 <b>name</b> ，symbol 的定义 和 variable 的 value 之外，*symbol* 还有一个 <b>property list</b> 的抽屉，它用于记录其他的信息。下面是一张假设图：
+</p>
+
+<pre class="example">
+    Chest of Drawers            Contents of Drawers
+
+    __   o0O0o   __
+  /                 \
+ ---------------------
+|    directions to    |            [map to]
+|     symbol name     |             bouquet
+|                     |
++---------------------+
+|    directions to    |
+|  symbol definition  |             [none]
+|                     |
++---------------------+
+|    directions to    |            [map to]
+|    variable value   |             (rose violet buttercup)
+|                     |
++---------------------+
+|    directions to    |
+|    property list    |             [not described here]
+|                     |
++---------------------+
+|/                   \|
+</pre>
+</div>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-orge32e3f9" class="outline-2">
+<h2 id="orge32e3f9">Yanking 回文本</h2>
+<div class="outline-text-2" id="text-orge32e3f9">
+<p>
+无论什么时候你从 buffer 中使用 <b>kill</b> command 来 cut 掉文本时，你都可以用 <b>yank</b> 命令来将它们返回。这些被 <b>kill</b> 掉的文本，它们被放到一个 <b>kill ring</b> 里，*yank* command 则从 <b>kill ring</b> 里插入适当的内容到一个 buffer 中（不必是原来的那个 buffer )
+</p>
+
+<p>
+简单的 <b>C-y</b> （yank) 会从 <b>kill ring</b> 中插入第一个项到当前的 buffer 中。如果 <b>C-y</b> command 是紧接着 <b>M-y</b> 的话，则第一个元素会被第二个元素替代。连续的 <b>M-y</b> 的话，会被第二个，第三个，第四个等等的元素替代。当达到了 <b>kill ring</b> 的最后一个元素的时候，它会被第一个元素替代然后循环重复。（这就是为什么 <b>kill ring</b> 之所以叫 <b>ring</b> 而不仅是一个 <b>list</b> ）。然而实际的数据结构拥有文本的是一个 list 。
+</p>
+</div>
+
+<div id="outline-container-org1131831" class="outline-3">
+<h3 id="org1131831">Kill Ring 概述</h3>
+<div class="outline-text-3" id="text-org1131831">
+<p>
+<b>kill ring</b> 是一个文本 string 的 list。看起来像这样子：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"some text"</span> <span style="color: #2d9574;">"a different piece of text"</span> <span style="color: #2d9574;">"yet more text"</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+如果你的 <b>kill ring</b> 是这些内容的话，并且我按下 <b>C-y</b> ，则字符串 "some text" 会插入到当前光标所在的位置的 buffer 中。 <b>yank</b> command 也用于 <b>copy</b> 中的文本，被 copy 的文本并不会从 buffer 中 cut 掉，但是 copy 的文本也会放到 <b>kill ring</b> 中，然后通过 <b>yank</b> 插入回来。
+</p>
+
+<p>
+<b>yank</b> （C-y) 用于从 <b>kill ring</b> 中返回文本。
+<b>yank-pop</b> (M-y) ，从 <b>kill ring</b> 中弹出第一个元素（即所谓第二个元素，替代了第一个元素）
+<b>rotate-yank-pointer</b> ，通常是上面两个来调用的。
+</p>
+
+<p>
+引用到 <b>kill ring</b> 的 functions 都是通过一个称为 <b>kill-ring-yank-pointer</b> 的 variable 来处理的。的确，从 <b>yank</b> 和 <b>yank-pop</b> functions 中插入的源码为 :
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>insert <span style="color: #bc6ec5;">(</span>car kill-ring-yank-pointer<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+不过，在 GNU Emacs 22 中就不再是这样子了。这个 function 已经被 <b>insert-for-yank</b> 替代了 。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2b4dad5" class="outline-3">
+<h3 id="org2b4dad5">kill-ring-yank-pointer variable</h3>
+<div class="outline-text-3" id="text-org2b4dad5">
+<p>
+就像 <b>kill-ring</b> 作为一个 <b>variable</b> 一样。如果有一个 <b>kill ring</b> 的 value 为:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"some text"</span> <span style="color: #2d9574;">"a different piece of text"</span> <span style="color: #2d9574;">"yet more text"</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+并且 <b>kill-ring-yank-pointer</b> 指向第二句的话，则 <b>kill-ring-yank-pointer</b> 的 value 为:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"a different piece of text"</span> <span style="color: #2d9574;">"yet more text"</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+正如之前解释的一样，计算机并不会保持两分这些 text 的 copy (kill-ring 和 kill-ring-yank-pointer) ，而是有两个 Lisp variable ，它们都指向同一份文本。这是示意图:
+</p>
+
+<pre class="example">
+kill-ring     kill-ring-yank-pointer
+ |               |
+ |      ___ ___  |     ___ ___      ___ ___
+  ---&gt; |   |   |  --&gt; |   |   |    |   |   |
+       |___|___|----&gt; |___|___|--&gt; |___|___|--&gt; nil
+         |              |            |
+         |              |            |
+         |              |             --&gt; "yet more text"
+         |              |
+         |               --&gt; "a different piece of text"
+         |
+          --&gt; "some text"
+</pre>
+
+<p>
+<b>kill-ring</b> 和 <b>kill-ring-yank-pointer</b> 两个 variable 都是 <b>pointer</b> 。但是 kill ring 自身才是我们实际上指的 kill ring 。*kill-ring* 我们通常指的是它自身 kill ring ，而不是一个指向 list 的 pointer 。相反地， <b>kill-ring-yank-pointer</b> 通常是作为一个 <b>pointer</b> 来指向一个 list .
+</p>
+
+<p>
+即 <b>kill-ring</b> 通常想像为一个完整的数据结构，而 <b>kill-ring-yank-pointer</b> 则是作为一个 <b>pointer</b> 指向将会被插入的元素的位置。
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org4add21f" class="outline-2">
+<h2 id="org4add21f">loops 和  recursion</h2>
+<div class="outline-text-2" id="text-org4add21f">
+</div><div id="outline-container-orgc6e3eb5" class="outline-3">
+<h3 id="orgc6e3eb5">while</h3>
+<div class="outline-text-3" id="text-orgc6e3eb5">
+<p>
+<b>while</b> 中，如果第一个 argument 返回的是 false， 则 Lisp 解析器会忽略之后的 expression （即 while 的 body 部分）。如果返回的是 true ，则它会 evaluate 它的 body 部分，然后再一次判断它的第一个 argument 是否是 true 还是 false 。如果又是 true ，则又会进行 evaluate 。它的模板如下:
+</p>
+
+<pre class="example">
+(while true-or-false-test
+       body…)
+</pre>
+</div>
+
+<div id="outline-container-org5cf8fcf" class="outline-4">
+<h4 id="org5cf8fcf">用 while 来进行 loop</h4>
+<div class="outline-text-4" id="text-org5cf8fcf">
+<p>
+注意， <b>while</b> 自身的 expression 永不会返回一个 true 的 value 的。这意味着， <b>while</b> 总是用作 <b>side effect</b> 的 。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1c255fc" class="outline-4">
+<h4 id="org1c255fc">一个 while loop 和一个 List</h4>
+<div class="outline-text-4" id="text-org1c255fc">
+<p>
+一个常用控制 <b>while</b> 的 loop 是来用 test 一个 list 是否有元素。如果有，则重复 loop ，否则结束循环。
+一个简单 test 一个 list 是否有元素的方式是进行 <b>evaluate</b> 一个 list 。如果没有元素，则是一个空 list ，并且会返回一个空 list ，这是 <b>nil</b> 或 <b>false</b> 的同义词。
+换句话说，一个带有元素的 list ，当它进行 evaluate 的时候，它会返回这些元素 。由于 Emacs Lisp 会认为所有非 <b>nil</b> 的 value 都为 <b>true</b> ，所以一个返回元素的的 list ，在 <b>while</b> 的 test 中会返回 <b>true</b> 。
+</p>
+
+<p>
+例如设置一个空 list:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> empty-list <span style="color: #bc6ec5;">()</span><span style="color: #4f97d7;">)</span>
+
+empty-list
+</pre>
+</div>
+
+<p>
+然后 <b>evaluate</b> 这个 <b>empty-list</b> 时，可以在 <b>echo area</b> 中显示一个 <b>nil</b>
+</p>
+
+<p>
+但如果是含有元素的话：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> animals '<span style="color: #bc6ec5;">(</span>gazelle giraffe lion tiger<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+
+animals
+</pre>
+</div>
+
+<p>
+这时可以用使用 <b>while</b> :
+</p>
+
+<pre class="example">
+(while animals
+   …
+</pre>
+
+<p>
+为了避免它一直循环，需要有一个提供空 list 的机制 。例如:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> animals <span style="color: #bc6ec5;">(</span>cdr animals<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+所以，一个框架如下:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">while</span> test-whether-list-is-empty
+  body&#8230;
+  set-list-to-cdr-of-list<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org8505cb7" class="outline-4">
+<h4 id="org8505cb7">例子： print-elements-of-list</h4>
+<div class="outline-text-4" id="text-org8505cb7">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> animals '<span style="color: #bc6ec5;">(</span>gazelle giraffe lion tiger<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+
+<span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">defun</span> <span style="color: #bc6ec5; font-weight: bold;">print-elements-of-list</span> <span style="color: #bc6ec5;">(</span>list<span style="color: #bc6ec5;">)</span>
+  <span style="color: #2aa1ae;">"Print each element of LIST on a line of its own."</span>
+  <span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">while</span> list
+    <span style="color: #2d9574;">(</span>print <span style="color: #67b11d;">(</span>car list<span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span>
+    <span style="color: #2d9574;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> list <span style="color: #67b11d;">(</span>cdr list<span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+
+<span style="color: #4f97d7;">(</span>print-elements-of-list animals<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org7545c56" class="outline-4">
+<h4 id="org7545c56">带有增量计数器的 Loop</h4>
+<div class="outline-text-4" id="text-org7545c56">
+<p>
+除了通过 list 来控制 loop 之个，一个常见的方式是使用 counter 。
+</p>
+</div>
+
+<div id="outline-container-orgc93ccfd" class="outline-5">
+<h5 id="orgc93ccfd">增量 Loop 的细节</h5>
+<div class="outline-text-5" id="text-orgc93ccfd">
+<p>
+带有计数器的 loop 它有一个 expression ，例如: <b>(&lt; count desired-number)</b> 。下面是一个模板：
+</p>
+
+<pre class="example">
+set-count-to-initial-value
+  (while (&lt; count desired-number)         ; true-or-false-test
+         body…
+         (setq count (1+ count)))              ; incrementer
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orga5a1f45" class="outline-5">
+<h5 id="orga5a1f45">例如用计数器的 loop 来统计星星数:</h5>
+<div class="outline-text-5" id="text-orga5a1f45">
+<pre class="example">
+   *
+  * *
+ * * *
+* * * *
+</pre>
+
+
+<p>
+框架:
+</p>
+
+<pre class="example">
+(let ((total 0)
+     (row-number 1))
+     body…)
+
+(&lt;= row-number number-of-rows)
+
+(setq total (+ total row-number))
+
+(setq row-number (1+ row-number))
+</pre>
+</div>
+</div>
+
+
+<div id="outline-container-org385e981" class="outline-5">
+<h5 id="org385e981">完整代码</h5>
+<div class="outline-text-5" id="text-org385e981">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">defun</span> <span style="color: #bc6ec5; font-weight: bold;">triangle</span> <span style="color: #bc6ec5;">(</span>number-of-rows<span style="color: #bc6ec5;">)</span>    <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">Version with</span>
+                                        <span style="color: #2aa1ae; background-color: #292e34;">;   </span><span style="color: #2aa1ae; background-color: #292e34;">incrementing counter.</span>
+  <span style="color: #2aa1ae;">"Add up the number of pebbles in a triangle.</span>
+<span style="color: #2aa1ae;">The first row has one pebble, the second row two pebbles,</span>
+<span style="color: #2aa1ae;">the third row three pebbles, and so on.</span>
+<span style="color: #2aa1ae;">The argument is NUMBER-OF-ROWS."</span>
+  <span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">let</span> <span style="color: #2d9574;">(</span><span style="color: #67b11d;">(</span>total <span style="color: #a45bad;">0</span><span style="color: #67b11d;">)</span>
+        <span style="color: #67b11d;">(</span>row-number <span style="color: #a45bad;">1</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span>
+    <span style="color: #2d9574;">(</span><span style="color: #4f97d7; font-weight: bold;">while</span> <span style="color: #67b11d;">(</span>&lt;= row-number number-of-rows<span style="color: #67b11d;">)</span>
+      <span style="color: #67b11d;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> total <span style="color: #b1951d;">(</span>+ total row-number<span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span>
+      <span style="color: #67b11d;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> row-number <span style="color: #b1951d;">(</span>1+ row-number<span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span>
+    total<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+
+    <span style="color: #4f97d7;">(</span>triangle <span style="color: #a45bad;">4</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-orgc74546b" class="outline-4">
+<h4 id="orgc74546b">带有减量计数器的 Loop</h4>
+<div class="outline-text-4" id="text-orgc74546b">
+<p>
+模板:
+</p>
+
+<pre class="example">
+(while (&gt; counter 0)                    ; true-or-false-test
+    body…
+    (setq counter (1- counter)))          ; decrementer
+</pre>
+
+<p>
+以下是完整的用减量计数器的版本:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">defun</span> <span style="color: #bc6ec5; font-weight: bold;">triangle</span> <span style="color: #bc6ec5;">(</span>number<span style="color: #bc6ec5;">)</span>                <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">Second version.</span>
+  <span style="color: #2aa1ae;">"Return sum of numbers 1 through NUMBER inclusive."</span>
+  <span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">let</span> <span style="color: #2d9574;">(</span><span style="color: #67b11d;">(</span>total <span style="color: #a45bad;">0</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span>
+    <span style="color: #2d9574;">(</span><span style="color: #4f97d7; font-weight: bold;">while</span> <span style="color: #67b11d;">(</span>&gt; number <span style="color: #a45bad;">0</span><span style="color: #67b11d;">)</span>
+      <span style="color: #67b11d;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> total <span style="color: #b1951d;">(</span>+ total number<span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span>
+      <span style="color: #67b11d;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> number <span style="color: #b1951d;">(</span>1- number<span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span>
+    total<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-org5be210a" class="outline-3">
+<h3 id="org5be210a">recursion</h3>
+<div class="outline-text-3" id="text-org5be210a">
+</div><div id="outline-container-orgfcbb09d" class="outline-4">
+<h4 id="orgfcbb09d">构建 robots</h4>
+<div class="outline-text-4" id="text-orgfcbb09d">
+<p>
+有时，作一个任务时，想像为一个 robot 来执行这些程序是有帮助的。为了干这个工作，一个 recursion function 调用第二个 robot 来帮助它。这个第二个的 robot 做的同第一个做的是工作指令是一样的，除了第二个 robot 的 argument 跟第一个的 robot 有所不同之外，其他是一样的。
+</p>
+
+<p>
+在一个 recursion function 中，第二个 robot 可以调用第三个； 第三个 robot 可能调用第四个，等等。直到最后一个 robot ，它应该知道什么时候该停止。
+</p>
+
+<p>
+有一点是非常重要的：就是要将不同的 argument 传递到下一个 robot ，否则的话会导致一直不会停下来的。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org850a256" class="outline-4">
+<h4 id="org850a256">recursion 定义部分</h4>
+<div class="outline-text-4" id="text-org850a256">
+<p>
+一个 recursion function 典型地有一个带有三部分的条件 expression:
+</p>
+
+<ol class="org-ol">
+<li>一个 <b>true-or-false-test</b> ，判断该 function 是否要再次调用，这里称为 <b>do-again-test</b></li>
+<li>function 的名字。当调用时，一个新的 function instance 即一个新的 robot - 会被创建以及被告知要做什么。</li>
+<li>当 function 调用时，有一个 expression ，第在每次调用 function 时，都会返回不同的 value ，这里称为 <b>next-step-expression</b> 。</li>
+</ol>
+
+
+<p>
+它的模板为:
+</p>
+
+<pre class="example">
+(defun name-of-recursive-function (argument-list)
+"documentation…"
+(if do-again-test
+  body…
+  (name-of-recursive-function
+       next-step-expression)))
+</pre>
+</div>
+
+<div id="outline-container-org87019f9" class="outline-5">
+<h5 id="org87019f9">使用 recursion 来处理 list</h5>
+<div class="outline-text-5" id="text-org87019f9">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> animals '<span style="color: #bc6ec5;">(</span>gazelle giraffe lion tiger<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+
+<span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">defun</span> <span style="color: #bc6ec5; font-weight: bold;">print-elements-recursively</span> <span style="color: #bc6ec5;">(</span>list<span style="color: #bc6ec5;">)</span>
+  <span style="color: #2aa1ae;">"Print each element of LIST on a line of its own.</span>
+<span style="color: #2aa1ae;">Uses recursion."</span>
+  <span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">when</span> list                            <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">do-again-test</span>
+    <span style="color: #2d9574;">(</span>print <span style="color: #67b11d;">(</span>car list<span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span>              <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">body</span>
+    <span style="color: #2d9574;">(</span>print-elements-recursively     <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">recursive call</span>
+     <span style="color: #67b11d;">(</span>cdr list<span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>                  <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">next-step-expression</span>
+
+<span style="color: #4f97d7;">(</span>print-elements-recursively animals<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3dc805b" class="outline-5">
+<h5 id="org3dc805b">使用 recursion 来替代 counter</h5>
+<div class="outline-text-5" id="text-org3dc805b">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">defun</span> <span style="color: #bc6ec5; font-weight: bold;">triangle-recursively</span> <span style="color: #bc6ec5;">(</span>number<span style="color: #bc6ec5;">)</span>
+  <span style="color: #2aa1ae;">"Return the sum of the numbers 1 through NUMBER inclusive.</span>
+<span style="color: #2aa1ae;">Uses recursion."</span>
+  <span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">if</span> <span style="color: #2d9574;">(</span>= number <span style="color: #a45bad;">1</span><span style="color: #2d9574;">)</span>                    <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">do-again-test</span>
+      <span style="color: #a45bad;">1</span>                               <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">then-part</span>
+    <span style="color: #2d9574;">(</span>+ number                         <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">else-part</span>
+       <span style="color: #67b11d;">(</span>triangle-recursively          <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">recursive call</span>
+        <span style="color: #b1951d;">(</span>1- number<span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>               <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">next-step-expression</span>
+
+<span style="color: #4f97d7;">(</span>triangle-recursively <span style="color: #a45bad;">7</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org0c504c7" class="outline-2">
+<h2 id="org0c504c7">regular expression 搜索</h2>
+<div class="outline-text-2" id="text-org0c504c7">
+<p>
+有2个 function 就是使用这种搜索的： <b>foward-sentence</b> 和 <b>forward-paragraph</b> 。*regular expression* 通常写作 <b>regexp</b>
+</p>
+</div>
+
+<div id="outline-container-orgb5ed887" class="outline-3">
+<h3 id="orgb5ed887">sentence-end 的 regular expression</h3>
+<div class="outline-text-3" id="text-orgb5ed887">
+<p>
+symbol <b>sentence-end</b> 是绑定到一个 <b>pattern</b> ，它是标记 <b>sentence</b> 结束的。
+显然，一个 <b>sentence</b> 应该是以句号，或问号或叹号结尾的。这意味着这个 <b>pattern</b> 应该包括这些字符集：
+</p>
+
+<pre class="example">
+[.?!]
+</pre>
+
+<p>
+然而，我们并不想 <b>forward-sentence</b> 仅仅跳到一个句号，或一个问号或一个叹号处，因为这些字符可以在 <b>sentence</b> 的中间使用。比如句号，可以用在缩写字符后。所以这里需要其他额外的信息。
+根据惯例，你会在每个 <b>sentence</b> 后面输入2个空格，仅在句号或问号或叹号后面有一个空格。所以，这些字符后跟着2个空格的就可以指明是一个 <b>sentence</b> 了。然而在文件中，2个空格可以用 <b>tab</b> 或换行来表示结束。所以，这个 regular expression 可以为修改为:
+</p>
+
+<pre class="example">
+\\($\\| \\|  \\)
+       ^   ^^
+      TAB  SPC
+</pre>
+
+<p>
+在这里， "$" 表示行尾。
+</p>
+
+<p>
+2条斜线，=\\= 在括号和垂直线之前是必须的：第一条斜线引用第二条斜线；并且第二条斜线显示接下来的字符，括号或垂直线是特殊字符。一个 <b>sentence</b> 也可能跟在一个或多个中括号，例如:
+</p>
+
+<pre class="example">
+[
+]*
+</pre>
+
+<p>
+像 <b>tabs</b> 和 空格 ， 一个中括号可以直接写字面值到 regular expression 中。星号表示重复0或多次。
+但一个 <b>sentence</b> 不仅是以以上字符结尾的，也可能是引号 <code>"</code> 或一个关闭的大括号 <code>}</code> 。所以 regexp 为:
+</p>
+
+<pre class="example">
+[]\"')}]*
+</pre>
+
+<p>
+所以，完整的 pattern 为:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">sentence-end
+  &#8658; <span style="color: #2d9574;">"[.?!][]\"')}]*</span><span style="color: #2d9574; font-weight: bold;">\\</span><span style="color: #2d9574; font-weight: bold;">(</span><span style="color: #2d9574;">$</span><span style="color: #2d9574; font-weight: bold;">\\</span><span style="color: #2d9574; font-weight: bold;">|</span><span style="color: #2d9574;">     </span><span style="color: #2d9574; font-weight: bold;">\\</span><span style="color: #2d9574; font-weight: bold;">|</span><span style="color: #2d9574;">  </span><span style="color: #2d9574; font-weight: bold;">\\</span><span style="color: #2d9574; font-weight: bold;">)</span><span style="color: #2d9574;">[</span>
+<span style="color: #2d9574;">]*"</span>
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgaf87f6b" class="outline-3">
+<h3 id="orgaf87f6b">re-search-forward function</h3>
+<div class="outline-text-3" id="text-orgaf87f6b">
+<p>
+它与 <b>search-foward</b> 是非常相似的。当搜索成功时，它会立即离开当前光标位置到 <b>target</b> 的最后一个字符后面。如果是向 <b>backward</b> 搜索的话，则是放到 <b>target</b> 的第一个字符的前面。与 <b>search-foward</b> 类似，*re-search-foward* 有4个 argument ：
+</p>
+
+<ol class="org-ol">
+<li>第一个为 regular expression 用来搜索的。它是一个用双引号引起的 string</li>
+<li>可选的第二个 argument ，表示限制该搜索可以搜索多远。即 buffer 的 position</li>
+<li>可选的第三个 argument ，表示如果搜索失败时，要做些什么。*nil* 的话，表示导致一个错误信号并打印错误消息。</li>
+<li>可选的第四个 argument ，表示重复的次数。如果为负，则表示是向 <b>backward</b> 搜索 。</li>
+</ol>
+
+
+<p>
+模板如下:
+</p>
+
+<pre class="example">
+(re-search-forward "regular-expression"
+             limit-of-search
+             what-to-do-if-search-fails
+             repeat-count)
+</pre>
+</div>
+</div>
+
+
+<div id="outline-container-org82e7f01" class="outline-3">
+<h3 id="org82e7f01">forward-sentence</h3>
+<div class="outline-text-3" id="text-org82e7f01">
+<p>
+通常，它绑定到 <b>M-e</b> 快捷键中。
+</p>
+</div>
+
+<div id="outline-container-org76bd798" class="outline-4">
+<h4 id="org76bd798">完整代码</h4>
+<div class="outline-text-4" id="text-org76bd798">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">defun</span> <span style="color: #bc6ec5; font-weight: bold;">forward-sentence</span> <span style="color: #bc6ec5;">(</span><span style="color: #ce537a; font-weight: bold;">&amp;optional</span> arg<span style="color: #bc6ec5;">)</span>
+  <span style="color: #2aa1ae;">"Move forward to next end of sentence.  With argument, repeat.</span>
+<span style="color: #2aa1ae;">With negative argument, move backward repeatedly to start of sentence.</span>
+
+<span style="color: #2aa1ae;">The variable `</span><span style="color: #a45bad;">sentence-end</span><span style="color: #2aa1ae;">' is a regular expression that matches ends of</span>
+<span style="color: #2aa1ae;">sentences.  Also, every paragraph boundary terminates sentences as well."</span>
+  <span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">interactive</span> <span style="color: #2d9574;">"p"</span><span style="color: #bc6ec5;">)</span>
+  <span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">or</span> arg <span style="color: #2d9574;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> arg <span style="color: #a45bad;">1</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span>
+  <span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">let</span> <span style="color: #2d9574;">(</span><span style="color: #67b11d;">(</span>opoint <span style="color: #b1951d;">(</span>point<span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span>
+        <span style="color: #67b11d;">(</span>sentence-end <span style="color: #b1951d;">(</span>sentence-end<span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span>
+    <span style="color: #2d9574;">(</span><span style="color: #4f97d7; font-weight: bold;">while</span> <span style="color: #67b11d;">(</span>&lt; arg <span style="color: #a45bad;">0</span><span style="color: #67b11d;">)</span>
+      <span style="color: #67b11d;">(</span><span style="color: #4f97d7; font-weight: bold;">let</span> <span style="color: #b1951d;">(</span><span style="color: #4f97d7;">(</span>pos <span style="color: #bc6ec5;">(</span>point<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+            <span style="color: #4f97d7;">(</span>par-beg <span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">save-excursion</span> <span style="color: #2d9574;">(</span>start-of-paragraph-text<span style="color: #2d9574;">)</span> <span style="color: #2d9574;">(</span>point<span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span><span style="color: #b1951d;">)</span>
+        <span style="color: #b1951d;">(</span><span style="color: #4f97d7; font-weight: bold;">if</span> <span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">and</span> <span style="color: #bc6ec5;">(</span>re-search-backward sentence-end par-beg t<span style="color: #bc6ec5;">)</span>
+                 <span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">or</span> <span style="color: #2d9574;">(</span>&lt; <span style="color: #9cb6ad;">(</span>match-end <span style="color: #a45bad;">0</span><span style="color: #9cb6ad;">)</span> pos<span style="color: #2d9574;">)</span>
+                     <span style="color: #2d9574;">(</span>re-search-backward sentence-end par-beg t<span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+            <span style="color: #4f97d7;">(</span>goto-char <span style="color: #bc6ec5;">(</span>match-end <span style="color: #a45bad;">0</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+          <span style="color: #4f97d7;">(</span>goto-char par-beg<span style="color: #4f97d7;">)</span><span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span>
+      <span style="color: #67b11d;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> arg <span style="color: #b1951d;">(</span>1+ arg<span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span>
+    <span style="color: #2d9574;">(</span><span style="color: #4f97d7; font-weight: bold;">while</span> <span style="color: #67b11d;">(</span>&gt; arg <span style="color: #a45bad;">0</span><span style="color: #67b11d;">)</span>
+      <span style="color: #67b11d;">(</span><span style="color: #4f97d7; font-weight: bold;">let</span> <span style="color: #b1951d;">(</span><span style="color: #4f97d7;">(</span>par-end <span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">save-excursion</span> <span style="color: #2d9574;">(</span>end-of-paragraph-text<span style="color: #2d9574;">)</span> <span style="color: #2d9574;">(</span>point<span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span><span style="color: #b1951d;">)</span>
+        <span style="color: #b1951d;">(</span><span style="color: #4f97d7; font-weight: bold;">if</span> <span style="color: #4f97d7;">(</span>re-search-forward sentence-end par-end t<span style="color: #4f97d7;">)</span>
+            <span style="color: #4f97d7;">(</span>skip-chars-backward <span style="color: #2d9574;">" \t\n"</span><span style="color: #4f97d7;">)</span>
+          <span style="color: #4f97d7;">(</span>goto-char par-end<span style="color: #4f97d7;">)</span><span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span>
+      <span style="color: #67b11d;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> arg <span style="color: #b1951d;">(</span>1- arg<span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span>
+    <span style="color: #2d9574;">(</span>constrain-to-field nil opoint t<span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+最好先看骨架，再看"肌肉" 。骨架如下:
+</p>
+
+<pre class="example">
+(defun forward-sentence (&amp;optional arg)
+  "documentation…"
+  (interactive "p")
+  (or arg (setq arg 1))
+  (let ((opoint (point)) (sentence-end (sentence-end)))
+    (while (&lt; arg 0)
+      (let ((pos (point))
+            (par-beg (save-excursion (start-of-paragraph-text) (point))))
+       rest-of-body-of-while-loop-when-going-backwards
+    (while (&gt; arg 0)
+      (let ((par-end (save-excursion (end-of-paragraph-text) (point))))
+       rest-of-body-of-while-loop-when-going-forwards
+    handle-forms-and-equivalent
+</pre>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+<div id="outline-container-org977eac3" class="outline-3">
+<h3 id="org977eac3">forward-paragraph</h3>
+<div class="outline-text-3" id="text-org977eac3">
+<p>
+它也是用 regexp 来处理的。
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org6e445a6" class="outline-2">
+<h2 id="org6e445a6">通过 regexp 和 累计 来统计单词</h2>
+<div class="outline-text-2" id="text-org6e445a6">
+</div><div id="outline-container-orgec2b045" class="outline-3">
+<h3 id="orgec2b045">Counting words</h3>
+<div class="outline-text-3" id="text-orgec2b045">
+<p>
+标准的 Emacs 发行版里已经有在一个 <b>region</b> 中统计行和单词的 functions 了。*count-words-region*
+</p>
+</div>
+
+<div id="outline-container-org7a92e8c" class="outline-4">
+<h4 id="org7a92e8c">count-words-example function</h4>
+<div class="outline-text-4" id="text-org7a92e8c">
+</div><div id="outline-container-org9bcbbe5" class="outline-5">
+<h5 id="org9bcbbe5">设计 count-words-example</h5>
+<div class="outline-text-5" id="text-org9bcbbe5">
+<p>
+模板:
+</p>
+<pre class="example">
+(defun name-of-function (argument-list)
+    "documentation…"
+    (interactive-expression…)
+  body…)
+</pre>
+
+<p>
+我们需要做的，就是填充这些槽。
+</p>
+
+<p>
+单词的 regular expression 为： 
+</p>
+<pre class="example">
+\w+\W*
+
+(re-search-forward "\\w+\\W*")
+</pre>
+
+<p>
+然后累加:
+</p>
+
+<pre class="example">
+(setq count (1+ count))
+</pre>
+
+<p>
+因此就有了下面的 function 定义:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">     <span style="color: #2aa1ae; background-color: #292e34;">;;; </span><span style="color: #2aa1ae; background-color: #292e34;">First version; has bugs!</span>
+<span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">defun</span> <span style="color: #bc6ec5; font-weight: bold;">count-words-example</span> <span style="color: #bc6ec5;">(</span>beginning end<span style="color: #bc6ec5;">)</span>
+  <span style="color: #2aa1ae;">"Print number of words in the region.</span>
+<span style="color: #2aa1ae;">Words are defined as at least one word-constituent</span>
+<span style="color: #2aa1ae;">character followed by at least one character that</span>
+<span style="color: #2aa1ae;">is not a word-constituent.  The buffer's syntax</span>
+<span style="color: #2aa1ae;">table determines which characters these are."</span>
+  <span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">interactive</span> <span style="color: #2d9574;">"r"</span><span style="color: #bc6ec5;">)</span>
+  <span style="color: #bc6ec5;">(</span>message <span style="color: #2d9574;">"Counting words in region ... "</span><span style="color: #bc6ec5;">)</span>
+
+<span style="color: #2aa1ae; background-color: #292e34;">;;; </span><span style="color: #2aa1ae; background-color: #292e34;">1. Set up appropriate conditions.</span>
+  <span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">save-excursion</span>
+    <span style="color: #2d9574;">(</span>goto-char beginning<span style="color: #2d9574;">)</span>
+    <span style="color: #2d9574;">(</span><span style="color: #4f97d7; font-weight: bold;">let</span> <span style="color: #67b11d;">(</span><span style="color: #b1951d;">(</span>count <span style="color: #a45bad;">0</span><span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span>
+
+<span style="color: #2aa1ae; background-color: #292e34;">;;; </span><span style="color: #2aa1ae; background-color: #292e34;">2. Run the while loop.</span>
+      <span style="color: #67b11d;">(</span><span style="color: #4f97d7; font-weight: bold;">while</span> <span style="color: #b1951d;">(</span>&lt; <span style="color: #4f97d7;">(</span>point<span style="color: #4f97d7;">)</span> end<span style="color: #b1951d;">)</span>
+        <span style="color: #b1951d;">(</span>re-search-forward <span style="color: #2d9574;">"\\w+\\W*"</span><span style="color: #b1951d;">)</span>
+        <span style="color: #b1951d;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> count <span style="color: #4f97d7;">(</span>1+ count<span style="color: #4f97d7;">)</span><span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span>
+
+<span style="color: #2aa1ae; background-color: #292e34;">;;; </span><span style="color: #2aa1ae; background-color: #292e34;">3. Send a message to the user.</span>
+      <span style="color: #67b11d;">(</span><span style="color: #4f97d7; font-weight: bold;">cond</span> <span style="color: #b1951d;">(</span><span style="color: #4f97d7;">(</span>zerop count<span style="color: #4f97d7;">)</span>
+             <span style="color: #4f97d7;">(</span>message
+              <span style="color: #2d9574;">"The region does NOT have any words."</span><span style="color: #4f97d7;">)</span><span style="color: #b1951d;">)</span>
+            <span style="color: #b1951d;">(</span><span style="color: #4f97d7;">(</span>= <span style="color: #a45bad;">1</span> count<span style="color: #4f97d7;">)</span>
+             <span style="color: #4f97d7;">(</span>message
+              <span style="color: #2d9574;">"The region has 1 word."</span><span style="color: #4f97d7;">)</span><span style="color: #b1951d;">)</span>
+            <span style="color: #b1951d;">(</span>t
+             <span style="color: #4f97d7;">(</span>message
+              <span style="color: #2d9574;">"The region has %d words."</span> count<span style="color: #4f97d7;">)</span><span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgafc59ff" class="outline-5">
+<h5 id="orgafc59ff">空格的 bug</h5>
+<div class="outline-text-5" id="text-orgafc59ff">
+<p>
+首先，如果你在一个仅有空格的 <b>region</b> 中，调用这个 function，它会告诉你这个 <b>region</b> 有一个单词！
+其次，如果你标记的 <b>region</b> 在 buffer 的结尾仅有空格字符或 访问一个 <b>narrowing</b> 的 buffer ，它会显示一个错误信息:
+</p>
+
+<pre class="example">
+Search failed: "\\w+\\W*"
+</pre>
+
+<p>
+比如有下面的内容:
+</p>
+
+<pre class="example">
+one   two   three
+</pre>
+
+<p>
+当你从行首的开始 <b>mark</b> 到 "one* 单词之前的这一段空格 <b>region</b> ，然后调用这个 function 时，Emacs 会告诉你，这有一个单词！（bug).
+</p>
+
+
+<p>
+然后将光标放到 "three" 后面，标记这个位置到 buffer 的结尾，这时再调用的话，Emacs 会产生一条错误信息："Search failed"
+</p>
+
+<p>
+这两个 bug 来自同一个问题： 这个搜索试图扩展搜索的 <b>region</b> 。解决办法就是限制搜索的 <b>region</b> 。
+</p>
+
+<p>
+完善版:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">     <span style="color: #2aa1ae; background-color: #292e34;">;;; </span><span style="color: #2aa1ae; background-color: #292e34;">Final version: while</span>
+<span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">defun</span> <span style="color: #bc6ec5; font-weight: bold;">count-words-example</span> <span style="color: #bc6ec5;">(</span>beginning end<span style="color: #bc6ec5;">)</span>
+  <span style="color: #2aa1ae;">"Print number of words in the region."</span>
+  <span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">interactive</span> <span style="color: #2d9574;">"r"</span><span style="color: #bc6ec5;">)</span>
+  <span style="color: #bc6ec5;">(</span>message <span style="color: #2d9574;">"Counting words in region ... "</span><span style="color: #bc6ec5;">)</span>
+
+<span style="color: #2aa1ae; background-color: #292e34;">;;; </span><span style="color: #2aa1ae; background-color: #292e34;">1. Set up appropriate conditions.</span>
+  <span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">save-excursion</span>
+    <span style="color: #2d9574;">(</span><span style="color: #4f97d7; font-weight: bold;">let</span> <span style="color: #67b11d;">(</span><span style="color: #b1951d;">(</span>count <span style="color: #a45bad;">0</span><span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span>
+      <span style="color: #67b11d;">(</span>goto-char beginning<span style="color: #67b11d;">)</span>
+
+<span style="color: #2aa1ae; background-color: #292e34;">;;; </span><span style="color: #2aa1ae; background-color: #292e34;">2. Run the while loop.</span>
+      <span style="color: #67b11d;">(</span><span style="color: #4f97d7; font-weight: bold;">while</span> <span style="color: #b1951d;">(</span><span style="color: #4f97d7; font-weight: bold;">and</span> <span style="color: #4f97d7;">(</span>&lt; <span style="color: #bc6ec5;">(</span>point<span style="color: #bc6ec5;">)</span> end<span style="color: #4f97d7;">)</span>
+                  <span style="color: #4f97d7;">(</span>re-search-forward <span style="color: #2d9574;">"\\w+\\W*"</span> end t<span style="color: #4f97d7;">)</span><span style="color: #b1951d;">)</span>
+        <span style="color: #b1951d;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> count <span style="color: #4f97d7;">(</span>1+ count<span style="color: #4f97d7;">)</span><span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span>
+
+<span style="color: #2aa1ae; background-color: #292e34;">;;; </span><span style="color: #2aa1ae; background-color: #292e34;">3. Send a message to the user.</span>
+      <span style="color: #67b11d;">(</span><span style="color: #4f97d7; font-weight: bold;">cond</span> <span style="color: #b1951d;">(</span><span style="color: #4f97d7;">(</span>zerop count<span style="color: #4f97d7;">)</span>
+             <span style="color: #4f97d7;">(</span>message
+              <span style="color: #2d9574;">"The region does NOT have any words."</span><span style="color: #4f97d7;">)</span><span style="color: #b1951d;">)</span>
+            <span style="color: #b1951d;">(</span><span style="color: #4f97d7;">(</span>= <span style="color: #a45bad;">1</span> count<span style="color: #4f97d7;">)</span>
+             <span style="color: #4f97d7;">(</span>message
+              <span style="color: #2d9574;">"The region has 1 word."</span><span style="color: #4f97d7;">)</span><span style="color: #b1951d;">)</span>
+            <span style="color: #b1951d;">(</span>t
+             <span style="color: #4f97d7;">(</span>message
+              <span style="color: #2d9574;">"The region has %d words."</span> count<span style="color: #4f97d7;">)</span><span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-orgcc715e3" class="outline-2">
+<h2 id="orgcc715e3">你的 .emacs 文件</h2>
+<div class="outline-text-2" id="text-orgcc715e3">
+</div><div id="outline-container-org9bee455" class="outline-3">
+<h3 id="org9bee455">Emacs 的默认配置</h3>
+<div class="outline-text-3" id="text-org9bee455">
+<p>
+默认情况下，它会根据你的文件后缀来打开相应的 mode ，如果找不到的话，就会使用 <b>Fundamental mode</b> 
+</p>
+</div>
+</div>
+
+<div id="outline-container-org86a27a8" class="outline-3">
+<h3 id="org86a27a8">初始化文件</h3>
+<div class="outline-text-3" id="text-org86a27a8">
+<p>
+Emacs 会自动加载这些 <b>site-wide</b> 初始化文件的，你的 <b>.emacs</b> 文件是仅为你加载的，但这个是加所有人都会加载的。
+</p>
+
+<p>
+这里有2个 <b>site-wide</b> 的初始化文件： <b>site-load.el</b> 和 <b>site-init.el</b> 。（编译和构建 Emacs 时使用）
+</p>
+
+<p>
+当你每次启动 Emacs ，有3个其他的 <b>site-wide</b> 初始化文件会自动地被加载，如果存在的话。
+</p>
+<ol class="org-ol">
+<li><b>site-start.el</b> 会在你的 <b>.emacs</b> 文件之前加载</li>
+<li><b>default.el</b> 会在你的 <b>.emacs</b> 文件之后加载</li>
+<li>terminal type 文件，会在你的 <b>.emacs</b> 文件之后加载</li>
+</ol>
+</div>
+</div>
+
+
+
+
+
+<div id="outline-container-orgd573dca" class="outline-3">
+<h3 id="orgd573dca">使用 defcustom 来指定 variables</h3>
+<div class="outline-text-3" id="text-orgd573dca">
+<p>
+之后，你就可以在 Emacs's 的 <b>customize</b> 功能里设置它们的 <b>value</b> 了。
+</p>
+
+<p>
+<b>defcustom</b> （前三个与 <b>defvar</b> 是一样的）
+</p>
+<ol class="org-ol">
+<li>第一个 argument 为 variable 的 name 。</li>
+<li>第二个为 variable 的初始 value ，并且这个 value 仅在原来没有 value 的情况下才会 set的</li>
+<li>第三部分是 documentation</li>
+<li>第四和剩余部分是指明类型和选项 （可选）。这些 argument 是由一个 <b>keyword</b> 然后接着一个 <b>value</b> 组成的。每个 <b>keyword</b> 是由分号 ":" 开始的。例如:</li>
+</ol>
+
+
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">defcustom</span> <span style="color: #7590db;">text-mode-hook</span> nil
+  <span style="color: #2aa1ae;">"Normal hook run when entering Text mode and many related modes."</span>
+  <span style="color: #4f97d7;">:type</span> 'hook
+  <span style="color: #4f97d7;">:options</span> '<span style="color: #bc6ec5;">(</span>turn-on-auto-fill flyspell-mode<span style="color: #bc6ec5;">)</span>
+  <span style="color: #4f97d7;">:group</span> 'wp<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-orgf10443f" class="outline-3">
+<h3 id="orgf10443f">开始 .emacs 文件</h3>
+<div class="outline-text-3" id="text-orgf10443f">
+<p>
+当你启动 Emacs 时，它会加载你的 <code>.emacs</code> 文件，除非你通过 "-q" 选项来告诉它不要加载，
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org1a3d46b" class="outline-3">
+<h3 id="org1a3d46b">Text 和 Auto fill mode</h3>
+<div class="outline-text-3" id="text-org1a3d46b">
+<p>
+开始 <b>Text mode</b> 和 *Auto fill mode*：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">   <span style="color: #2aa1ae; background-color: #292e34;">;;; </span><span style="color: #2aa1ae; background-color: #292e34;">Text mode and Auto Fill mode</span>
+<span style="color: #2aa1ae; background-color: #292e34;">;; </span><span style="color: #2aa1ae; background-color: #292e34;">The next two lines put Emacs into Text mode</span>
+<span style="color: #2aa1ae; background-color: #292e34;">;; </span><span style="color: #2aa1ae; background-color: #292e34;">and Auto Fill mode, and are for writers who</span>
+<span style="color: #2aa1ae; background-color: #292e34;">;; </span><span style="color: #2aa1ae; background-color: #292e34;">want to start writing prose rather than code.</span>
+<span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">setq-default</span> major-mode 'text-mode<span style="color: #4f97d7;">)</span>
+<span style="color: #4f97d7;">(</span>add-hook 'text-mode-hook 'turn-on-auto-fill<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+<b>'text-mode</b> 告诉 Emacs 直接处理 <b>text-mode</b> symbol ，无论它代表的是什么。
+</p>
+
+<p>
+<b>(add-hook 'text-mode-hook 'turn-on-auto-fill)</b> 表示每次开启 <b>Text mode</b> 的时候，Emacs 都会执行所有与 <b>text-mode-hook</b> 相关的 commands 。
+</p>
+
+<p>
+<b>(setq colon-double-space t)</b> 表示在每个分号后都插入2个空格。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org8358603" class="outline-3">
+<h3 id="org8358603">mail aliases</h3>
+<div class="outline-text-3" id="text-org8358603">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">   <span style="color: #2aa1ae; background-color: #292e34;">;;; </span><span style="color: #2aa1ae; background-color: #292e34;">Mail mode</span>
+                                        <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">To enter mail mode, type 'C-x m'</span>
+                                        <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">To enter RMAIL (for reading mail),</span>
+                                        <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">type 'M-x rmail'</span>
+<span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> mail-aliases t<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+<b>setq</b> 将 <b>mail-aliases</b> 的 value 设置为 t 。表示 <b>true</b> ，即表示: "Yes, use mail aliases"
+</p>
+
+<p>
+这里可以在 <b>~/.mailrc</b> 中加上 aliases 了：内容类似：
+</p>
+
+<pre class="example">
+alias geo george@foobar.wiz.edu
+</pre>
+</div>
+</div>
+
+
+<div id="outline-container-orgcd5fcfe" class="outline-3">
+<h3 id="orgcd5fcfe">indent tabs mode</h3>
+<div class="outline-text-3" id="text-orgcd5fcfe">
+<p>
+默认情况下，当 format 一个 region 时 Emacs 将会多个空格替换为 tab 。以下是关闭这个mode的代码:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #2aa1ae; background-color: #292e34;">;;; </span><span style="color: #2aa1ae; background-color: #292e34;">Prevent Extraneous Tabs</span>
+<span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">setq-default</span> indent-tabs-mode nil<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+注意，这里使用 <b>setq-default</b> 而不是 <b>setq</b> 。*setq-default* 仅在 buffer 中没有他们自己的 local values 时，才设置它的 values .
+</p>
+</div>
+</div>
+
+<div id="outline-container-org29df897" class="outline-3">
+<h3 id="org29df897">keybindings</h3>
+<div class="outline-text-3" id="text-org29df897">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>global-set-key <span style="color: #2d9574;">"\C-cw"</span> 'compare-windows<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org473743d" class="outline-3">
+<h3 id="org473743d">Keymaps</h3>
+<div class="outline-text-3" id="text-org473743d">
+<p>
+Emacs 中使用 Keymaps 来记录哪些键绑定了哪些 commands 。当你用 <b>global-set-key</b> 时，会修改 <b>current-global-map</b> 。每一种 mode 都有它们自己的 keymaps 。 <b>mode</b> 指定的 keymap 会覆盖 global map 的。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org5c66206" class="outline-3">
+<h3 id="org5c66206">loading files</h3>
+<div class="outline-text-3" id="text-org5c66206">
+<p>
+你可以使用 <b>load</b> command 来 evaluate 一个完整的文件：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>load <span style="color: #2d9574;">"~/emacs/slowsplit"</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0d931a8" class="outline-3">
+<h3 id="org0d931a8">Autoloading</h3>
+<div class="outline-text-3" id="text-org0d931a8">
+<p>
+通过 <b>load</b> 或 <b>evaluate</b> 是会实际就安装好了的。但 <b>autoloading</b> 则是在第一次调用的时候才会安装的。（这可以让 Emacs 启动得更快）。例如:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>autoload 'html-helper-mode
+<span style="color: #2d9574;">"html-helper-mode"</span> <span style="color: #2aa1ae;">"Edit HTML documents"</span> t<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+<b>autoload</b> 有5个 argument：
+</p>
+<ol class="org-ol">
+<li>function name</li>
+<li>要加载的 fien name</li>
+<li>documentation</li>
+<li>是否可以通过 <b>interactively</b> 来调用</li>
+<li>告诉 autoload 什么类型的对象可以处理一个 keymap 或 macro 以及一个 function （默认为 function)</li>
+</ol>
+</div>
+</div>
+</div>
+
+
+
+
+
+<div id="outline-container-orgae00cc2" class="outline-2">
+<h2 id="orgae00cc2">Debugging</h2>
+<div class="outline-text-2" id="text-orgae00cc2">
+</div><div id="outline-container-orgfc0b608" class="outline-3">
+<h3 id="orgfc0b608">debug</h3>
+</div>
+<div id="outline-container-org5ec52da" class="outline-3">
+<h3 id="org5ec52da">debug-on-entry</h3>
+<div class="outline-text-3" id="text-org5ec52da">
+<p>
+指定入口来进行 debug
+<b>M-x debug-on-entry RET function-name RET</b>
+</p>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">&#33050;&#27880;: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+参见维基百科 <a href="https://zh.wikipedia.org/wiki/S-%E8%A1%A8%E8%BE%BE%E5%BC%8F">S-表达式</a>
+</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<p class="author">&#20316;&#32773;: emacsist</p>
+<p class="date">Created: 2017-03-15 Wed 16:58</p>
+<p class="validation"></p>
+</div>
+</body>
+</html>
