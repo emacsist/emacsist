@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2017-03-15 Wed 16:58 -->
+<!-- 2017-03-15 Wed 17:12 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GNU Emacs Lisp 学习笔记</title>
@@ -367,7 +367,7 @@ for the JavaScript code in this tag.
 <li><a href="#orgd675583">save-excursion 模板</a></li>
 </ul>
 </li>
-<li><a href="#org7510974">回顾</a></li>
+<li><a href="#org8a9fb0d">回顾</a></li>
 </ul>
 </li>
 <li><a href="#org739e645">一些 buffer 相关的 Functions</a>
@@ -388,7 +388,7 @@ for the JavaScript code in this tag.
 </li>
 </ul>
 </li>
-<li><a href="#org1760046">回顾</a></li>
+<li><a href="#org60755e6">回顾</a></li>
 </ul>
 </li>
 <li><a href="#org25d69a5">一些更复杂的 Functions</a>
@@ -418,7 +418,7 @@ for the JavaScript code in this tag.
 </li>
 </ul>
 </li>
-<li><a href="#org8a9fb0d">回顾</a></li>
+<li><a href="#org019d506">回顾</a></li>
 </ul>
 </li>
 <li><a href="#orge6dbab8">Narrowing 和 Widening</a>
@@ -485,7 +485,7 @@ for the JavaScript code in this tag.
 <ul>
 <li><a href="#orgc93ccfd">增量 Loop 的细节</a></li>
 <li><a href="#orga5a1f45">例如用计数器的 loop 来统计星星数:</a></li>
-<li><a href="#org385e981">完整代码</a></li>
+<li><a href="#org76bd798">完整代码</a></li>
 </ul>
 </li>
 <li><a href="#orgc74546b">带有减量计数器的 Loop</a></li>
@@ -510,7 +510,7 @@ for the JavaScript code in this tag.
 <li><a href="#orgaf87f6b">re-search-forward function</a></li>
 <li><a href="#org82e7f01">forward-sentence</a>
 <ul>
-<li><a href="#org76bd798">完整代码</a></li>
+<li><a href="#org37c3680">完整代码</a></li>
 </ul>
 </li>
 <li><a href="#org977eac3">forward-paragraph</a></li>
@@ -625,7 +625,7 @@ list中的list:
 <h4 id="org3d34b5d">Lisp Atom</h4>
 <div class="outline-text-4" id="text-org3d34b5d">
 <p>
-在 Lisp 中，我们称 <b>words</b> 为 <b>atoms</b> ， <b>atom</b> 的意思是不可分割的。对 <b>Lisp</b> 而言，*words* 是用在 <b>list</b> 中的，并且是不可以被再分割为其他再小部分的仍然是作为程序的一部分的。
+在 Lisp 中，我们称 <b>words</b> 为 <b>atoms</b> ， <b>atom</b> 的意思是不可分割的。对 <b>Lisp</b> 而言,  <b>words</b>  是用在 <b>list</b> 中的，并且是不可以被再分割为其他再小部分的仍然是作为程序的一部分的。
 </p>
 
 <p>
@@ -652,7 +652,7 @@ list中的list:
 
 
 <p>
-在 Lisp 中，所有引号的文本包括标点符号和空格是一个 <b>atom*，这种 *atom</b> 称为 <b>string</b> . <b>string</b> 是不同于 <b>numbers</b> 或 <b>symbols</b> 的 <b>atom</b> ，并且与它们的使用方式也不同。
+在 Lisp 中，所有引号的文本包括标点符号和空格是一个 <b>atom</b> ，这种 <b>atom</b> 称为 <b>string</b>  .  <b>string</b>  是不同于 <b>numbers</b> 或 <b>symbols</b> 的 <b>atom</b> ，并且与它们的使用方式也不同。
 </p>
 </div>
 </div>
@@ -836,7 +836,7 @@ call-interactively(eval-last-sexp)
 </p>
 
 <p>
-介绍这些的目的，你不需要太担心哪些是特殊的 <b>form</b> ，哪些是 <b>macro</b> 或者 <b>function</b> 例如 <b>if</b> 是一个特殊的 <b>form</b> ，但 <b>when</b> 是一个 <b>macro</b> 。在早期的 Emacs 版本中，*defun* 是一个特殊的 <b>form</b> ，但现在它是一个 <b>macro</b> .
+介绍这些的目的，你不需要太担心哪些是特殊的 <b>form</b> ，哪些是 <b>macro</b> 或者 <b>function</b> 例如 <b>if</b> 是一个特殊的 <b>form</b> ，但 <b>when</b> 是一个 <b>macro</b> 。在早期的 Emacs 版本中，  <b>defun</b> 是一个特殊的 <b>form</b> ，但现在它是一个 <b>macro</b> .
 </p>
 </div>
 </div>
@@ -902,7 +902,7 @@ Lisp 解析器可以解析两种形式的代码:
 <h4 id="org4c53407">evaluating 内部  list</h4>
 <div class="outline-text-4" id="text-org4c53407">
 <p>
-当 <b>evaluation</b> 应用到一个 list 包含另一个 list 的 list 时，外部的 list 可能使用 第一个 <b>evaluation</b> 返回的值作为外部的 list 的信息。这就解析了，为什么内部的 <b>expression</b> 会首先被 <b>evaluation*，它们返回的值会被外部的 *expression</b> 使用。请将光标放到下面的 <b>expression</b> 中，然后按 <b>C-x C-e</b> :
+当 <b>evaluation</b> 应用到一个 list 包含另一个 list 的 list 时，外部的 list 可能使用 第一个 <b>evaluation</b> 返回的值作为外部的 list 的信息。这就解析了，为什么内部的 <b>expression</b> 会首先被      <b>evaluation</b>  ，它们返回的值会被外部的 <b>expression</b> 使用。请将光标放到下面的 <b>expression</b> 中，然后按 <b>C-x C-e</b> :
 </p>
 
 <div class="org-src-container">
@@ -932,7 +932,7 @@ Lisp 解析器执行的情况是首先 <b>evaluation</b> 内部 <b>expression</b
 <h3 id="orgfc39379">Variables 变量</h3>
 <div class="outline-text-3" id="text-orgfc39379">
 <p>
-在 Emacs Lisp 中， 一个 <b>symbol</b> 可以有一个 <b>value</b> 附于它，就像有一个 <b>function</b> 定义附于它一样。它们是不同的，*function* 定义是一个指令集；一个 <b>value</b> ，是一些东西，例如是 <b>number</b> 或 <b>name</b> ，它们是多样的，这就是为什么叫它做 <b>variable</b> 的原因。
+在 Emacs Lisp 中， 一个 <b>symbol</b> 可以有一个 <b>value</b> 附于它，就像有一个 <b>function</b> 定义附于它一样。它们是不同的,  <b>function</b>  定义是一个指令集；一个 <b>value</b> ，是一些东西，例如是 <b>number</b> 或 <b>name</b> ，它们是多样的，这就是为什么叫它做 <b>variable</b> 的原因。
 </p>
 
 <p>
@@ -941,7 +941,7 @@ Lisp 解析器执行的情况是首先 <b>evaluation</b> 内部 <b>expression</b
 
 <p>
 一个 <b>symbol</b> 可以同时拥有 <b>function</b> 定义和 <b>value</b> 附于它，又或者是它们之一。这有点类似 <b>Cambridge</b> 可以指 <b>Massachusetts</b> 的一个城市，并且也带有一些附加信息到这个名字上，例如是伟大的编程中心。
-另一种思考的方式是，想像 <b>symbol</b> 是一堆抽屉，*function* 定义放在其中一个抽屉中，而 <b>value</b> 放在另一个抽屉，以此类推。
+另一种思考的方式是，想像 <b>symbol</b> 是一堆抽屉， <b>function</b> 定义放在其中一个抽屉中，而 <b>value</b> 放在另一个抽屉，以此类推。
 </p>
 </div>
 
@@ -2011,9 +2011,9 @@ body…))
 </div>
 
 
-<div id="outline-container-org7510974" class="outline-3">
-<h3 id="org7510974">回顾</h3>
-<div class="outline-text-3" id="text-org7510974">
+<div id="outline-container-org8a9fb0d" class="outline-3">
+<h3 id="org8a9fb0d">回顾</h3>
+<div class="outline-text-3" id="text-org8a9fb0d">
 <ul class="org-ul">
 <li>eval-last-sexp</li>
 <li>defun</li>
@@ -2371,9 +2371,9 @@ let-the-local-meaning-of-oldbuf-disappear-when-finished
 
 
 
-<div id="outline-container-org1760046" class="outline-3">
-<h3 id="org1760046">回顾</h3>
-<div class="outline-text-3" id="text-org1760046">
+<div id="outline-container-org60755e6" class="outline-3">
+<h3 id="org60755e6">回顾</h3>
+<div class="outline-text-3" id="text-org60755e6">
 <ul class="org-ul">
 <li>describe-function</li>
 <li>describe-variable</li>
@@ -2787,9 +2787,9 @@ nil
 </div>
 
 
-<div id="outline-container-org8a9fb0d" class="outline-3">
-<h3 id="org8a9fb0d">回顾</h3>
-<div class="outline-text-3" id="text-org8a9fb0d">
+<div id="outline-container-org019d506" class="outline-3">
+<h3 id="org019d506">回顾</h3>
+<div class="outline-text-3" id="text-org019d506">
 <ul class="org-ul">
 <li>or</li>
 <li>and</li>
@@ -3849,9 +3849,9 @@ set-count-to-initial-value
 </div>
 
 
-<div id="outline-container-org385e981" class="outline-5">
-<h5 id="org385e981">完整代码</h5>
-<div class="outline-text-5" id="text-org385e981">
+<div id="outline-container-org76bd798" class="outline-5">
+<h5 id="org76bd798">完整代码</h5>
+<div class="outline-text-5" id="text-org76bd798">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">defun</span> <span style="color: #bc6ec5; font-weight: bold;">triangle</span> <span style="color: #bc6ec5;">(</span>number-of-rows<span style="color: #bc6ec5;">)</span>    <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">Version with</span>
                                         <span style="color: #2aa1ae; background-color: #292e34;">;   </span><span style="color: #2aa1ae; background-color: #292e34;">incrementing counter.</span>
@@ -4103,9 +4103,9 @@ symbol <b>sentence-end</b> 是绑定到一个 <b>pattern</b> ，它是标记 <b>
 </p>
 </div>
 
-<div id="outline-container-org76bd798" class="outline-4">
-<h4 id="org76bd798">完整代码</h4>
-<div class="outline-text-4" id="text-org76bd798">
+<div id="outline-container-org37c3680" class="outline-4">
+<h4 id="org37c3680">完整代码</h4>
+<div class="outline-text-4" id="text-org37c3680">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">defun</span> <span style="color: #bc6ec5; font-weight: bold;">forward-sentence</span> <span style="color: #bc6ec5;">(</span><span style="color: #ce537a; font-weight: bold;">&amp;optional</span> arg<span style="color: #bc6ec5;">)</span>
   <span style="color: #2aa1ae;">"Move forward to next end of sentence.  With argument, repeat.</span>
@@ -4592,7 +4592,7 @@ Emacs 中使用 Keymaps 来记录哪些键绑定了哪些 commands 。当你用 
 </div></div>
 <div id="postamble" class="status">
 <p class="author">&#20316;&#32773;: emacsist</p>
-<p class="date">Created: 2017-03-15 Wed 16:58</p>
+<p class="date">Created: 2017-03-15 Wed 17:12</p>
 <p class="validation"></p>
 </div>
 </body>
