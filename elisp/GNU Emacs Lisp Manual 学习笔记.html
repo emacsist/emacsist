@@ -1,0 +1,1689 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2017-03-22 Wed 00:10 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GNU Emacs Lisp Manual 学习笔记</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="emacsist">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/emacsist/css/org-mode.css"/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="/emacsist/index.html"> UP </a>
+ |
+ <a accesskey="H" href="/emacsist/index.html"> HOME </a>
+</div><div id="content">
+<h1 class="title">GNU Emacs Lisp Manual 学习笔记</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org0135051">约定</a>
+<ul>
+<li><a href="#org53acdd1">nil 和 t</a></li>
+<li><a href="#org7e8280d">evaluate</a></li>
+<li><a href="#org6de1950">form</a></li>
+<li><a href="#org639f36b">Lisp object</a></li>
+<li><a href="#org091895b">Function 相关</a></li>
+</ul>
+</li>
+<li><a href="#orgd7e7240">Lisp 数据类型(data type)</a>
+<ul>
+<li><a href="#orgf1cbc16">Printed Representation 和  Read Syntax</a></li>
+<li><a href="#orgf5d937e">comments</a></li>
+<li><a href="#orgeebd6d6">programming types</a>
+<ul>
+<li><a href="#org080af39">integer type</a></li>
+<li><a href="#org6541910">floating-point type</a></li>
+<li><a href="#org29d0807">character type</a>
+<ul>
+<li><a href="#orgf2d78e9">基本的 char syntax</a></li>
+<li><a href="#org42afeb2">一般的 Escape Syntax</a></li>
+<li><a href="#orgf3a23de">Control-Character Syntax</a></li>
+<li><a href="#org156eee8">Meta-Character Syntax</a></li>
+<li><a href="#orge4de427">其他的 Character Modifier Bits</a></li>
+</ul>
+</li>
+<li><a href="#org1141863">symbol type</a></li>
+<li><a href="#org8e5de70">Sequence types</a></li>
+<li><a href="#org3e372ce">Cons Cell 和 List Types</a>
+<ul>
+<li><a href="#org1545956">Drawing Lists as Box Diagrams</a></li>
+<li><a href="#org4f9ede1">Dotted Pair Notation</a></li>
+<li><a href="#orgd0bd218">Association List Type</a></li>
+</ul>
+</li>
+<li><a href="#orgac49cee">Array type</a></li>
+<li><a href="#org40a52ea">String type</a>
+<ul>
+<li><a href="#org0ecdd87">string 的 syntax</a></li>
+<li><a href="#org8c6d96f">Non-ASCII Characters in Strings</a></li>
+<li><a href="#org895f4b7">Nonprinting Characters in Strings</a></li>
+<li><a href="#org4b29756">Text Properties in Strings</a></li>
+</ul>
+</li>
+<li><a href="#org531bd9b">Vector Type</a></li>
+<li><a href="#orgffac42a">Char-Table Type</a></li>
+<li><a href="#org3e37666">Bool-Vector Type</a></li>
+<li><a href="#orgf1db8ce">Hash Table Type</a></li>
+<li><a href="#org22ae7cc">Function Type</a></li>
+<li><a href="#org3dd4b0b">Macro Type</a></li>
+<li><a href="#orgbc005e7">Primitive Function Type</a></li>
+<li><a href="#org9dc8e18">Byte-Code Function Type</a></li>
+<li><a href="#orga30159d">Autoload Type</a></li>
+<li><a href="#org54b3554">Finalizer Type</a></li>
+</ul>
+</li>
+<li><a href="#orgc632519">Editing Types</a>
+<ul>
+<li><a href="#org6f8deba">Buffer Type</a></li>
+<li><a href="#orgf1ea73f">Marker Type</a></li>
+<li><a href="#org32ef42e">Window Type</a></li>
+<li><a href="#org5587536">Frame Type</a></li>
+<li><a href="#org05f6072">Terminal Type</a></li>
+<li><a href="#org1f3a3ff">Window Configuration Type</a></li>
+<li><a href="#orge66f706">Frame Configuration Type</a></li>
+<li><a href="#org9988c06">Process Type</a></li>
+<li><a href="#org78e057e">Stream Type</a></li>
+<li><a href="#org8b7574b">Keymap Type</a></li>
+<li><a href="#orgf6e18cb">Overlay Type</a></li>
+<li><a href="#org6ed7aef">Font Type</a></li>
+</ul>
+</li>
+<li><a href="#orgf9eb5ab">Read Syntax for Circular Objects</a></li>
+<li><a href="#org9448520">Type Predicates</a></li>
+<li><a href="#orgec87ad3">Equality Predicates</a></li>
+</ul>
+</li>
+<li><a href="#org4f9575a">Numbers</a>
+<ul>
+<li>
+<ul>
+<li><a href="#orga127de9">Integer Basics</a></li>
+<li><a href="#org351a84c">Floating-Point Basics</a></li>
+<li><a href="#orgb91ad9b">Comparison of Numbers</a></li>
+<li><a href="#org9969ab4">Numeric Conversions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0135051" class="outline-2">
+<h2 id="org0135051">约定</h2>
+<div class="outline-text-2" id="text-org0135051">
+</div><div id="outline-container-org53acdd1" class="outline-3">
+<h3 id="org53acdd1">nil 和 t</h3>
+<div class="outline-text-3" id="text-org53acdd1">
+<p>
+在 Emacs lisp 中，一个 symbol <b>nil</b> 在三种不同的意思
+</p>
+<ol class="org-ol">
+<li>一个名为 <b>nil</b> 的 symbol</li>
+<li>布尔值为 <b>false</b></li>
+<li>一个空 list ，即0个元素的 list</li>
+</ol>
+
+
+<p>
+当作为 <b>variable</b> 时（即第一种意思），它的 value 永远是 <b>nil</b> 。
+对于 Lisp 而言，  <code>()</code> 和 <code>nil</code> 相同的，它们都代表相同的 object —— symbol <b>nil</b> 
+</p>
+
+<p>
+在程序中，我们用 <code>()</code> 来强调它是一个空 list ，用 <b>nil</b> 来强调它是一个布尔值: <b>false</b> 
+</p>
+
+<p>
+<b>t</b> 代表布尔值： <b>true</b> 
+</p>
+
+<p>
+在 Emacs Lisp 中， <b>nil</b> 和 <b>t</b> 是特殊的 symbol —— 它们总是 <b>evaluate</b> 他们自身。因此，你不需要在程序员用引号引着他们来作为常量。如果试图修改它们的值的话，会导致一个 <b>setting-constant</b> 错误。
+</p>
+
+<p>
+<b>booleanp object</b> 函数 —— 如果 <i>object</i> 是 <b>t</b> 或 <b>nil</b> 之一，则会返回非 <b>nil</b> 。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>booleanp '<span style="color: #bc6ec5;">(</span>hell world<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span> =&gt; &#36820;&#22238; nil
+<span style="color: #4f97d7;">(</span>booleanp t<span style="color: #4f97d7;">)</span> =&gt; &#36820;&#22238; t
+<span style="color: #4f97d7;">(</span>booleanp nil<span style="color: #4f97d7;">)</span> =&gt; &#36820;&#22238; t
+<span style="color: #4f97d7;">(</span>booleanp <span style="color: #2d9574;">"hello world"</span><span style="color: #4f97d7;">)</span> =&gt; &#36820;&#22238; nil
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7e8280d" class="outline-3">
+<h3 id="org7e8280d">evaluate</h3>
+</div>
+<div id="outline-container-org6de1950" class="outline-3">
+<h3 id="org6de1950">form</h3>
+<div class="outline-text-3" id="text-org6de1950">
+<p>
+一个可以进行 <b>evaluate</b> 的 <b>expression</b> 就称为一个 <b>form</b>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org639f36b" class="outline-3">
+<h3 id="org639f36b">Lisp object</h3>
+<div class="outline-text-3" id="text-org639f36b">
+<p>
+<b>evaluate</b> 一个 <b>form</b> 总是会产生一个结果，这就是 <b>Lisp object</b> 
+</p>
+</div>
+</div>
+<div id="outline-container-org091895b" class="outline-3">
+<h3 id="org091895b">Function 相关</h3>
+<div class="outline-text-3" id="text-org091895b">
+<p>
+<b>&amp;optional</b> 表示 argument 是可选的。
+<b>&amp;rest</b> 表示可以有任意个 argument 。但它必须跟在一个 argument 后面。这些 argument 会被接收放到一个 list 里面。
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgd7e7240" class="outline-2">
+<h2 id="orgd7e7240">Lisp 数据类型(data type)</h2>
+<div class="outline-text-2" id="text-orgd7e7240">
+<p>
+每一个 <b>object</b> 至少属于一种 <b>type</b> 。相同 <b>type</b> 的 <b>objects</b> 拥有相似的结构，并且通常用在相同的 <b>context</b> 中。 <b>type</b> 可以 <b>overlap</b> ，并且 <b>object</b> 可以属于两种或多种类型。
+因此，我们可以问：一个 <b>object</b> 是否属于特定的 <b>type</b> ，但不能问 <b>object</b> 是什么 <b>type</b> 。
+</p>
+
+
+<p>
+<b>primitive type</b> ，它是 Emacs 内建的 <b>type</b> ，是构成其他 <b>type</b> 的基础。
+每一个 <b>object</b> 属于且仅属于一种 <b>primitive type</b> ，这些 <b>type</b> 包括：
+</p>
+
+<ul class="org-ul">
+<li>integer</li>
+<li>float</li>
+<li>cons</li>
+<li>symbol</li>
+<li>string</li>
+<li>vector</li>
+<li>hash-table</li>
+<li>subr</li>
+<li>byte-code</li>
+<li>function</li>
+<li>buffer</li>
+</ul>
+
+
+<p>
+每一种 <b>primitive type</b> 都有相应的 Lisp function 来检测一个 <b>object</b> 的 type 是否属于它们的一员。
+</p>
+
+<p>
+Lisp 不同于其他的语言，它的 <b>objects</b> 是 <b>self-typing</b> 的： <b>primitive type</b> 的每个 <b>object</b> 就是指它自身。举个例子，如果一个 <b>object</b> 是一个 <b>vector</b> ，没有任何东西可以把它当作是 <b>number</b> ，Lisp 知道它是一个 <b>vector</b> ，而不是一个 <b>number</b> 。
+</p>
+
+<p>
+在大多数语言中，程序员必须声明每个 <b>variable</b> 的 <b>data type</b> ，并且 <b>type</b> 是由 <b>compiler</b> 所知的，并不在 <b>data</b> 中表示。这样子的声明，在 Emacs Lisp 中是不存在的。一个 Lisp 的 <b>variable</b> 可以是任意 <b>type</b> 的 value ，并且它会记住你所保存的 <b>value</b> 、 <b>type</b> 以及所有东西。
+</p>
+
+<blockquote>
+<p>
+实际上，仅有一小部分的 Emacs Lisp variable 可以确定它的 <b>type</b> 的 <b>values</b> 。
+</p>
+</blockquote>
+</div>
+
+<div id="outline-container-orgf1cbc16" class="outline-3">
+<h3 id="orgf1cbc16">Printed Representation 和  Read Syntax</h3>
+<div class="outline-text-3" id="text-orgf1cbc16">
+<p>
+一个 <b>obejct</b> 的 <b>printed representation</b> ，它是一个由 Lisp printer (function <b>prin1</b> ) 为该 <b>object</b> 产生的格式化的输出。每一个 <b>data type</b> 都有一个唯一的 <b>printed representation</b> 。
+</p>
+
+<p>
+一个 <b>object</b> 的 <b>read syntax</b> ，它是一个由 Lisp reader (function <b>read</b> ）为该 <b>object</b> 产生的格式化的输入。这并不必是唯一的。
+</p>
+
+<p>
+在大部分情况下，一个 <b>object</b> 的 <b>printed representation</b> 也是它的 <b>read syntax</b> 。然而，有一些 <b>types</b> 并没有 <b>read syntax</b> ，因为在 Lisp 程序中，将这些 <b>types</b> 作为常量输入是没有意义的。这些 <b>objects</b> 使用 <b>hash notation</b> 来进行 <b>print</b> ，它是由字符 <code>#&lt;</code>  、一个描述性字符串（典型地是 <b>type name</b> ，后接 <b>object name</b> ） 和一个关闭的 <code>&gt;</code> 。例如:
+</p>
+
+<pre class="example">
+(current-buffer)
+  ⇒ #&lt;buffer objects.texi&gt;
+</pre>
+
+<p>
+<b>Hash notation</b> 是不可读取的，因此 Lisp reader 无论在什么时候遇到 <code>#&lt;</code> 时都会发出错误信息 <b>invalid-read-syntax</b> 。
+</p>
+
+<p>
+在其他语言中，一个 <b>expression</b> 就是 <b>text</b> ，没有其他的 <b>form</b> 了。在 Lisp 中， 一个 <b>expression</b> ，首先它是一个 <b>Lisp object</b> ，其次才是 <b>text</b> ，它是 object 的 <b>read syntax</b> 。通常情况下，是不需要强调这种区别的，但你必须在脑海里一直记住它，否则你偶尔会感到非常迷惑。
+</p>
+
+<p>
+当你 <b>evaluate</b> 一个 <b>expression</b> 时，Lisp interpreter 首先读取它的 <b>textual representation</b> ，产生一个 <b>Lisp object</b> ，然后 <b>evaluate</b> 这个 object 。然而， <b>evaluation</b> 和 <b>reading</b> 是分开的两个动作的。 <b>Reading</b> 则返回读取的 <b>text</b> 所表示的 Lisp Object ； 之后，这个 Object 可以或不会进行 <b>evaluate</b> 。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf5d937e" class="outline-3">
+<h3 id="orgf5d937e">comments</h3>
+<div class="outline-text-3" id="text-orgf5d937e">
+<p>
+以一个 <b>;</b> 号开始的，是程序的注释，它会一直到行尾。（只要不是在字符串常量用的字符串或字符，都会是一个 comment)
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgeebd6d6" class="outline-3">
+<h3 id="orgeebd6d6">programming types</h3>
+<div class="outline-text-3" id="text-orgeebd6d6">
+<p>
+Emacs Lisp 中通常有2大目录的类型：一种是 Lisp 编程相关的，一种是与编辑相关的。前者存在于一些 Lisp 的实现中。后者是 Emacs Lisp 独有的。
+</p>
+</div>
+
+<div id="outline-container-org080af39" class="outline-4">
+<h4 id="org080af39">integer type</h4>
+<div class="outline-text-4" id="text-org080af39">
+<p>
+它的范围取决于机器。最小的范围是 <b>-536,870,912 ~ 536,870,911</b> (30 bits ，例如 : -2<sup>29</sup> ~ 2<sup>29</sup>-1) ，但一些机器提供更大的范围。Emacs Lisp 算术 function 并不会检测一个 integer 是否 overflow 的。因此 <code>(1+ 536870911)</code> 的结果是 -536,870,912 ，如果 Emacs 的 integer 是 30bits 的话。
+</p>
+
+<p>
+它的 <b>read syntax</b> 是一个数字 sequence （10进制），可带有一个可选的在开头的符号（正负）以及一个可选的在结尾的 <b>period</b> 。
+它的 <b>printed representation</b> , 由 Lisp interpreter 产生的， 是不会带有 '+' 或 结尾的 '.' 的。
+</p>
+
+<pre class="example">
+-1               ; The integer -1.
+1                ; The integer 1.
+1.               ; Also the integer 1.
++1               ; Also the integer 1.
+</pre>
+
+<p>
+作为一个特殊的例外，如果一个 integer 的数字 sequence 是太大或太小，以及是一个 <b>invalid</b> 的 integer object ，则 Lisp reader 会将它读取为一个 <b>floating-point</b> number 。例如，如果 Emacs integer 是 30bits 的话，则 <code>536870912</code> 会读取为一个 <b>floating-point</b> number <code>536870912.0</code> 
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6541910" class="outline-4">
+<h4 id="org6541910">floating-point type</h4>
+<div class="outline-text-4" id="text-org6541910">
+<p>
+它等同于计算机中的 <b>scientific notation</b> ，你可以想象 <b>floating-point</b> number 是一个分数与一个以10为底数一起的。精度以及指数的范围是依赖于机器的，Emacs 使用 C 语言中的 <b>double</b> 来保存该 value ，并且内部是使用以2为底数而不是以10为底数的。
+</p>
+
+<p>
+它的 <b>printed representation</b> 要求是要有一个浮点（并且至少要带有一位小数），或者指数，或者两者都有。例如
+</p>
+
+<pre class="example">
+    ‘1500.0’, ‘+15e2’, ‘15.0e+2’, ‘+1500000e-3’, and ‘.15e4’
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org29d0807" class="outline-4">
+<h4 id="org29d0807">character type</h4>
+<div class="outline-text-4" id="text-org29d0807">
+<p>
+Emacs Lisp 中， <b>character</b> 只是一个 <b>integer</b> 。换句话说， <b>character</b> 是用它们的 <b>character code</b> 来表示的。例如 <b>character</b> <code>A</code> 是用 <b>integer</b> 65 来表示的。
+单独的 <b>character</b> 只是偶尔在程序中使用，更多的是使用 <b>strings</b> ，它是由 <b>character</b> 组成的 <b>sequence</b> 。
+</p>
+
+<p>
+在 <b>strings</b> 和 <b>buffers</b> 中的 <b>characters code</b> 的当前限制的范围是 <code>0 ~ 4194303</code> . Code 0 ~ 127 是 ASCII code ，其余的是非 ASCII 。
+</p>
+</div>
+
+<div id="outline-container-orgf2d78e9" class="outline-5">
+<h5 id="orgf2d78e9">基本的 char syntax</h5>
+<div class="outline-text-5" id="text-orgf2d78e9">
+<p>
+由于 <b>characters</b> 本质上是 <b>integers</b> ，所以它的 <b>printed representation</b> 是一个十进制数 (decimal number) 。这个也可以作为 <b>charater</b> 的 <b>read syntax</b> ，但用这种方式来写的话，在 Lisp 程序中并不够清晰。你应该总是使用特定的 Emacs Lisp 提供的为 <b>charater</b> 所使用的 <b>read syntax</b> 。这些 <b>syntax</b> 是以一个 <b>question mark</b> 开头的。
+</p>
+
+<p>
+通常的字母 <b>charater</b> 的 <b>read syntax</b> 是一个 <b>question mark</b> 后接该 <b>charater</b> 。因此 <code>?A</code> 为 charater A, <code>?B</code> 为 charater B 等。比如 
+</p>
+
+<pre class="example">
+?Q ⇒ 81     ?q ⇒ 113
+</pre>
+
+<p>
+你可以为 <b>punctuation character</b> 使用同样的 <b>syntax</b> ，不过通常添加一个 <code>\</code> 是一个好的主意，这样的话 Emacs commands 为那些正在编辑的 Lisp code 就不会困惑了。例如 <code>?\(</code> 是写一个开括号的方式。如果这个 <b>character</b> 是 <code>\</code> ，则你必须使用第二个 <code>\</code> 来引住它： <code>?\\</code> 
+</p>
+
+<p>
+下面是一些特殊字符:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">?\a &#8658; <span style="color: #a45bad;">7</span>                 <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">control-g, C-g</span>
+?\b &#8658; <span style="color: #a45bad;">8</span>                 <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">backspace, BS, C-h</span>
+?\t &#8658; <span style="color: #a45bad;">9</span>                 <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">tab, TAB, C-i</span>
+?\n &#8658; <span style="color: #a45bad;">10</span>                <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">newline, C-j</span>
+?\v &#8658; <span style="color: #a45bad;">11</span>                <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">vertical tab, C-k</span>
+?\f &#8658; <span style="color: #a45bad;">12</span>                <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">formfeed character, C-l</span>
+?\r &#8658; <span style="color: #a45bad;">13</span>                <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">carriage return, RET, C-m</span>
+?\e &#8658; <span style="color: #a45bad;">27</span>                <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">escape character, ESC, C-[</span>
+?\s &#8658; <span style="color: #a45bad;">32</span>                <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">space character, SPC</span>
+?\\ &#8658; <span style="color: #a45bad;">92</span>                <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">backslash character, \</span>
+?\d &#8658; <span style="color: #a45bad;">127</span>               <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">delete character, DEL</span>
+</pre>
+</div>
+
+
+<p>
+这些以 <b>backslash</b> 开头的 <b>sequences</b> 就是 <b>escape sequences</b> ， 因为 <b>backslash</b> 扮演了一个 <b>escape character</b> 的角色，这与字符 <code>ESC</code> 没有任何关系。在 <b>character constant</b> 或 <b>string constant</b> 中的 <code>\s</code> 仅仅是写一个 <b>space</b> （空格）。
+</p>
+
+<p>
+在任何一个没有特定 <b>escape</b> 意义的  <b>character</b> 前面加上一个 <b>backslash</b> 是允许的，并且也没有任何害处的。因此 <code>?\+</code> 等同于 <code>?+</code> 。在大部分的 <b>character</b> 前面没有理由为它们添加一个 <b>backslash</b> 。然而，你应该在以下这些字符之一之前添加一个 <b>backslash</b> ： <code>()\|;'`"#.,</code>  以免 Emacs commands 对这些编辑中的 Lisp code 感到困惑。
+</p>
+
+<p>
+你也可以在 <b>whitespace character</b> 前添加一个 <b>backslash</b> ，例如 : space, tab, newline 和  formfeed 。不过，使用 <code>\t</code> 或 <code>\s</code> 来代替 <b>whitespace character</b> 如 space, tab  则更清晰可读。
+</p>
+
+<blockquote>
+<p>
+如果你在一个 space 前加上 backslash ，则后面应该还有一个额外的 space 来区分它。
+</p>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-org42afeb2" class="outline-5">
+<h5 id="org42afeb2">一般的 Escape Syntax</h5>
+<div class="outline-text-5" id="text-org42afeb2">
+<p>
+Emacs 提供了几种 escape syntax 来使用非 ASCII 文本 character 。
+</p>
+<ol class="org-ol">
+<li>你可以使用指定 <b>character</b> 的 Unicode value 。 <code>?\unnnn</code>  表示一个指定 unicode code point 为 <code>U+nnnn</code> 的 character, <code>nnnn</code> 是一个四位数的 <b>hexadecimal number</b> （十六进制）。如果你的 <b>code point</b> 是高于 <code>U+ffff</code> 的话，要使用一种不同的 syntax 来指示： <code>?\U00nnnnnn</code> , 它表示 code point 为 <code>U+nnnnnn</code> ，这里的 <code>nnnnnn</code> 是一个六位数的 <b>hexadecimal number</b> 。*Unicode Standard* 仅定义了 code point 的值到 <code>U+10ffffff</code> ，因此，如果你指定的 code point 比它大，Emacs 会发送一个错误信号。</li>
+
+<li>你可以指明该字符的 <b>hexadecimal character codes</b> 。一个 <b>hexadecimal escape sequences</b> 由一个 <b>backslash</b> ， <code>x</code> ，以及 <b>hexadecimal character code</b> 组成。因此 <code>?\x41</code> 表示 character <code>A</code> ， <code>?\x1</code> 表示字符 <code>C-a</code> 等。</li>
+
+<li>你可以用 <b>octal</b> 来指明 character 的 character code 。一个 <b>octal escape sequences</b> 由一个 <b>backslash</b> 后接三个 <b>octal</b> 数字组成。因此 <code>?\101</code> 表示 character <code>A</code> 。这种方式仅可以表示到 <b>octal code</b> 为 777 的字符集。</li>
+</ol>
+
+
+<p>
+它们也可以用在 <b>strings</b> 中。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgf3a23de" class="outline-5">
+<h5 id="orgf3a23de">Control-Character Syntax</h5>
+<div class="outline-text-5" id="text-orgf3a23de">
+<p>
+<b>Control</b> character 可以使用另一种 <b>read syntax</b> 来表示。它由一个 <b>question mark</b> 后接一个 <b>backslash</b> ， <b>caret</b> 和一个相关的非 <b>control</b> 字符 ，不管是大写还是小写。例如： <code>?\^I</code> 和 <code>?\^i</code> 都是 character <code>C-i</code> 的有效 <b>read syntax</b> ，它的 value 是 9 。
+</p>
+
+<p>
+你可以使用 <code>C-</code> 来代替 <code>^</code> 。因此 <code>?C-i</code> 等同于 <code>?\^I</code> 和 <code>?\^i</code> 。在 <b>strings</b> 和 <b>buffers</b> 中仅允许出现在 ASCII 中的 characters 。
+</p>
+
+<p>
+由于历史原因，Emacs 将 <code>DEL</code> 字符看作等同到 <code>?</code> 的 control character 。即:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">?\^? &#8658; <span style="color: #a45bad;">127</span>     ?\C-? &#8658; <span style="color: #a45bad;">127</span>
+</pre>
+</div>
+
+<p>
+因此，当前并不能表示字符 <code>Control-?</code> 
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org156eee8" class="outline-5">
+<h5 id="org156eee8">Meta-Character Syntax</h5>
+<div class="outline-text-5" id="text-org156eee8">
+<p>
+一个 <b>meta character</b> 是通过 <b>META</b> 修饰键来输入的。 代表这样一个 character有 <code>2^27</code> 位所表示的整数个。我们使用 <b>high bits</b> 来表示这个 <b>META</b> ，其他的 bits 表示基础的 character code 范围。
+在 <b>string</b> 中， 附加到 ASCII character 的 <code>2^7</code> 位表示 <b>meta</b> character 。因此，meta character 在 string 中适应的 code 范围为 <code>128 ~ 255</code> , 这些都是普通的 ASCII character 中的 <b>meta</b> 版本 characters 。
+</p>
+
+<p>
+它的 <b>read syntax</b> 为 <code>\M-</code> 。例如 <code>?\M-a</code> 表示 <code>M-a</code> ，你可以用 <code>\M-</code> 与 <b>octal character code</b> 一起，或与 <code>\C-</code> 或其他任何的 character syntax 一起。因此，你可以写 <code>M-A</code> 为 <code>?\M-A</code> 或 <code>?\M-\101</code> 。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge4de427" class="outline-5">
+<h5 id="orge4de427">其他的 Character Modifier Bits</h5>
+<div class="outline-text-5" id="text-orge4de427">
+<p>
+一个 <b>graphic character</b> 是通过它的 <b>character code</b> 来指示的。例如，ASCII 区分 character <code>a</code> 和 <code>A</code> 。但是 ASCII 没有办法来表示一个 <b>control character</b> 到底是 <b>upper case</b> 还是 <b>lower case</b> 。 Emacs 使用 <code>2^25</code> 位来输入 Control character 指示 <b>shift key</b> 。这可能仅在你使用 X terminal 和 其他特别的 terminal 才有区别。Lisp 中对于 <b>shift</b> bits 的 syntax 为 <code>\S-</code> 。因此， <code>?\C-\S-o</code> 或 <code>?\C-\C-O</code> 都表示 <b>shift-control-o</b> character 。
+</p>
+
+<p>
+X Window System 定义了其他三种 <b>modifier bits</b> ：
+</p>
+<ol class="org-ol">
+<li>hyper ， <code>\H-</code></li>
+<li>super ， <code>\s-</code></li>
+<li>alt ， <code>\A-</code></li>
+</ol>
+
+
+<p>
+因此， <code>?\H-\M-\A-x</code> 表示 <b>Alt-Hyper-Meta-x</b> 
+</p>
+
+<blockquote>
+<p>
+注意，\s 后面没有 '-' 的表示是 space character
+</p>
+</blockquote>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1141863" class="outline-4">
+<h4 id="org1141863">symbol type</h4>
+<div class="outline-text-4" id="text-org1141863">
+<p>
+在 GNU Emacs Lisp 中，一个 <b>symbol</b> 就是一个带有 name 的 object 。symbol name 作为它的 <b>printed representation</b> 。一个 symbol 的 name 是唯一的，没有两个 symbol 会有相同的 name 。
+</p>
+
+<p>
+一个 symbol 可以作为 variable 或 function 的 name ，或者拥有一个 property list 。或者它仅作为区分其他所有 Lisp objects ，以便它在数据结构中可以容易识别出来。在一个给定的 Context 中，仅会使用这些中的一个意思。但是，你可以用 symbol 独立地来处理这所有的方式。
+</p>
+
+<p>
+一个以 colon (':') 开头的 symbol name 称为 <b>keyword symbol</b> 。这些 symbol 自动地表现为 <b>constants</b> ，并且通常下仅用几个具体的选项来与一个 unknown symbol 来进行比较。一个 symbol name 可以包含任何字符。绝大部分情况下，使用 <b>letters</b>, <b>digits</b> 和 <b>punctuation charater</b> '-+=*/' 来进行书写。这些 names 的要求是没有特殊的 <b>punctuation</b> ； name 的 charater 要足够长以便让它看起来不像是一个 number 即可 (如果还像 number 的话，那就 name 前面加上一个 <code>\</code> 来强制解释为 symbol) 。 <code>_~!@$%^&amp;:&lt;&gt;{}?</code> 这些 charater 虽然比较少使用，但也要求是没有特殊的 <b>punctuation</b> 。
+</p>
+
+<p>
+其他的 charater 要用在 symbol name 的话，则需要进行 <b>escape</b> 。
+</p>
+
+<p>
+下面是一些例子：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">foo                 <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">A symbol named &#8216;</span><span style="color: #a45bad; background-color: #292e34;">foo</span><span style="color: #2aa1ae; background-color: #292e34;">&#8217;.</span>
+FOO                 <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">A symbol named &#8216;</span><span style="color: #a45bad; background-color: #292e34;">FOO</span><span style="color: #2aa1ae; background-color: #292e34;">&#8217;, different from &#8216;</span><span style="color: #a45bad; background-color: #292e34;">foo</span><span style="color: #2aa1ae; background-color: #292e34;">&#8217;.</span>
+1+                  <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">A symbol named &#8216;</span><span style="color: #a45bad; background-color: #292e34;">1+</span><span style="color: #2aa1ae; background-color: #292e34;">&#8217;</span>
+                                        <span style="color: #2aa1ae; background-color: #292e34;">;   </span><span style="color: #2aa1ae; background-color: #292e34;">(not &#8216;</span><span style="color: #a45bad; background-color: #292e34;">+1</span><span style="color: #2aa1ae; background-color: #292e34;">&#8217;, which is an integer).</span>
+\<span style="color: #a45bad;">+1</span>                 <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">A symbol named &#8216;</span><span style="color: #a45bad; background-color: #292e34;">+1</span><span style="color: #2aa1ae; background-color: #292e34;">&#8217;</span>
+                                        <span style="color: #2aa1ae; background-color: #292e34;">;   </span><span style="color: #2aa1ae; background-color: #292e34;">(not a very readable name).</span>
+\(*\ <span style="color: #a45bad;">1</span>\ <span style="color: #a45bad;">2</span>\)         <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">A symbol named &#8216;(* 1 2)&#8217; (a worse name).</span>
++-*/_~!@$%^&amp;=:&lt;&gt;{}  <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">A symbol named &#8216;</span><span style="color: #a45bad; background-color: #292e34;">+-*/_~!@$%^&amp;=:&lt;&gt;{}</span><span style="color: #2aa1ae; background-color: #292e34;">&#8217;.</span>
+                                        <span style="color: #2aa1ae; background-color: #292e34;">;   </span><span style="color: #2aa1ae; background-color: #292e34;">These characters need not be escaped.</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8e5de70" class="outline-4">
+<h4 id="org8e5de70">Sequence types</h4>
+<div class="outline-text-4" id="text-org8e5de70">
+<p>
+一个 <b>sequence</b> 表示一个带有元素顺序的 <b>set</b> 的 Lisp object 。在 Emacs Lisp 中有两种:
+</p>
+<ol class="org-ol">
+<li>lists</li>
+<li>arrays</li>
+</ol>
+
+
+<p>
+Lists 是最常用的 <b>sequence</b> 。一个 list 可以拥有任意 type 的 elements ，它的 length 可以容易地通过添加或移除 elements 来改变。
+</p>
+
+<p>
+Arrays 是一个 <b>fixed-length</b> 的 <b>sequences</b> 。它进一步分为：
+</p>
+<ol class="org-ol">
+<li>strings ，它的 elements 必须为 <b>characters</b> 。这些 <b>characters</b> 可以有 <b>text properties</b> ，就像在 buffer 中的 <b>characters</b> 一样。</li>
+<li>vectors , 它的 elements 可以是任意的 type 。它不支持 <b>text properties</b> ，即使它的 elements 是 characters 。</li>
+<li>char-tables ，与 vectors 类似，但它是通过任意有效的 character code 来索引的。</li>
+<li>bool-vectors ，它的 elements 必须是 <b>t</b> 或 <b>nil</b></li>
+</ol>
+
+
+<p>
+<b>Lists</b>, <b>strings</b> 和其他 array type 都有相似性。例如，它们都有一个 <b>length</b> <code>/</code> ，并且所有的 elements 都是从 <code>0</code> 到 <code>/-1</code> 的索引 。
+</p>
+
+<p>
+通常，同一个 <b>sequences</b> 是不可能读取两次的，因为 <b>sequences</b> 总是在读取时创建一个新的。如果你读取 <b>sequences</b> 的 <b>read syntax</b> 两次的话，你会获得两个拥有相同内容的 <b>sequences</b> 。有一个是例外的：空list <code>()</code> ，它总是表示同样的 obejct <b>nil</b> 。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3e372ce" class="outline-4">
+<h4 id="org3e372ce">Cons Cell 和 List Types</h4>
+<div class="outline-text-4" id="text-org3e372ce">
+<p>
+一个 <b>cons cell</b> 是一个由2个 <b>slots</b> 组成的对象：
+</p>
+<ol class="org-ol">
+<li>CAR slot</li>
+<li>CDR slot</li>
+</ol>
+
+
+<p>
+每一个 <b>slot</b> 可以持有任意的 Lisp object 。我们也可以这样说，这个 <b>cons cell</b> 的 CAR 是当前拥有的任何 object ，CDR 同样也如此。
+</p>
+
+<p>
+一个 <b>list</b> 是由一系列的 <b>cons cell</b> 链接在一起的，使得每个 <b>cons cell</b> 的 CDR slot 持有下一个 <b>cons cell</b> 或是一个空 list 。一个空 list 实际上是 symbol <b>nil</b> 。由于绝大多数的 <b>cons cell</b> 是用作 <b>list</b> 的部分，我们指那些由 <b>cons cell</b> 组成的结构称为 <b>list</b> 结构 。
+</p>
+
+<blockquote>
+<p>
+C 语言程序员注意： 一个 Lisp list 因此表现得像由 <b>cons cell</b> 为节点的 <b>linked list</b> 。因为 <b>pointer</b> 在 Lisp 中是隐式的，我们不区分一个 <b>cons cell</b> 是持有一个 value ，还是 <b>point</b> to 这个 value 
+</p>
+</blockquote>
+
+
+<p>
+由于 <b>cons cell</b> 是 Lisp 的核心，我们为这些 object 有另一个单词而不是 <b>cons cell</b> 来称呼它，称为 <b>atoms</b> 
+</p>
+
+<p>
+list 的 <b>read syntax</b> 和 <b>printed representation</b> 是相同的：由一个左括号，一个任意数是的 elements ，以及一个右括号组成。例如:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>A <span style="color: #a45bad;">2</span> <span style="color: #2d9574;">"A"</span><span style="color: #4f97d7;">)</span>            <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">A list of three elements.</span>
+<span style="color: #4f97d7;">()</span>                   <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">A list of no elements (the empty list).</span>
+nil                  <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">A list of no elements (the empty list).</span>
+<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"A ()"</span><span style="color: #4f97d7;">)</span>             <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">A list of one element: the string "A ()".</span>
+<span style="color: #4f97d7;">(</span>A <span style="color: #bc6ec5;">()</span><span style="color: #4f97d7;">)</span>               <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">A list of two elements: A and the empty list.</span>
+<span style="color: #4f97d7;">(</span>A nil<span style="color: #4f97d7;">)</span>              <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">Equivalent to the previous.</span>
+<span style="color: #4f97d7;">(</span><span style="color: #bc6ec5;">(</span>A B C<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>            <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">A list of one element</span>
+                                        <span style="color: #2aa1ae; background-color: #292e34;">;   </span><span style="color: #2aa1ae; background-color: #292e34;">(which is a list of three elements).</span>
+</pre>
+</div>
+
+
+<p>
+在括号中的每一个 object ，都会成为 list 的 element 。也就是说，是一个 <b>cons cell</b> 组成了每个 element 。*cons cell* 的 CAR slot 持有 element ，并且它的 CDR slot 指向 list 中的下一个 <b>cons cell</b> element 。最后一个 <b>cons cell</b> 的 CDR 是设置为 <b>nil</b> 。
+</p>
+
+<p>
+CAR 和 CDR 的名字，是从 Lisp 的历史中获得的。原始的 Lisp 实现运行在一台 IBM 704 计算机上的，它将 <b>words</b> 分成两部分： <b>address</b> 和 <b>decrement</b> 。 CAR 是一个从 <b>register</b> 保存的 <b>address</b> 指示的地方获取内容的指令； CDR 是一个获取剩余内容的指令。
+</p>
+</div>
+
+
+<div id="outline-container-org1545956" class="outline-5">
+<h5 id="org1545956">Drawing Lists as Box Diagrams</h5>
+<div class="outline-text-5" id="text-org1545956">
+<pre class="example">
+(rose violet buttercup) =&gt;
+ --- ---      --- ---      --- ---
+|   |   |--&gt; |   |   |--&gt; |   |   |--&gt; nil
+ --- ---      --- ---      --- ---
+  |            |            |
+  |            |            |
+   --&gt; rose     --&gt; violet   --&gt; buttercup
+
+
+(rose violet buttercup) =&gt;
+
+---------------       ----------------       -------------------
+| car   | cdr   |     | car    | cdr   |     | car       | cdr   |
+| rose  |   o--------&gt;| violet |   o--------&gt;| buttercup |  nil  |
+|       |       |     |        |       |     |           |       |
+ ---------------       ----------------       -------------------
+
+(A ()) =&gt;
+
+ --- ---      --- ---
+|   |   |--&gt; |   |   |--&gt; nil
+ --- ---      --- ---
+  |            |
+  |            |
+   --&gt; A        --&gt; nil
+
+
+((pine needles) oak maple) =&gt;
+
+    --- ---      --- ---      --- ---
+   |   |   |--&gt; |   |   |--&gt; |   |   |--&gt; nil
+    --- ---      --- ---      --- ---
+     |            |            |
+     |            |            |
+     |             --&gt; oak      --&gt; maple
+     |
+     |     --- ---      --- ---
+      --&gt; |   |   |--&gt; |   |   |--&gt; nil
+           --- ---      --- ---
+            |            |
+            |            |
+             --&gt; pine     --&gt; needles
+
+
+
+ --------------       --------------       --------------
+| car   | cdr  |     | car   | cdr  |     | car   | cdr  |
+|   o   |   o-------&gt;| oak   |   o-------&gt;| maple |  nil |
+|   |   |      |     |       |      |     |       |      |
+ -- | ---------       --------------       --------------
+    |
+    |
+    |        --------------       ----------------
+    |       | car   | cdr  |     | car     | cdr  |
+     ------&gt;| pine  |   o-------&gt;| needles |  nil |
+            |       |      |     |         |      |
+             --------------       ----------------
+</pre>
+</div>
+</div>
+
+
+<div id="outline-container-org4f9ede1" class="outline-5">
+<h5 id="org4f9ede1">Dotted Pair Notation</h5>
+<div class="outline-text-5" id="text-org4f9ede1">
+<p>
+<b>Dotted Pair Notation</b> 它是为 <b>cons cell</b> 显式地表示 CAR 和 CDR 的 syntax 。这种 syntax 里， <code>(a . b)</code> 表示一个 <b>cons cell</b> ，它的 CAR 部分是 object <code>a</code> ，它的 CDR 部分是 object <code>b</code> 。 <b>Dotted Pair Natation</b> 比 <b>list</b> syntax 更能用，因为它的 CDR 并不必是一个 list 。不过，在 CDR 部分也是 list 时，它比 list syntax 更笨拙点 。在 <b>Dotted Pair Notation</b> 中 list <code>(1 2 3)</code>  要写成 <code>(1 . (2 . (3 . nil)))</code> 。
+</p>
+
+<p>
+当进行打印时，*Dotted Pair Notation* 仅在 <b>cons cell</b> 的 CDR 不是一个 list 才会使用。
+</p>
+
+<pre class="example">
+(rose . violet) =&gt;
+    --- ---
+   |   |   |--&gt; violet
+    --- ---
+     |
+     |
+      --&gt; rose
+
+
+(rose violet . buttercup) 等同于 (rose . (violet . buttercup)) =&gt;
+
+    --- ---      --- ---
+   |   |   |--&gt; |   |   |--&gt; buttercup
+    --- ---      --- ---
+     |            |
+     |            |
+      --&gt; rose     --&gt; violet
+</pre>
+</div>
+</div>
+
+
+<div id="outline-container-orgd0bd218" class="outline-5">
+<h5 id="orgd0bd218">Association List Type</h5>
+<div class="outline-text-5" id="text-orgd0bd218">
+<p>
+一个 <b>association list</b> 或 <b>alist</b> 是一个特殊结构的 list ，它的 elements 是多个 <b>cons cell</b> 。在每一个 elements 中， CAR 视作为一个 <b>key</b> ， CDR 则视作是 <b>associated value</b> （在一些情况下，associated value 是保存在 CDR 的 CAR 部分）。它通常用作 <b>stacks</b> ，因为它可以容易地添加或删除 list 前面的 association 。例如:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> alist-of-colors
+ '<span style="color: #bc6ec5;">(</span><span style="color: #2d9574;">(</span>rose . red<span style="color: #2d9574;">)</span> <span style="color: #2d9574;">(</span>lily . white<span style="color: #2d9574;">)</span> <span style="color: #2d9574;">(</span>buttercup . yellow<span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+第一个 element 中， <code>rose</code> 就是 key ， <code>red</code> 就是 value 。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgac49cee" class="outline-4">
+<h4 id="orgac49cee">Array type</h4>
+<div class="outline-text-4" id="text-orgac49cee">
+<p>
+参考上面的 <b>sequences type</b> 
+</p>
+</div>
+</div>
+
+<div id="outline-container-org40a52ea" class="outline-4">
+<h4 id="org40a52ea">String type</h4>
+<div class="outline-text-4" id="text-org40a52ea">
+<p>
+在 Lisp 中， <b>evaluate</b> 一个 string 会返回它自身。
+</p>
+</div>
+
+<div id="outline-container-org0ecdd87" class="outline-5">
+<h5 id="org0ecdd87">string 的 syntax</h5>
+<div class="outline-text-5" id="text-org0ecdd87">
+<p>
+它的 <b>read syntax</b> 是： 一个 <b>double-quote</b> ，一个任意数是的 characters，以及另一个 <b>double-quote</b> ： <code>"like this"</code>  。为了包括一个 <b>double-quote</b> ，可以在它前面加上一个 <b>backslash</b> 。即： <code>"\""</code>  ，这个 string 仅包含一个 <b>double-quote</b> character 。你可以包含一个 <b>backslash</b> ，通过在它的前面加上另一个 <b>backslash</b> 。比如这样： <code>"this \\ is a single embedded backslash"</code> 
+</p>
+
+<p>
+<b>newline</b> character 在 <b>read syntax</b> 中并不是特殊 character 。如果你在 <b>double-quote</b> 之间写了个 <b>newline</b> ，它会成为 <b>string</b> 的一部分。但如果你 <b>escaped newline</b> —— 即在前面加上 <code>\</code>  的话，则不会成为 <b>string</b> 的一部分。例如， Lisp reader 在读取一个 <b>string</b> 时会忽略一个 <b>escaped newline</b> 。它也会忽略通过 <code>\</code> 来 <b>escaped space</b> character 。例如:
+</p>
+
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #2d9574;">"It is useful to include newlines</span>
+<span style="color: #2d9574;">in documentation strings,</span>
+<span style="color: #2d9574;">but the newline is \</span>
+<span style="color: #2d9574;">ignored if escaped."</span>
+     &#8658; <span style="color: #2d9574;">"It is useful to include newlines</span>
+<span style="color: #2d9574;">in documentation strings,</span>
+<span style="color: #2d9574;">but the newline is ignored if escaped."</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8c6d96f" class="outline-5">
+<h5 id="org8c6d96f">Non-ASCII Characters in Strings</h5>
+<div class="outline-text-5" id="text-org8c6d96f">
+<p>
+在 Emacs strings 中有两种表示 non-ASCII 文本:
+</p>
+<ol class="org-ol">
+<li>multibyte</li>
+<li>unibyte</li>
+</ol>
+
+
+<p>
+粗略地说，  <b>unibyte</b> string 保存了 <b>raw bytes</b> ，而 <b>multibyte</b> string 保存为 <b>human-readable</b> 文本。在 <b>unibyte</b> string 中的每一个 character 是一个 <b>byte</b> ，即它的 value 是 <code>0~255</code> 之间。相比之下，在 <b>multibyte</b> 中的每个 character 允许的 value 为 <code>0~4194303</code> 之间。这两种情况下，所有大于 127 的都是 non-ASCII 。
+</p>
+
+<p>
+你可以在一个 <b>string</b> 中包含一个 non-ASCII character ，通过直接书写它的字面即可。如果一个 <b>string constant</b> 是从一个 <b>multibyte source</b> 例如 multibyte buffer , multibyte string, 或通过 multibyte 来访问的 file 的话，之后 Emacs 每次读取的 non-ASCII character 会自动成为 multibyte string 的。如果它是从一个 <b>unibyte source</b> 读取的话，那么它也会自动成为 <b>unibyte</b> 的。
+</p>
+
+<p>
+书写一个 character 为 multibyte string 的替代方式，你可以用一个  <b>escaped sequence</b> 来写它的 character code 。
+</p>
+
+<p>
+如果你写的是任意的 Unicode-style 的 <b>escaped sequence</b> <code>\uNNNN</code> 或 <code>\U00NNNN</code> ，Emacs 会自动假设它是 multibyte 的。
+</p>
+
+<p>
+你也可以使用 <b>hexadecimal escape sequence</b> <code>(\xn)</code> 和 <b>octal escape sequences</b> <code>(\n)</code> 。但要注意，如果是这些形式的话，所有这些 <b>escape sequences</b> 会成为 <b>unibyte</b> （即小于 256) 并且没有其他的 non-ASCII 字面量 character 或 Unicode-style escape sequences 。这就是说，它会假设所有 non-ASCII character 都会是 8-bit 的 raw bytes 。
+</p>
+</div>
+</div>
+<div id="outline-container-org895f4b7" class="outline-5">
+<h5 id="org895f4b7">Nonprinting Characters in Strings</h5>
+<div class="outline-text-5" id="text-org895f4b7">
+<p>
+你同样也可以使用 <b>backslash</b> 来在 <b>string</b> 中 <b>escape-sequences</b> 一个 character literal 。（但不要用 <b>question mark</b> 在一个 character constant 开头。）
+例如，你可以在 <b>string</b> 中写一个 <b>nonprinting character</b> ： tab ，像这样子： <code>"\t"</code> 。
+</p>
+
+<p>
+然而，并不是所有的 characters 你都可以通过 <b>backslash escape-sequences</b> 来书写的。仅是在 ASCII 的 control character 下的才可以。*strings* 并不会区别 ASCII 中 character 的大小写。
+</p>
+
+<p>
+正确地说， <b>strings</b> 并不能持有 <b>meta character</b> ，但当一个 <b>string</b> 用作一个 <b>key sequence</b> 时，这里提供了一个约定来表示 ASCII character 的 <b>meta</b> 版本。如果它是用在 <b>string constant</b> 中来指示 <b>meta character</b> ，则会将它的 <b>2<sup>7</sup></b> 位设置到 <b>string</b> 中。 如果是用在 <code>define-key</code> 或  <code>lookup-key</code> ，会被转换为相应的 numeric code 。
+</p>
+
+
+<p>
+<b>strings</b> 并不能持有 <b>hyper</b> ， <b>super</b> 或 <b>alt</b> 这些 modifier character 。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4b29756" class="outline-5">
+<h5 id="org4b29756">Text Properties in Strings</h5>
+<div class="outline-text-5" id="text-org4b29756">
+<p>
+syntax ：
+</p>
+
+<pre class="example">
+#("characters" property-data...)
+</pre>
+
+<p>
+<b>property-data</b> 由0个或多个 elements 元素组成，以下三个为一组：
+</p>
+
+<pre class="example">
+beg end plist
+</pre>
+
+<p>
+<b>beg</b> 和 <b>end</b> 都是 integer ，它们一起指示了 <b>string</b> 的范围。
+<b>plist</b> 是对这些范围的 <b>string</b> 的 property list 。例如:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">#<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"foo bar"</span> <span style="color: #a45bad;">0</span> <span style="color: #a45bad;">3</span> <span style="color: #bc6ec5;">(</span>face bold<span style="color: #bc6ec5;">)</span> <span style="color: #a45bad;">3</span> <span style="color: #a45bad;">4</span> nil <span style="color: #a45bad;">4</span> <span style="color: #a45bad;">7</span> <span style="color: #bc6ec5;">(</span>face italic<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+没有指定范围的,默认就是没有 properties 的。
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org531bd9b" class="outline-4">
+<h4 id="org531bd9b">Vector Type</h4>
+<div class="outline-text-4" id="text-org531bd9b">
+<p>
+它是一个可包含任意 <b>type</b> 的一维 <b>array</b> 。在 <b>vector</b> 中，访问任意一个 element 的时间一样的（在 list 中，则时间并不一样，最开始的 element 耗时短）
+</p>
+
+<p>
+它的 <b>printed representation</b> 是由： 一个左边的 <b>square bracket</b> ， elements 和一个右边的 <b>square bracket</b> 。这也是它的 <b>read syntax</b> 。例如:
+</p>
+
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">[</span><span style="color: #a45bad;">1</span> <span style="color: #2d9574;">"two"</span> <span style="color: #bc6ec5;">(</span>three<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">]</span>      <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">A vector of three elements.</span>
+ &#8658; <span style="color: #4f97d7;">[</span><span style="color: #a45bad;">1</span> <span style="color: #2d9574;">"two"</span> <span style="color: #bc6ec5;">(</span>three<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">]</span>
+</pre>
+</div>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-orgffac42a" class="outline-4">
+<h4 id="orgffac42a">Char-Table Type</h4>
+<div class="outline-text-4" id="text-orgffac42a">
+<p>
+它是一个一维 <b>array</b> ，可包含任意 <b>type</b> 的 elements ，通过 <b>character code</b> 来进行 <b>index</b> 。
+它的 <b>printed representation</b> 像 <b>vector</b> 一样，除了它有一个额外的 <code>#^</code> 开头。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3e37666" class="outline-4">
+<h4 id="org3e37666">Bool-Vector Type</h4>
+<div class="outline-text-4" id="text-org3e37666">
+<p>
+它也是一个一维 <b>array</b> ，elements 必须是 <b>t</b> 或 <b>nil</b> 
+</p>
+
+<p>
+<b>bool-vector</b> 实际指定的内容是在 <b>string constant</b> 用 <b>bitmap</b> 表示的。在 <b>string</b> 中的每个 <b>character</b> 包含 <b>8bits</b> ，它指示了 <b>bool-vector</b> 的之后的 8 个 elements （1 代表 <b>t</b> ，0 代表 *nil*国）.
+</p>
+
+<p>
+它的 <b>printed representation</b> 像一个 <b>string</b> ，除它了是以 <code>#&amp;</code> 开头，且后面接着它的 <b>length</b> 。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>make-bool-vector <span style="color: #a45bad;">3</span> t<span style="color: #4f97d7;">)</span>
+&#8658; #<span style="color: #ce537a; font-weight: bold;">&amp;3</span><span style="color: #2d9574;">"^G"</span>
+<span style="color: #4f97d7;">(</span>make-bool-vector <span style="color: #a45bad;">3</span> nil<span style="color: #4f97d7;">)</span>
+&#8658; #<span style="color: #ce537a; font-weight: bold;">&amp;3</span><span style="color: #2d9574;">"^@"</span>
+</pre>
+</div>
+
+
+<p>
+因为它是三个 <b>t</b> 即是： <b>111</b> ，所以，它显示为 <b>C-g</b> （C-g 的 Code 就是 111）。下面的同理。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf1db8ce" class="outline-4">
+<h4 id="orgf1db8ce">Hash Table Type</h4>
+<div class="outline-text-4" id="text-orgf1db8ce">
+<p>
+它是一个非常快的查找表，与 <b>alist</b> 相似，但是它更快。它的 <b>printed representation</b> 是 <b>properties</b> 和 <b>contents</b> 。比如这样：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>make-hash-table<span style="color: #4f97d7;">)</span>
+ &#8658; #s<span style="color: #4f97d7;">(</span>hash-table size <span style="color: #a45bad;">65</span> test eql rehash-size <span style="color: #a45bad;">1.5</span>
+                         rehash-threshold <span style="color: #a45bad;">0.8</span> data <span style="color: #bc6ec5;">()</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org22ae7cc" class="outline-4">
+<h4 id="org22ae7cc">Function Type</h4>
+<div class="outline-text-4" id="text-org22ae7cc">
+<p>
+它是 <b>executable code</b> ，就像其他语言中的 <b>function</b> 一样。在 Lisp 中，不同于大多数其他语言， <b>function</b> 也是 Lisp Object 。一个 <b>non-compiled</b> 的 function 是一个 <b>lambda expression</b> ，也就是说，它的第一个 element 是 symbol <b>lambda</b> 。
+</p>
+
+<p>
+在大多数语言中，一个 function 是不能没有 name 的。在 Lisp 中，一个 <b>function</b> 没有真正的 name 。一个 <b>lambda expression</b> 可以作为 <b>function</b> 来调用，即使它没有 <b>name</b> ；为了强调这点，我们也称它为 <b>anonymous function</b> 。一个 带有 name 的 function 仅是一个带有有效 function 的 symbol 。
+</p>
+
+<p>
+大部分的时候，在 Lisp 程序中，是用它们的 name 来调用的。然而，你也可以构建或在 <b>run time</b> 获取一个 <b>function</b> 然后通过 <b>primitive function</b> <code>funcall</code> 和 <code>apply</code> 来调用它。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3dd4b0b" class="outline-4">
+<h4 id="org3dd4b0b">Macro Type</h4>
+<div class="outline-text-4" id="text-org3dd4b0b">
+<p>
+一个 <b>Lisp macro</b> 是 <b>user-defined</b> 的结构，用来扩展 Lisp language 的。它的表现与 <b>function</b> 很相似，但是有不同的 <b>argument-passing</b> 。一个 <b>Lisp macro</b> 的 <b>form</b> 是一个 list ，它的第一个 element 是 symbol <b>macro</b> 以及 CDR 部分是一个 lisp function object ，包括 <b>lambda</b> symbol 。
+</p>
+
+<p>
+Lisp macro 通过用内建的 <b>defmacro</b> 来定义。
+</p>
+
+<blockquote>
+<p>
+注意，Lisp macro 和 keyboard macros 是完全不同的两个东西。当我们使用 <b>macro</b> 时，如果没有特别说明，是指 <b>Lisp macro</b> ，而不是 <b>keyboard macro</b> 
+</p>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-orgbc005e7" class="outline-4">
+<h4 id="orgbc005e7">Primitive Function Type</h4>
+<div class="outline-text-4" id="text-orgbc005e7">
+<p>
+一个 <b>primitive function</b> 是一个可以从 Lisp 调用的 function， 但是它是用 C 语言写的。它也称为 <b>subrs</b> 或 <b>build-in functions</b> 。( <b>subr</b> 源于 <b>subroutine</b> ）
+</p>
+
+<p>
+大部分的 primitive function 当它们被调用时，会将它的们 arguments 全进行 evaluate 。一个没有将它们的 arguments 全进行 <b>evaluate</b> 的，称为 <b>special form</b> 。
+</p>
+
+<p>
+对于 <b>caller</b> ，调用一个 <b>function</b> 不需要关心它是否是一个 <b>primitive function</b> 。但是，如果你试图用 Lisp 来重新定义一个 <b>primitive function</b> 时，这就需要关心了。因为 <b>primitive function</b> 可能从 C 代码中直接调用。 用 Lisp 重定义的 function 在调用时会使用重定义后的 function ，但从 C 代码中调用的，仍会使用 <b>build-in</b> 定义的。因此，我们不鼓励重定义 <b>primitive function</b> 
+</p>
+
+<p>
+术语 <b>functions</b> 是指所有的 Emacs functions ，不管它是用 Lisp 还是 C 写的。
+</p>
+
+<p>
+它没有 <b>read syntax</b> ，并且它是用 带有 <b>subroutine</b> name 的  <b>hash notation</b>  来 print 的。如:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>symbol-function 'car<span style="color: #4f97d7;">)</span>          <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">Access the function cell</span>
+                                        <span style="color: #2aa1ae; background-color: #292e34;">;   </span><span style="color: #2aa1ae; background-color: #292e34;">of the symbol.</span>
+&#8658; #&lt;subr car&gt;
+<span style="color: #4f97d7;">(</span>subrp <span style="color: #bc6ec5;">(</span>symbol-function 'car<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>  <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">Is this a primitive function?</span>
+&#8658; t                       <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">Yes.</span>
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org9dc8e18" class="outline-4">
+<h4 id="org9dc8e18">Byte-Code Function Type</h4>
+<div class="outline-text-4" id="text-org9dc8e18">
+<p>
+<b>Byte-Code Function</b> objects 是由 <b>byte-compiling</b> 后的 Lisp code 生成的。在内部，一个 <b>byte-code</b> function 与 vector 很像；然而，*evaluator* 在 function call 时会特别处理这种 data type。
+</p>
+
+<p>
+它的 <b>printed representation</b> 和 <b>read syntax</b> 类似 <b>vector</b> ，但在 <code>[</code> 前面有个额外的 <code>#</code> 。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga30159d" class="outline-4">
+<h4 id="orga30159d">Autoload Type</h4>
+<div class="outline-text-4" id="text-orga30159d">
+<p>
+它是一个 list ，但它的第一个 element 是 symbol <b>autoload</b> 。它保存了 symbol 的 function definition ，作为一个 <b>real definition</b> 的 <b>placeholder</b> 。一个 <b>autoload</b> object 是说，*real definition* 当需要的时候，从一个带有 Lisp code 的文件中进行 load 。它包含了文件的 name 和一些关于 real definition 的其他信息。
+</p>
+
+<p>
+当该文件已经 loaded 的时候，该 <b>symbol</b> 就有了一个新的 function definition ，并且不再是一个 autoload object 了。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org54b3554" class="outline-4">
+<h4 id="org54b3554">Finalizer Type</h4>
+<div class="outline-text-4" id="text-org54b3554">
+<p>
+一个 <b>finalizer object</b> 在不再需要这些对象的时候帮助 Lisp code 来清理它们。一个 <b>finalizer</b> 持有一个 Lisp function 。当一个 <b>finalizer object</b> 在 <b>garbage collection</b> 进行后， 变成 <b>unreadable</b> ，Emacs 就会调用它相关的 <b>function</b> 了。该 <b>function</b> 在每个 <b>finalizer object</b> 中仅会执行一次。
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgc632519" class="outline-3">
+<h3 id="orgc632519">Editing Types</h3>
+<div class="outline-text-3" id="text-orgc632519">
+<p>
+上一部分是大多数 Lisp dialects 中通用的 type 。这一部分的 type 是 Emacs Lisp 提供与 editing 相关的 type 。
+</p>
+</div>
+
+<div id="outline-container-org6f8deba" class="outline-4">
+<h4 id="org6f8deba">Buffer Type</h4>
+<div class="outline-text-4" id="text-org6f8deba">
+<p>
+一个 <b>buffer</b> 是一个持有可被编辑的文本的 object 。大部分的 buffer 是持有 disk 文件的内容的，但也有一些 buffer 是用作其他目的的。大部分的 buffer 也是对用户可见的，但也有一些是不可见的。
+它没有 <b>read syntax</b> 。它的 <b>printed representation</b> 是用 <b>hash notation</b> ：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>current-buffer<span style="color: #4f97d7;">)</span>
+ &#8658; #&lt;buffer objects.texi&gt;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf1ea73f" class="outline-4">
+<h4 id="orgf1ea73f">Marker Type</h4>
+<div class="outline-text-4" id="text-orgf1ea73f">
+<p>
+一个 <b>marker</b> 是批一个特定的 buffer 中的一个 position . 因此 ，它有两部分：一部分是指一个 buffer ，另一部分是指一个 position 。
+它没有 <b>read syntax</b> 。它的 <b>printed representation</b> 是用 hash notation ，给出当前 charater 的 position 以及 buffer 的name 。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>point-marker<span style="color: #4f97d7;">)</span>
+ &#8658; #&lt;marker at <span style="color: #a45bad;">10779</span> in objects.texi&gt;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org32ef42e" class="outline-4">
+<h4 id="org32ef42e">Window Type</h4>
+<div class="outline-text-4" id="text-org32ef42e">
+<p>
+一个 <b>windows</b> 是 Emacs 用来显示一个 buffer 的 terminal screen 的一部分。每一个 window 都有一个与之相关的 buffer ，它的内容就出现在 window 中。相比之下，一个给定的 buffer ，可能出现在一个 window ，或没有 window 或在好几个 window 中。
+</p>
+
+<p>
+虽然可以同时存在好个 window ，但在同一时间，只有一个 window 是 <b>selected window</b> ，即 <b>cursor</b> 出现所在的 window 。它对应的 buffer ，也就称为 <b>curent-buffer</b> 。
+</p>
+
+<p>
+在screen 中 Window 分组为 <b>frame</b> 。每一个 <b>window</b> 仅属于一个 <b>frame</b> 。
+</p>
+
+<p>
+它没有 <b>read syntax</b> 。它的 <b>printed representation</b> 是用 hash notation ，给出 window number ，以及显示的 buffer 的name。比如:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>selected-window<span style="color: #4f97d7;">)</span>
+ &#8658; #&lt;window <span style="color: #a45bad;">1</span> on objects.texi&gt;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5587536" class="outline-4">
+<h4 id="org5587536">Frame Type</h4>
+<div class="outline-text-4" id="text-org5587536">
+<p>
+一个 <b>frame</b> 是包含一个或多个 Emacs window 的 screen area 。
+</p>
+
+<p>
+它没有 <b>read syntax</b> 。它的 <b>printed representation</b> 是用 hash notation ，给出了 frame 的 title ，加上它的 address 。（用于唯一地标识一个 frame）。如:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>selected-frame<span style="color: #4f97d7;">)</span>
+ &#8658; #&lt;frame emacs@psilocin.gnu.org 0xdac80&gt;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org05f6072" class="outline-4">
+<h4 id="org05f6072">Terminal Type</h4>
+<div class="outline-text-4" id="text-org05f6072">
+<p>
+一个 <b>terminal</b> ，可以显示一个或多个 Emacs frame 。
+它没有 <b>read syntax</b> 。它的 <b>printed representation</b> 是给出 terminal 的序号以及它的 TTY 设置文件名。如:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>get-device-terminal nil<span style="color: #4f97d7;">)</span>
+ &#8658; #&lt;terminal <span style="color: #a45bad;">1</span> on /dev/tty&gt;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1f3a3ff" class="outline-4">
+<h4 id="org1f3a3ff">Window Configuration Type</h4>
+<div class="outline-text-4" id="text-org1f3a3ff">
+<p>
+一个 <b>window configuration</b> 保存了在一个 <b>frame</b> 中的 window 的 position, size 以及 content 的信息。
+它没有 <b>read syntax</b> ，它的 <b>printed representation</b> 看起来像 <code>#&lt;window-configuration&gt;</code> .
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge66f706" class="outline-4">
+<h4 id="orge66f706">Frame Configuration Type</h4>
+<div class="outline-text-4" id="text-orge66f706">
+<p>
+一个 <b>frame configuration</b> 保存了在所有 frames 中的关于 window 的 position, size 和 content 的信息。它不是一个 primitive type ，实际是一个 list ，它的 CAR 是 <b>frame-configuration</b> ，CDR 是一个 alist 。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9988c06" class="outline-4">
+<h4 id="org9988c06">Process Type</h4>
+<div class="outline-text-4" id="text-org9988c06">
+<p>
+<b>process</b> 通常意味着 <b>running program</b> 。Emacs 自身在这种类型中执行的。然而，在 Emacs Lisp 中，一个 <b>process</b> 是一个 Lisp object ，是设计用来通过 Emacs process 来创建一个 subprocess 的。例如 shell, GDB 和 compiler 这些程序，在 Emacs 中是执行在 subprocesses 中的。它没有 <b>read syntax</b> ，它的 <b>printed representation</b> 是:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>process-list<span style="color: #4f97d7;">)</span>
+ &#8658; <span style="color: #4f97d7;">(</span>#&lt;process shell&gt;<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org78e057e" class="outline-4">
+<h4 id="org78e057e">Stream Type</h4>
+<div class="outline-text-4" id="text-org78e057e">
+<p>
+一个 <b>stream</b> 是一个可用作 character source 的 object 。一些不同的 type 可以使用这种方式： markers, buffers, strings, 和 functions 。
+<b>nil</b> object ，除了其他含义，也可作用 <b>stream</b> 。它表示 <b>standard-input</b> 或 <b>standard-output</b> 的 value 。
+<b>t</b> 也可以作为用在 <b>minibuffer</b> 或 <b>echo area</b> 的 input stream 。
+</p>
+
+<p>
+它没有 <b>read syntax</b> ，它的 <b>printed representation</b> 是与它的 primitive type 是什么就会显示为什么。
+</p>
+</div>
+</div>
+<div id="outline-container-org8b7574b" class="outline-4">
+<h4 id="org8b7574b">Keymap Type</h4>
+<div class="outline-text-4" id="text-org8b7574b">
+<p>
+一个 <b>keymap</b> 是映射 <b>key type</b> 为用户指定的 <b>commands</b> 。它实际上是一个 list ，它的 CAR 是 symbol <b>keymap</b> 。
+</p>
+</div>
+</div>
+<div id="outline-container-orgf6e18cb" class="outline-4">
+<h4 id="orgf6e18cb">Overlay Type</h4>
+<div class="outline-text-4" id="text-orgf6e18cb">
+<p>
+一个 <b>overlay</b> 是应用到一部分的 buffer 的 <b>specifies properties</b> 。用于临时用一个不同的显示风格来显示buffer中的一部分。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6ed7aef" class="outline-4">
+<h4 id="org6ed7aef">Font Type</h4>
+<div class="outline-text-4" id="text-org6ed7aef">
+<p>
+一个 <b>font</b> 指示了在一个 Graphical terminal 中如何显示文本。实际上有三种不同的 font types:
+</p>
+
+<ol class="org-ol">
+<li>font objects</li>
+<li>font specs</li>
+<li>font entities</li>
+</ol>
+
+
+<p>
+每一种都有稍微不同的 properties 。它们都没有 <b>read syntax</b> 。它们的 <b>printed representation</b> 分别为 :
+</p>
+
+<pre class="example">
+#&lt;font-object&gt; 
+#&lt;font-spec&gt; 
+#&lt;font-entity&gt;
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgf9eb5ab" class="outline-3">
+<h3 id="orgf9eb5ab">Read Syntax for Circular Objects</h3>
+<div class="outline-text-3" id="text-orgf9eb5ab">
+<p>
+你可以在一个 object 前面用 '#n=' label , 之后在其他地方使用 '#n#' 来引用同样一个 object 。 <b>n</b> 是 integer 。例如：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>#1=<span style="color: #bc6ec5;">(</span>a<span style="color: #bc6ec5;">)</span> b #<span style="color: #a45bad;">1</span>#<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org9448520" class="outline-3">
+<h3 id="org9448520">Type Predicates</h3>
+<div class="outline-text-3" id="text-org9448520">
+<p>
+Emacs Lisp 并不进行 type checking ，所以这个要自己去判断。所有 build-in 的 functions 都在适当的时候会进行 type checking ，并且会在不匹配的时候产生 <b>wrong-type-argument</b> 的错误信号。例如:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>+ <span style="color: #a45bad;">2</span> 'a<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+Emacs Lisp 提供了这些判断 argument 是否是特定类型的 object ，它们称为 <b>type predicate function</b> 。它们接受一个 argument ，如果是特定的 type 就返回 <b>t</b> ，否则返回 <b>nil</b> 。这些 function 的名字，大都是以 "p" 结束的。
+</p>
+</div>
+</div>
+<div id="outline-container-orgec87ad3" class="outline-3">
+<h3 id="orgec87ad3">Equality Predicates</h3>
+<div class="outline-text-3" id="text-orgec87ad3">
+<p>
+<b>eq object1 object2</b> function ：如果 object1 与 object2 是同一个 object 则返回 <b>t</b> ，否则返回 <b>nil</b> 。这意味着，更改其中的一个 object 的 content ，另一个也会跟着更改的。即，它们实际上是指向同一个 object 的时候，才会返回 <b>t</b> 。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>eq 'foo 'foo<span style="color: #4f97d7;">)</span>
+&#8658; t
+
+<span style="color: #4f97d7;">(</span>eq <span style="color: #a45bad;">456</span> <span style="color: #a45bad;">456</span><span style="color: #4f97d7;">)</span>
+&#8658; t
+
+<span style="color: #4f97d7;">(</span>eq <span style="color: #2d9574;">"asdf"</span> <span style="color: #2d9574;">"asdf"</span><span style="color: #4f97d7;">)</span>
+&#8658; nil
+
+<span style="color: #4f97d7;">(</span>eq <span style="color: #2d9574;">""</span> <span style="color: #2d9574;">""</span><span style="color: #4f97d7;">)</span>
+&#8658; t
+<span style="color: #2aa1ae; background-color: #292e34;">;; </span><span style="color: #2aa1ae; background-color: #292e34;">This exception occurs because Emacs Lisp</span>
+<span style="color: #2aa1ae; background-color: #292e34;">;; </span><span style="color: #2aa1ae; background-color: #292e34;">makes just one multibyte empty string, to save space.</span>
+
+<span style="color: #4f97d7;">(</span>eq '<span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">1</span> <span style="color: #2d9574;">(</span><span style="color: #a45bad;">2</span> <span style="color: #67b11d;">(</span><span style="color: #a45bad;">3</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span> '<span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">1</span> <span style="color: #2d9574;">(</span><span style="color: #a45bad;">2</span> <span style="color: #67b11d;">(</span><span style="color: #a45bad;">3</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658; nil
+
+<span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> foo '<span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">1</span> <span style="color: #2d9574;">(</span><span style="color: #a45bad;">2</span> <span style="color: #67b11d;">(</span><span style="color: #a45bad;">3</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658; <span style="color: #4f97d7;">(</span><span style="color: #a45bad;">1</span> <span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">2</span> <span style="color: #2d9574;">(</span><span style="color: #a45bad;">3</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+<span style="color: #4f97d7;">(</span>eq foo foo<span style="color: #4f97d7;">)</span>
+&#8658; t
+<span style="color: #4f97d7;">(</span>eq foo '<span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">1</span> <span style="color: #2d9574;">(</span><span style="color: #a45bad;">2</span> <span style="color: #67b11d;">(</span><span style="color: #a45bad;">3</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658; nil
+
+<span style="color: #4f97d7;">(</span>eq <span style="color: #bc6ec5;">[</span><span style="color: #2d9574;">(</span><span style="color: #a45bad;">1</span> <span style="color: #a45bad;">2</span><span style="color: #2d9574;">)</span> <span style="color: #a45bad;">3</span><span style="color: #bc6ec5;">]</span> <span style="color: #bc6ec5;">[</span><span style="color: #2d9574;">(</span><span style="color: #a45bad;">1</span> <span style="color: #a45bad;">2</span><span style="color: #2d9574;">)</span> <span style="color: #a45bad;">3</span><span style="color: #bc6ec5;">]</span><span style="color: #4f97d7;">)</span>
+&#8658; nil
+
+<span style="color: #4f97d7;">(</span>eq <span style="color: #bc6ec5;">(</span>point-marker<span style="color: #bc6ec5;">)</span> <span style="color: #bc6ec5;">(</span>point-marker<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658; nil
+</pre>
+</div>
+
+
+<p>
+<b>equal object1 object2</b> function ： 如果 object1 和 object2 有相同的 components ，则返回 <b>t</b> ，否则返回 <b>nil</b> 。它是比较内容是否一样的。如果一个 object 是 eq 另一个 object ，则一定也是 equal 的，但反过来则不一定。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>equal 'foo 'foo<span style="color: #4f97d7;">)</span>
+&#8658; t
+
+<span style="color: #4f97d7;">(</span>equal <span style="color: #a45bad;">456</span> <span style="color: #a45bad;">456</span><span style="color: #4f97d7;">)</span>
+&#8658; t
+
+<span style="color: #4f97d7;">(</span>equal <span style="color: #2d9574;">"asdf"</span> <span style="color: #2d9574;">"asdf"</span><span style="color: #4f97d7;">)</span>
+&#8658; t
+<span style="color: #4f97d7;">(</span>eq <span style="color: #2d9574;">"asdf"</span> <span style="color: #2d9574;">"asdf"</span><span style="color: #4f97d7;">)</span>
+&#8658; nil
+
+<span style="color: #4f97d7;">(</span>equal '<span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">1</span> <span style="color: #2d9574;">(</span><span style="color: #a45bad;">2</span> <span style="color: #67b11d;">(</span><span style="color: #a45bad;">3</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span> '<span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">1</span> <span style="color: #2d9574;">(</span><span style="color: #a45bad;">2</span> <span style="color: #67b11d;">(</span><span style="color: #a45bad;">3</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658; t
+<span style="color: #4f97d7;">(</span>eq '<span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">1</span> <span style="color: #2d9574;">(</span><span style="color: #a45bad;">2</span> <span style="color: #67b11d;">(</span><span style="color: #a45bad;">3</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span> '<span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">1</span> <span style="color: #2d9574;">(</span><span style="color: #a45bad;">2</span> <span style="color: #67b11d;">(</span><span style="color: #a45bad;">3</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658; nil
+
+<span style="color: #4f97d7;">(</span>equal <span style="color: #bc6ec5;">[</span><span style="color: #2d9574;">(</span><span style="color: #a45bad;">1</span> <span style="color: #a45bad;">2</span><span style="color: #2d9574;">)</span> <span style="color: #a45bad;">3</span><span style="color: #bc6ec5;">]</span> <span style="color: #bc6ec5;">[</span><span style="color: #2d9574;">(</span><span style="color: #a45bad;">1</span> <span style="color: #a45bad;">2</span><span style="color: #2d9574;">)</span> <span style="color: #a45bad;">3</span><span style="color: #bc6ec5;">]</span><span style="color: #4f97d7;">)</span>
+&#8658; t
+<span style="color: #4f97d7;">(</span>eq <span style="color: #bc6ec5;">[</span><span style="color: #2d9574;">(</span><span style="color: #a45bad;">1</span> <span style="color: #a45bad;">2</span><span style="color: #2d9574;">)</span> <span style="color: #a45bad;">3</span><span style="color: #bc6ec5;">]</span> <span style="color: #bc6ec5;">[</span><span style="color: #2d9574;">(</span><span style="color: #a45bad;">1</span> <span style="color: #a45bad;">2</span><span style="color: #2d9574;">)</span> <span style="color: #a45bad;">3</span><span style="color: #bc6ec5;">]</span><span style="color: #4f97d7;">)</span>
+&#8658; nil
+
+<span style="color: #4f97d7;">(</span>equal <span style="color: #bc6ec5;">(</span>point-marker<span style="color: #bc6ec5;">)</span> <span style="color: #bc6ec5;">(</span>point-marker<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658; t
+
+<span style="color: #4f97d7;">(</span>eq <span style="color: #bc6ec5;">(</span>point-marker<span style="color: #bc6ec5;">)</span> <span style="color: #bc6ec5;">(</span>point-marker<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658; nil
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-org4f9575a" class="outline-2">
+<h2 id="org4f9575a">Numbers</h2>
+<div class="outline-text-2" id="text-org4f9575a">
+</div><div id="outline-container-orga127de9" class="outline-4">
+<h4 id="orga127de9">Integer Basics</h4>
+<div class="outline-text-4" id="text-orga127de9">
+<p>
+非十进制的 integer 可以通过下面的形式来指定:
+</p>
+<dl class="org-dl">
+<dt>#b1010101</dt><dd>表示二进制</dd>
+<dt>#o52</dt><dd>表示八进制 octal</dd>
+<dt>#x2c</dt><dd>表示十六进制 hex</dd>
+<dt>#radixrInteger</dt><dd>表示以 radixr 为进制的数据 。例如 ：#24r1k</dd>
+</dl>
+
+
+<p>
+integer 的最大值，可以通过 variable <b>most-positive-fixnum</b> 来获取 。最小值可以通过 <b>most-negative-fixnum</b> 来获取 :
+</p>
+
+<p>
+下面是我在 Mac 下的输出。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">most-positive-fixnum <span style="color: #a45bad;">2305843009213693951</span>
+most-negative-fixnum <span style="color: #a45bad;">-2305843009213693952</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org351a84c" class="outline-4">
+<h4 id="org351a84c">Floating-Point Basics</h4>
+<div class="outline-text-4" id="text-org351a84c">
+<p>
+它的范围，与 C 语言在你的机器中 <b>double</b> 所能代表的范围。
+</p>
+</div>
+</div>
+<div id="outline-container-orgb91ad9b" class="outline-4">
+<h4 id="orgb91ad9b">Comparison of Numbers</h4>
+<div class="outline-text-4" id="text-orgb91ad9b">
+<p>
+你应该使用 <b>=</b> 来比两个数是否相等，而不是用 <b>eq</b> 。 <b>=</b> 仅比较一个 object 的 numeric values ，而不是比较它是否是同一个 object 。
+</p>
+</div>
+</div>
+<div id="outline-container-org9969ab4" class="outline-4">
+<h4 id="org9969ab4">Numeric Conversions</h4>
+<div class="outline-text-4" id="text-org9969ab4">
+<p>
+integer =&gt; floating point ，使用 <b>float</b> function 。 floating point =&gt; integer 则有4个 function：
+</p>
+
+<ol class="org-ol">
+<li>truncate ， 向 0 的方向取整。</li>
+<li>floor ，向负无穷的方向取整。</li>
+<li>ceiling ，向正无穷的方向取整。</li>
+<li>round ，朝向最近的 integer 取整。（俗称四舍五入）</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">&#20316;&#32773;: emacsist</p>
+<p class="date">Created: 2017-03-22 Wed 00:10</p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

@@ -1,0 +1,2352 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2017-03-22 Wed 00:10 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Java Servlet 3.1 规范笔记</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="emacsist">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/emacsist/css/org-mode.css"/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="/emacsist/index.html"> UP </a>
+ |
+ <a accesskey="H" href="/emacsist/index.html"> HOME </a>
+</div><div id="content">
+<h1 class="title">Java Servlet 3.1 规范笔记</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org36a4dfd">概述</a>
+<ul>
+<li><a href="#org7916fb9">Servlet 是什么</a></li>
+<li><a href="#org888d6b3">Servlet 容器是什么</a></li>
+</ul>
+</li>
+<li><a href="#orgdad52d3">Servlet 接口</a>
+<ul>
+<li><a href="#org22634ff">处理的方法</a></li>
+<li><a href="#orga7caf28">HTTP 特定的请求</a></li>
+<li><a href="#org5650f72">实例数量</a>
+<ul>
+<li><a href="#orga113513">没有实现 SingleThreadModel</a></li>
+<li><a href="#org1528566">实现了 SingleThreadModel</a></li>
+</ul>
+</li>
+<li><a href="#org3c68378">Servlet 生命周期</a>
+<ul>
+<li><a href="#org5e40a48">加载和实例化</a></li>
+<li><a href="#org64181fe">初始化</a>
+<ul>
+<li><a href="#org02a0714">实例化出错</a></li>
+</ul>
+</li>
+<li><a href="#org0572a0d">处理请求</a>
+<ul>
+<li><a href="#orga0b72f0">多线程问题</a></li>
+<li><a href="#org06a1fdd">请求时出现异常</a></li>
+<li><a href="#org920634b">异步处理</a></li>
+<li><a href="#org439feec">线程安全</a></li>
+<li><a href="#orgae610de">结束服务</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org66ccd99">请求(request）对象</a>
+<ul>
+<li><a href="#org3e0a425">HTTP 协议参数</a>
+<ul>
+<li><a href="#org10cabdf">Parameters 可用的条件</a>
+<ul>
+<li><a href="#org79afe1b">方法为GET时</a></li>
+<li><a href="#org96cf1b9">方法为POST时</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgafd0ebc">文件上传</a></li>
+<li><a href="#org5ce373c">属性</a></li>
+<li><a href="#orgf9b7f10">请求头</a></li>
+<li><a href="#orgf21bd78">请求路径元素</a></li>
+<li><a href="#org67c895b">路径转换方法</a></li>
+<li><a href="#org49dcb85">非阻塞IO</a></li>
+<li><a href="#orgc117fd5">Cookies</a></li>
+<li><a href="#orgf539d51">国际化</a></li>
+<li><a href="#orged7b3ec">请求数据编码</a></li>
+<li><a href="#orgd6eff08">请求对象的生命周期</a></li>
+</ul>
+</li>
+<li><a href="#org0cf2bf4">Servlet Context</a>
+<ul>
+<li><a href="#org9e4fd56">概述</a></li>
+<li><a href="#org4bdd156">作用域</a></li>
+<li><a href="#orgaa7f95b">初始参数</a></li>
+<li><a href="#orgbdedad2">配置方法</a></li>
+<li><a href="#org65c6eb8">Context 属性</a></li>
+<li><a href="#orga0d6c46">资源</a></li>
+<li><a href="#org01e22d6">多个主机和 Servlet Context</a></li>
+<li><a href="#org352be7e">重载注意因素</a>
+<ul>
+<li><a href="#orgd2bb1c0">临时工作目录</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org89928f0">响应(response)对象</a>
+<ul>
+<li><a href="#orgb67bf23">buffering</a></li>
+<li><a href="#org5f72dc5">非阻塞IO</a></li>
+<li><a href="#org3340bc1">便捷方法</a></li>
+<li><a href="#org41f5661">国际化</a></li>
+<li><a href="#orgbec1b25">关闭 response 对象</a></li>
+</ul>
+</li>
+<li><a href="#orge6c0688">Filtering 过滤器</a>
+<ul>
+<li><a href="#org0608385">filter 是什么</a>
+<ul>
+<li><a href="#orgb6fc6b2">例如</a></li>
+</ul>
+</li>
+<li><a href="#org93c7718">主要概念</a>
+<ul>
+<li><a href="#orgc566ec9">filter 生命周期</a></li>
+<li><a href="#org4ac9fc1">包装 request 和 response</a></li>
+<li><a href="#org78e9d65">filter 环境</a></li>
+<li><a href="#org61b9c2a">在 Web 应用中配置 filters</a></li>
+<li><a href="#org7e6e51c">Filters 和 RequestDispatcher</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orge534cb4">Sessions 会话</a>
+<ul>
+<li><a href="#orgbe85424">Session 跟踪机制</a>
+<ul>
+<li><a href="#orgaac4251">Cookies</a>
+<ul>
+<li><a href="#org10ec8b7">URL Rewriting</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgc2c84f8">创建一个 session</a></li>
+<li><a href="#orgd2d7552">session 作用域</a></li>
+<li><a href="#org5d1ffb8">绑定属性到 session</a></li>
+<li><a href="#orge4dbc26">Session timeouts</a></li>
+<li><a href="#org41bf0bb">最后访问时间</a></li>
+<li><a href="#org3ac9427">重要的 session 语义</a>
+<ul>
+<li><a href="#orgb5bf4a5">线程问题</a></li>
+<li><a href="#orgee537d5">分布式环境</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org082ac8a">注解和可插拔性</a>
+<ul>
+<li><a href="#orgc3b75b0">注解和可插拔性</a></li>
+<li><a href="#org2b20e00">可插拔性</a>
+<ul>
+<li><a href="#org73605cf">web.xml 的模块化</a></li>
+<li><a href="#orge10c544">web.xml 和 web-fragment.xml 的顺序</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org4766e81">转发请求</a>
+<ul>
+<li><a href="#orgb7ede7a">获取一个 RequestDispatcher</a>
+<ul>
+<li><a href="#orgb25af37">在 RequestDispatcher 路径的查询字符串</a></li>
+</ul>
+</li>
+<li><a href="#org7ea9ad9">使用 RequestDispatcher</a></li>
+<li><a href="#orgb3f1856">include 方法</a>
+<ul>
+<li><a href="#org71a59b3">include 请求参数</a></li>
+</ul>
+</li>
+<li><a href="#orgcbb64ed">forward 方法</a>
+<ul>
+<li><a href="#org344fcb7">查询字符串</a></li>
+<li><a href="#org2bc9ad3">forward 请求参数</a></li>
+</ul>
+</li>
+<li><a href="#orgbee7cf4">dispatch 方法</a>
+<ul>
+<li><a href="#org39b5d53">dispatch 请求参数</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orga1812de">Web 应用程序</a>
+<ul>
+<li><a href="#org97e6c90">目录结构</a></li>
+<li><a href="#org2e9ea45">Error Pages</a></li>
+<li><a href="#org8dda0b3">Welcome Files</a></li>
+</ul>
+</li>
+<li><a href="#org9d97e33">应用程序生命周期事件</a>
+<ul>
+<li><a href="#orgeea6ebf">事件类型和接口</a>
+<ul>
+<li><a href="#org13686a6">Servlet Context 事件</a></li>
+<li><a href="#org16aaf3d">HTTP Session 事件</a></li>
+<li><a href="#orgb924091">Servlet Request 事件</a></li>
+</ul>
+</li>
+<li><a href="#orge4db601">部署声明</a></li>
+<li><a href="#orgd94c8d8">listener 异常</a></li>
+</ul>
+</li>
+<li><a href="#org35db54e">映射请求到Servlet</a>
+<ul>
+<li><a href="#org468fcd0">使用URL路径</a></li>
+<li><a href="#orgefa2fda">映射规范</a></li>
+<li><a href="#orgfb54b6d">隐式映射</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-org36a4dfd" class="outline-2">
+<h2 id="org36a4dfd">概述</h2>
+<div class="outline-text-2" id="text-org36a4dfd">
+</div><div id="outline-container-org7916fb9" class="outline-3">
+<h3 id="org7916fb9">Servlet 是什么</h3>
+<div class="outline-text-3" id="text-org7916fb9">
+<blockquote>
+<p>
+Servlet 是一个 Java 基于Web技术的组件，通过容器来管理，用于产生动态内容。该容器，有时也称为 Servlet 引擎。它与Web客户端通过一个由容器实现的 请求/响应 范例来进行交互。
+</p>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-org888d6b3" class="outline-3">
+<h3 id="org888d6b3">Servlet 容器是什么</h3>
+<div class="outline-text-3" id="text-org888d6b3">
+<p>
+Servlet 容器是 Web 服务器或应用程序服务器的一部分，用来提供发送 请求和响应 的网络服务，解码基于 MIME 的请求，并格式化基于 MIMIE 的响应。它包含和管理 servlets 的生命周期。
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgdad52d3" class="outline-2">
+<h2 id="orgdad52d3">Servlet 接口</h2>
+<div class="outline-text-2" id="text-orgdad52d3">
+</div><div id="outline-container-org22634ff" class="outline-3">
+<h3 id="org22634ff">处理的方法</h3>
+<div class="outline-text-3" id="text-org22634ff">
+<p>
+<b>service</b> 用来处理客户端请求
+</p>
+</div>
+</div>
+<div id="outline-container-orga7caf28" class="outline-3">
+<h3 id="orga7caf28">HTTP 特定的请求</h3>
+<div class="outline-text-3" id="text-orga7caf28">
+<ul class="org-ul">
+<li>doGet</li>
+<li>doPost</li>
+<li>doPut</li>
+<li>doDelete</li>
+<li>doHead</li>
+<li>doOptions</li>
+<li>doTrace</li>
+</ul>
+
+
+<p>
+它们是在 <b>service</b> 方法里，根据HTTP请求的方法再调用相应的代码的。
+</p>
+</div>
+</div>
+<div id="outline-container-org5650f72" class="outline-3">
+<h3 id="org5650f72">实例数量</h3>
+<div class="outline-text-3" id="text-org5650f72">
+<p>
+在一个非分布式环境中（默认），servlet 容器必须为每个 servlet 声明仅使用一个实例。然而，如果一个 servlet 实现了 <b>SingleThreadModel</b> 接口，则 servlet 容器可能会实例化多个实例来处理一个非常重的请求，加载和串行化这些请求到一个特定的实例。
+</p>
+
+<p>
+在一个分布式环境中，每个JVM中的每个 servlet 容器可能仅会有一个 servlet 实例。如果一个 servlet 在一个分布式环境中并实现了 <b>SingleThreadModel</b> 接口，则在每个JVM中的 servlet 容器可能会实例化多个 servlet 实例。
+</p>
+
+<blockquote>
+<p>
+<b>SingleThreadModel</b> 在该版本中已经被弃用
+</p>
+</blockquote>
+</div>
+
+<div id="outline-container-orga113513" class="outline-4">
+<h4 id="orga113513">没有实现 SingleThreadModel</h4>
+<div class="outline-text-4" id="text-orga113513">
+<div class="org-src-container">
+<pre class="src src-bash">ab -n <span style="color: #a45bad;">100</span> -c <span style="color: #a45bad;">100</span> http://localhost:8008/hello
+</pre>
+</div>
+<p>
+生成的 instance 是 1:
+</p>
+<img src="/emacsist/images/java-servlet-100-nosingleThread.jpg"
+</div>
+</div>
+
+
+<div id="outline-container-org1528566" class="outline-4">
+<h4 id="org1528566">实现了 SingleThreadModel</h4>
+<div class="outline-text-4" id="text-org1528566">
+<div class="org-src-container">
+<pre class="src src-bash">ab -n <span style="color: #a45bad;">100</span> -c <span style="color: #a45bad;">100</span> http://localhost:8008/hello
+</pre>
+</div>
+
+<p>
+生成的 instance 是100，这个数是并发数是多少，就是多少，即上面 ab 测试中的 <b>-c</b> 参数相同。
+</p>
+
+<img src="/emacsist/images/java-servlet-100-singleThread.jpg"
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-org3c68378" class="outline-3">
+<h3 id="org3c68378">Servlet 生命周期</h3>
+<div class="outline-text-3" id="text-org3c68378">
+<p>
+它在 <b>javax.servlet.Servlet</b> 接口中定义以下的生命周期方法
+</p>
+
+<ol class="org-ol">
+<li>init</li>
+<li>service</li>
+<li>destroy</li>
+</ol>
+</div>
+
+<div id="outline-container-org5e40a48" class="outline-4">
+<h4 id="org5e40a48">加载和实例化</h4>
+<div class="outline-text-4" id="text-org5e40a48">
+<p>
+它是由 servlet 容器来负责的。它可以在 servlet 容器启动时，或延迟到需要为一个请求进行服务时才进行加载和实例化。
+</p>
+</div>
+</div>
+<div id="outline-container-org64181fe" class="outline-4">
+<h4 id="org64181fe">初始化</h4>
+<div class="outline-text-4" id="text-org64181fe">
+<p>
+实例化之后，容器必须在为客户端处理请求之前初始化 servlet 。它是通过一个配置的对象 ServletConfig 来保存初始化配置，初始化是调用 <b>init</b> 方法来进行初始化的。
+</p>
+</div>
+<div id="outline-container-org02a0714" class="outline-5">
+<h5 id="org02a0714">实例化出错</h5>
+<div class="outline-text-5" id="text-org02a0714">
+<p>
+这时 servlet 是不能提供服务的并且必须被 servlet 容器释放。 <b>destroy</b>  方法也不会调用，因为它没有成功地进行初始化过。
+开发者不应该假设一个 servlet 在一个容器的 runtime 中是激活的，直到调用了 <b>init</b> 方法之后才可以。
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org0572a0d" class="outline-4">
+<h4 id="org0572a0d">处理请求</h4>
+<div class="outline-text-4" id="text-org0572a0d">
+<blockquote>
+<p>
+注意，一个 servlet 实例在它的生命周期内，是可以不进行处理请求的。
+</p>
+</blockquote>
+</div>
+<div id="outline-container-orga0b72f0" class="outline-5">
+<h5 id="orga0b72f0">多线程问题</h5>
+<div class="outline-text-5" id="text-orga0b72f0">
+<p>
+尽管不建议，一个可行的方法是实现 <b>SingleThreadModel</b> 接口来让容器保证在一个 <b>service</b> 方法中仅有一条线程执行。它可以通过将请求进行串行化处理，或者维护一个 servlet 实例池来实现。
+</p>
+
+<p>
+如果没有实现 <b>SingleThreadModel</b> 接口，并且 <b>service</b> 方法是使用 <b>synchronized</b> 来定义的话，则 servlet 容器并不能使用实例池的方式，而必须串行化请求。强烈建议开发者不要在 <b>service</b> 方法上使用 <b>synchronized</b> ，它会导致性能问题。
+</p>
+</div>
+</div>
+<div id="outline-container-org06a1fdd" class="outline-5">
+<h5 id="org06a1fdd">请求时出现异常</h5>
+<div class="outline-text-5" id="text-org06a1fdd">
+<p>
+<b>ServletException</b> 表示正在处理请求时出现错误，容器这时应该适当清理这些请求。
+<b>UnavailableException</b> 表示该 servlet 临时或永久不可用了。（永久不可用应返回 404， 临时不可用则返回 503)
+</p>
+</div>
+</div>
+<div id="outline-container-org920634b" class="outline-5">
+<h5 id="org920634b">异步处理</h5>
+<div class="outline-text-5" id="text-org920634b">
+<ol class="org-ol">
+<li>接收到请求并通过一般的 filters 再到达 servlet</li>
+<li>servlet 处理请求的参数或内容来决定请求的本质</li>
+<li>servlet 发出数据或资源的请求，例如访问远程的 web 服务或 JDBC 链接</li>
+<li>servlet 返回一个没有内容的 response</li>
+<li>之后，当请求的资源可用时（第3步），处理该事件的线程继续在同一线程中继续处理或者通过 <b>AsyncContext</b> 来分发到容器的另一个资源中处理。</li>
+</ol>
+
+
+<p>
+<b>@WebServlet</b> 和 <b>@WebFilter</b> 都有一个 <b>asyncSupported</b> 的布尔属性，默认为 <b>false</b> 。当为 <b>true</b> 的时候， 可以通过调用 <b>startAsync</b> 开启一个异步处理。响应会直到在 <b>AsyncContext</b> 中调用 <b>complete</b> 才会真正完成。从一个 <b>asyncSupported=true</b> 的 servlet 转发到一个 <b>asyncSupported=false</b> 是允许的。这种情况下，在 <b>asyncSupported=false</b> 的 servlet 退出 <b>service</b> 方法时，就会完成响应了，并且由容器来负责调用 <b>AsyncContext</b> 的 <b>complete</b> ，以便让 <b>AsyncListener</b> 收到通知。
+</p>
+
+<p>
+从一个 <b>synchronous</b> 的 servlet 转发到一个 <b>asynchronous</b> 的 servlet 是非法的。
+</p>
+</div>
+</div>
+<div id="outline-container-org439feec" class="outline-5">
+<h5 id="org439feec">线程安全</h5>
+<div class="outline-text-5" id="text-org439feec">
+<p>
+除了 <b>startAsync</b> 和 <b>complete</b> 之外的方法， <b>request</b> 和 <b>response</b> 实现的对象并不保证是线程安全的。
+</p>
+</div>
+</div>
+<div id="outline-container-orgae610de" class="outline-5">
+<h5 id="orgae610de">结束服务</h5>
+<div class="outline-text-5" id="text-orgae610de">
+<p>
+并不要求 servlet 容器一直保持 servlet 到特定时期的时间。当 servlet 容器决定一个 servlet 应该中服务移除时，它会调用 <b>destroy</b> 方法。在调用 <b>destroy</b> 方法之前，它必须允许任意正在执行 <b>service</b> 的线程执行完毕或者超出了 server 定义的时间限制。调用完 <b>destroy</b> 方法后，servlet 容器就会释放该 servlet 实例，以便进行 GC
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org66ccd99" class="outline-2">
+<h2 id="org66ccd99">请求(request）对象</h2>
+<div class="outline-text-2" id="text-org66ccd99">
+</div><div id="outline-container-org3e0a425" class="outline-3">
+<h3 id="org3e0a425">HTTP 协议参数</h3>
+<div class="outline-text-3" id="text-org3e0a425">
+<p>
+从客户端发送的参数，都是 <b>strings</b> 。
+</p>
+<ul class="org-ul">
+<li>getParameter</li>
+<li>getParameterNames</li>
+<li>getParameterValues</li>
+<li>getParameterMap</li>
+</ul>
+
+
+<p>
+<b>getParameter</b> 的值必须是 <b>getParameterValues</b> 返回的 <b>string</b> 数组对象中的第一个值。即:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java">getParameter<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"hello"</span><span style="color: #4f97d7;">)</span> &#31561;&#21516;&#20110; getParameterValues<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"hello"</span><span style="color: #4f97d7;">)[</span><span style="color: #a45bad;">0</span><span style="color: #4f97d7;">]</span>
+</pre>
+</div>
+
+
+<p>
+从 query string 以及Post body 中的数据，都会统一放到 parameter 集中。query string 会在 post body 的数据之前设置。即，如果一个请求中, query string 为 a=hello，并且 post body 为 a=goodbye&amp;a=world ，则参数 a 的结果为 （hello, goodbye, world) 。
+</p>
+
+<p>
+Path 的参数是 GET 请求的一部分，并不会放到 parameters 中。Path 参数必须从 <b>getRequestURI</b> 方法或 <b>getPathInfo</b> 方法来获取。
+</p>
+</div>
+<div id="outline-container-org10cabdf" class="outline-4">
+<h4 id="org10cabdf">Parameters 可用的条件</h4>
+<div class="outline-text-4" id="text-org10cabdf">
+<p>
+Post表单时要满足以下条件时 parameter 集合才可用
+</p>
+<ol class="org-ol">
+<li>请求是 http 或 https</li>
+<li>请求的方法是 POST</li>
+<li>content type 为： <b>application/x-www-form-urlencoded</b></li>
+<li>servlet 已经在 request 对象上调用了相关的 <b>getParameter</b> 方法。</li>
+</ol>
+
+
+<p>
+当以上条件不满足时，POST 表单的数据并不会设置到 parameter 集合中，但依然可以通过 request 对象的 inputstream 来获取。
+当以上条件满足时，POST 表单的数据在 request 对象的 inputstream 将不再可用了。
+</p>
+
+<p>
+下面是具体例子
+</p>
+</div>
+
+<div id="outline-container-org79afe1b" class="outline-5">
+<h5 id="org79afe1b">方法为GET时</h5>
+<div class="outline-text-5" id="text-org79afe1b">
+</div><ul class="org-ul"><li><a id="org25e0ae6"></a>没有 query string 时<br><ul class="org-ul"><li><a id="org9b98a19"></a>第一次调用 getParameter 时<br><div class="outline-text-7" id="text-org9b98a19">
+<p>
+示例的Java代码：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java">System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"1."</span> + req.getParameterNames<span style="color: #bc6ec5;">()</span>.hasMoreElements<span style="color: #bc6ec5;">()</span><span style="color: #4f97d7;">)</span>;
+System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"2."</span> + convertStreamToString<span style="color: #bc6ec5;">(</span>req.getInputStream<span style="color: #2d9574;">()</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>;
+System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"3."</span> + req.getParameterNames<span style="color: #bc6ec5;">()</span>.hasMoreElements<span style="color: #bc6ec5;">()</span><span style="color: #4f97d7;">)</span>;
+System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"4."</span> + convertStreamToString<span style="color: #bc6ec5;">(</span>req.getInputStream<span style="color: #2d9574;">()</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>;
+</pre>
+</div>
+
+<pre class="example">
+[22:50:28] emacsist:~ $ curl -X GET  -d "hello=world&amp;hello2=world2" http://localhost:8008/parameters -v
+*   Trying ::1...
+* TCP_NODELAY set
+* Connected to localhost (::1) port 8008 (#0)
+&gt; GET /parameters HTTP/1.1
+&gt; Host: localhost:8008
+&gt; User-Agent: curl/7.51.0
+&gt; Accept: */*
+&gt; Content-Length: 25
+&gt; Content-Type: application/x-www-form-urlencoded
+&gt;
+* upload completely sent off: 25 out of 25 bytes
+&lt; HTTP/1.1 200 OK
+&lt; Date: Mon, 20 Mar 2017 14:54:08 GMT
+&lt; Content-Length: 0
+&lt; Server: Jetty(9.3.7.v20160115)
+&lt;
+* Curl_http_done: called premature == 0
+* Connection #0 to host localhost left intact
+</pre>
+
+<p>
+它输出:
+</p>
+
+<pre class="example">
+1.false
+2.hello=world&amp;hello2=world2
+3.false
+4.
+</pre>
+</div></li>
+
+<li><a id="orge92be8c"></a>第一次调用 getInputStream 时<br><div class="outline-text-7" id="text-orge92be8c">
+<p>
+示例的Java代码：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java">System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"1."</span> + convertStreamToString<span style="color: #bc6ec5;">(</span>req.getInputStream<span style="color: #2d9574;">()</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>;
+System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"2."</span> + req.getParameterNames<span style="color: #bc6ec5;">()</span>.hasMoreElements<span style="color: #bc6ec5;">()</span><span style="color: #4f97d7;">)</span>;
+System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"3."</span> + convertStreamToString<span style="color: #bc6ec5;">(</span>req.getInputStream<span style="color: #2d9574;">()</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>;
+System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"4."</span> + req.getParameterNames<span style="color: #bc6ec5;">()</span>.hasMoreElements<span style="color: #bc6ec5;">()</span><span style="color: #4f97d7;">)</span>;
+</pre>
+</div>
+
+<pre class="example">
+[22:50:28] emacsist:~ $ curl -X GET  -d "hello=world&amp;hello2=world2" http://localhost:8008/parameters -v
+*   Trying ::1...
+* TCP_NODELAY set
+* Connected to localhost (::1) port 8008 (#0)
+&gt; GET /parameters HTTP/1.1
+&gt; Host: localhost:8008
+&gt; User-Agent: curl/7.51.0
+&gt; Accept: */*
+&gt; Content-Length: 25
+&gt; Content-Type: application/x-www-form-urlencoded
+&gt;
+* upload completely sent off: 25 out of 25 bytes
+&lt; HTTP/1.1 200 OK
+&lt; Date: Mon, 20 Mar 2017 14:54:08 GMT
+&lt; Content-Length: 0
+&lt; Server: Jetty(9.3.7.v20160115)
+&lt;
+* Curl_http_done: called premature == 0
+* Connection #0 to host localhost left intact
+</pre>
+
+<p>
+它输出:
+</p>
+
+<pre class="example">
+1.hello=world&amp;hello2=world2
+2.false
+3.
+4.false
+</pre>
+</div></li></ul></li>
+
+<li><a id="org7f76859"></a>有 query string 时<br><ul class="org-ul"><li><a id="org29873cd"></a>第一次调用 getParameter 时<br><div class="outline-text-7" id="text-org29873cd">
+<p>
+示例的Java代码：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java">System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"1."</span> + req.getParameterNames<span style="color: #bc6ec5;">()</span>.hasMoreElements<span style="color: #bc6ec5;">()</span><span style="color: #4f97d7;">)</span>;
+System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"2."</span> + convertStreamToString<span style="color: #bc6ec5;">(</span>req.getInputStream<span style="color: #2d9574;">()</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>;
+System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"3."</span> + req.getParameterNames<span style="color: #bc6ec5;">()</span>.hasMoreElements<span style="color: #bc6ec5;">()</span><span style="color: #4f97d7;">)</span>;
+System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"4."</span> + convertStreamToString<span style="color: #bc6ec5;">(</span>req.getInputStream<span style="color: #2d9574;">()</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>;
+</pre>
+</div>
+
+<pre class="example">
+[23:08:07] emacsist:~ $ curl -X GET  -d "hello=world&amp;hello2=world2" http://localhost:8008/parameters\?hello\=parameters -v
+*   Trying ::1...
+* TCP_NODELAY set
+* Connected to localhost (::1) port 8008 (#0)
+&gt; GET /parameters?hello=parameters HTTP/1.1
+&gt; Host: localhost:8008
+&gt; User-Agent: curl/7.51.0
+&gt; Accept: */*
+&gt; Content-Length: 25
+&gt; Content-Type: application/x-www-form-urlencoded
+&gt;
+* upload completely sent off: 25 out of 25 bytes
+&lt; HTTP/1.1 200 OK
+&lt; Date: Mon, 20 Mar 2017 15:09:26 GMT
+&lt; Content-Length: 0
+&lt; Server: Jetty(9.3.7.v20160115)
+&lt;
+* Curl_http_done: called premature == 0
+* Connection #0 to host localhost left intact
+</pre>
+
+<p>
+它输出:
+</p>
+
+<pre class="example">
+1.true
+2.hello=world&amp;hello2=world2
+3.true
+4.
+</pre>
+</div></li>
+
+<li><a id="org58285b9"></a>第一次调用 getInputStream 时<br><div class="outline-text-7" id="text-org58285b9">
+<p>
+示例的Java代码：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java">System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"1."</span> + convertStreamToString<span style="color: #bc6ec5;">(</span>req.getInputStream<span style="color: #2d9574;">()</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>;
+System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"2."</span> + req.getParameterNames<span style="color: #bc6ec5;">()</span>.hasMoreElements<span style="color: #bc6ec5;">()</span><span style="color: #4f97d7;">)</span>;
+System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"3."</span> + convertStreamToString<span style="color: #bc6ec5;">(</span>req.getInputStream<span style="color: #2d9574;">()</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>;
+System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"4."</span> + req.getParameterNames<span style="color: #bc6ec5;">()</span>.hasMoreElements<span style="color: #bc6ec5;">()</span><span style="color: #4f97d7;">)</span>;
+</pre>
+</div>
+
+<pre class="example">
+[23:12:15] emacsist:~ $ curl -X GET  -d "hello=world&amp;hello2=world2" http://localhost:8008/parameters\?hello\=parameters -v
+*   Trying ::1...
+* TCP_NODELAY set
+* Connected to localhost (::1) port 8008 (#0)
+&gt; GET /parameters?hello=parameters HTTP/1.1
+&gt; Host: localhost:8008
+&gt; User-Agent: curl/7.51.0
+&gt; Accept: */*
+&gt; Content-Length: 25
+&gt; Content-Type: application/x-www-form-urlencoded
+&gt;
+* upload completely sent off: 25 out of 25 bytes
+&lt; HTTP/1.1 200 OK
+&lt; Date: Mon, 20 Mar 2017 15:13:11 GMT
+&lt; Content-Length: 0
+&lt; Server: Jetty(9.3.7.v20160115)
+&lt;
+* Curl_http_done: called premature == 0
+* Connection #0 to host localhost left intact
+</pre>
+
+<p>
+它的输出:
+</p>
+
+<pre class="example">
+1.hello=world&amp;hello2=world2
+2.true
+3.
+4.true
+</pre>
+</div></li></ul></li></ul>
+</div>
+
+<div id="outline-container-org96cf1b9" class="outline-5">
+<h5 id="org96cf1b9">方法为POST时</h5>
+<div class="outline-text-5" id="text-org96cf1b9">
+</div><ul class="org-ul"><li><a id="org6f013b3"></a>没有 query string 时<br><ul class="org-ul"><li><a id="orgc387a52"></a>第一次调用 getParameter 时<br><div class="outline-text-7" id="text-orgc387a52">
+<p>
+示例的Java代码：
+</p>
+<div class="org-src-container">
+<pre class="src src-java">System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"1."</span> + req.getParameterNames<span style="color: #bc6ec5;">()</span>.hasMoreElements<span style="color: #bc6ec5;">()</span><span style="color: #4f97d7;">)</span>;
+System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"2."</span> + convertStreamToString<span style="color: #bc6ec5;">(</span>req.getInputStream<span style="color: #2d9574;">()</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>;
+System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"3."</span> + req.getParameterNames<span style="color: #bc6ec5;">()</span>.hasMoreElements<span style="color: #bc6ec5;">()</span><span style="color: #4f97d7;">)</span>;
+System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"4."</span> + convertStreamToString<span style="color: #bc6ec5;">(</span>req.getInputStream<span style="color: #2d9574;">()</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>;
+</pre>
+</div>
+
+<pre class="example">
+[23:16:50] emacsist:~ $ curl -X POST  -d "hello=world&amp;hello2=world2" http://localhost:8008/parameters -v
+Note: Unnecessary use of -X or --request, POST is already inferred.
+*   Trying ::1...
+* TCP_NODELAY set
+* Connected to localhost (::1) port 8008 (#0)
+&gt; POST /parameters HTTP/1.1
+&gt; Host: localhost:8008
+&gt; User-Agent: curl/7.51.0
+&gt; Accept: */*
+&gt; Content-Length: 25
+&gt; Content-Type: application/x-www-form-urlencoded
+&gt;
+* upload completely sent off: 25 out of 25 bytes
+&lt; HTTP/1.1 200 OK
+&lt; Date: Mon, 20 Mar 2017 15:16:55 GMT
+&lt; Content-Length: 0
+&lt; Server: Jetty(9.3.7.v20160115)
+&lt;
+* Curl_http_done: called premature == 0
+* Connection #0 to host localhost left intact
+</pre>
+
+<p>
+它输出:
+</p>
+
+<pre class="example">
+1.true
+2.
+3.true
+4.
+</pre>
+</div></li>
+
+<li><a id="org686ec5f"></a>第一次调用 getInputStream 时<br><div class="outline-text-7" id="text-org686ec5f">
+<p>
+示例的Java代码:
+</p>
+<div class="org-src-container">
+<pre class="src src-java">System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"1."</span> + convertStreamToString<span style="color: #bc6ec5;">(</span>req.getInputStream<span style="color: #2d9574;">()</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>;
+System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"2."</span> + req.getParameterNames<span style="color: #bc6ec5;">()</span>.hasMoreElements<span style="color: #bc6ec5;">()</span><span style="color: #4f97d7;">)</span>;
+System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"3."</span> + convertStreamToString<span style="color: #bc6ec5;">(</span>req.getInputStream<span style="color: #2d9574;">()</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>;
+System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"4."</span> + req.getParameterNames<span style="color: #bc6ec5;">()</span>.hasMoreElements<span style="color: #bc6ec5;">()</span><span style="color: #4f97d7;">)</span>;
+</pre>
+</div>
+
+<pre class="example">
+[23:17:56] emacsist:~ $ curl -X POST  -d "hello=world&amp;hello2=world2" http://localhost:8008/parameters -v
+Note: Unnecessary use of -X or --request, POST is already inferred.
+*   Trying ::1...
+* TCP_NODELAY set
+* Connected to localhost (::1) port 8008 (#0)
+&gt; POST /parameters HTTP/1.1
+&gt; Host: localhost:8008
+&gt; User-Agent: curl/7.51.0
+&gt; Accept: */*
+&gt; Content-Length: 25
+&gt; Content-Type: application/x-www-form-urlencoded
+&gt;
+* upload completely sent off: 25 out of 25 bytes
+&lt; HTTP/1.1 200 OK
+&lt; Date: Mon, 20 Mar 2017 15:19:26 GMT
+&lt; Content-Length: 0
+&lt; Server: Jetty(9.3.7.v20160115)
+&lt;
+* Curl_http_done: called premature == 0
+* Connection #0 to host localhost left intact
+</pre>
+
+<p>
+它的输出:
+</p>
+
+<pre class="example">
+1.hello=world&amp;hello2=world2
+2.false
+3.
+4.false
+</pre>
+</div></li></ul></li>
+<li><a id="org421c490"></a>有 query string 时<br><ul class="org-ul"><li><a id="orgedc13cd"></a>第一次调用 getParameter 时<br><div class="outline-text-7" id="text-orgedc13cd">
+<p>
+示例的Java代码:
+</p>
+<div class="org-src-container">
+<pre class="src src-java">System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"1."</span> + req.getParameterNames<span style="color: #bc6ec5;">()</span>.hasMoreElements<span style="color: #bc6ec5;">()</span><span style="color: #4f97d7;">)</span>;
+System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"2."</span> + convertStreamToString<span style="color: #bc6ec5;">(</span>req.getInputStream<span style="color: #2d9574;">()</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>;
+System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"3."</span> + req.getParameterNames<span style="color: #bc6ec5;">()</span>.hasMoreElements<span style="color: #bc6ec5;">()</span><span style="color: #4f97d7;">)</span>;
+System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"4."</span> + convertStreamToString<span style="color: #bc6ec5;">(</span>req.getInputStream<span style="color: #2d9574;">()</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>;
+</pre>
+</div>
+
+<pre class="example">
+[23:19:26] emacsist:~ $ curl -X POST  -d "hello=world&amp;hello2=world2" http://localhost:8008/parameters\?hello\=paratemers -v
+Note: Unnecessary use of -X or --request, POST is already inferred.
+*   Trying ::1...
+* TCP_NODELAY set
+* Connected to localhost (::1) port 8008 (#0)
+&gt; POST /parameters?hello=paratemers HTTP/1.1
+&gt; Host: localhost:8008
+&gt; User-Agent: curl/7.51.0
+&gt; Accept: */*
+&gt; Content-Length: 25
+&gt; Content-Type: application/x-www-form-urlencoded
+&gt;
+* upload completely sent off: 25 out of 25 bytes
+&lt; HTTP/1.1 200 OK
+&lt; Date: Mon, 20 Mar 2017 15:22:25 GMT
+&lt; Content-Length: 0
+&lt; Server: Jetty(9.3.7.v20160115)
+&lt;
+* Curl_http_done: called premature == 0
+* Connection #0 to host localhost left intact
+</pre>
+
+<p>
+它的输出:
+</p>
+
+<pre class="example">
+1.true
+2.
+3.true
+4.
+</pre>
+</div></li>
+<li><a id="org522a564"></a>第一次调用 getInputStream 时<br><div class="outline-text-7" id="text-org522a564">
+<p>
+示例的Java代码:
+</p>
+<div class="org-src-container">
+<pre class="src src-java">System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"1."</span> + convertStreamToString<span style="color: #bc6ec5;">(</span>req.getInputStream<span style="color: #2d9574;">()</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>;
+System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"2."</span> + req.getParameterNames<span style="color: #bc6ec5;">()</span>.hasMoreElements<span style="color: #bc6ec5;">()</span><span style="color: #4f97d7;">)</span>;
+System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"3."</span> + convertStreamToString<span style="color: #bc6ec5;">(</span>req.getInputStream<span style="color: #2d9574;">()</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>;
+System.out.println<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"4."</span> + req.getParameterNames<span style="color: #bc6ec5;">()</span>.hasMoreElements<span style="color: #bc6ec5;">()</span><span style="color: #4f97d7;">)</span>;
+</pre>
+</div>
+
+<pre class="example">
+[23:22:25] emacsist:~ $ curl -X POST  -d "hello=world&amp;hello2=world2" http://localhost:8008/parameters\?hello\=paratemers -v
+Note: Unnecessary use of -X or --request, POST is already inferred.
+*   Trying ::1...
+* TCP_NODELAY set
+* Connected to localhost (::1) port 8008 (#0)
+&gt; POST /parameters?hello=paratemers HTTP/1.1
+&gt; Host: localhost:8008
+&gt; User-Agent: curl/7.51.0
+&gt; Accept: */*
+&gt; Content-Length: 25
+&gt; Content-Type: application/x-www-form-urlencoded
+&gt;
+* upload completely sent off: 25 out of 25 bytes
+&lt; HTTP/1.1 200 OK
+&lt; Date: Mon, 20 Mar 2017 15:24:34 GMT
+&lt; Content-Length: 0
+&lt; Server: Jetty(9.3.7.v20160115)
+&lt;
+* Curl_http_done: called premature == 0
+* Connection #0 to host localhost left intact
+</pre>
+
+<p>
+它的输出:
+</p>
+
+<pre class="example">
+1.hello=world&amp;hello2=world2
+2.true
+3.
+4.true
+</pre>
+</div></li></ul></li></ul>
+</div>
+</div>
+</div>
+<div id="outline-container-orgafd0ebc" class="outline-3">
+<h3 id="orgafd0ebc">文件上传</h3>
+<div class="outline-text-3" id="text-orgafd0ebc">
+<p>
+content-type为 <b>multipart/form-data</b> 时 servlet 容器允许上传文件。
+servlet 可以处理带有注解 <b>@MultipartConfig</b> 的请求。部署描述符为那些处理上传文件的请求包含了一个 <b>multipart-config</b> 元素。如果 servlet 容器提供了 <b>multipart/form-data</b> 处理，数据可以通过以下的 <b>HttpServletRequest</b> 对象的方法来处理。
+</p>
+
+<ul class="org-ul">
+<li>getParts()</li>
+<li>getPart(name)</li>
+</ul>
+
+
+<p>
+每一个 <b>part</b> 都可以访问它的 headers, content type 以及通过 <b>Part.getInputStream</b> 来读取内容。
+如果是带有这个 <b>form-data</b> 的，但并没有一个 filename ，则它也可以通过 <b>getParameter</b> 和 <b>getParameterValues</b> 来访问。
+</p>
+
+
+<p>
+如果 servlet 容器并不提供 <b>multipart/form-data</b> 处理，但数据仍可以通过 <b>HttpServletRequest.getInputStream</b> 来获取。
+</p>
+</div>
+</div>
+<div id="outline-container-org5ce373c" class="outline-3">
+<h3 id="org5ce373c">属性</h3>
+<div class="outline-text-3" id="text-org5ce373c">
+<p>
+它是与 request 对象相关的属性。属性的名字，以 <b>java.</b> 和 <b>javax.</b> 开头的是规范里保留的。以 <b>sun.</b> , <b>com.sun</b> , <b>oracle</b> , <b>com.oracle</b> 是 为 Oracle 公司保留的。
+</p>
+</div>
+</div>
+<div id="outline-container-orgf9b7f10" class="outline-3">
+<h3 id="orgf9b7f10">请求头</h3>
+<div class="outline-text-3" id="text-orgf9b7f10">
+<ul class="org-ul">
+<li>getHeader</li>
+<li>getHeaders</li>
+<li>getHeaderNames</li>
+</ul>
+
+
+<p>
+<b>getHeader</b> 可以是多个带有同名的 headers ，例如 <b>Cache-Control</b> ，如果是这样的话， <b>getHeader</b> 返回的是第一个。而 <b>getHeaders</b> 则返回同名的所有 <b>header</b> 。
+</p>
+</div>
+</div>
+<div id="outline-container-orgf21bd78" class="outline-3">
+<h3 id="orgf21bd78">请求路径元素</h3>
+<div class="outline-text-3" id="text-orgf21bd78">
+<dl class="org-dl">
+<dt>Context Path</dt><dd>与 <b>ServletContext</b> 相关的前缀路径，它是 <b>servlet</b> 的一部分。如果是 <b>default</b> （即 web server 的 root context) ，则它是一个空字符串。否则，它是一个以 <b>/</b> 字符 开头，但并不会以 <b>/</b> 字符结束的字符串。</dd>
+<dt>Servlet Path</dt><dd>它是直接响应请求的 path 部分。以 <b>/</b> 字符开头，除了请求 <code>/*</code> 或 <code>""</code> pattern 匹配的请求外。</dd>
+<dt>PathInfo</dt><dd>它不是 ContextPath 或 Servlet Path 的一部分。如果没有额外的路径的话，它会是 <b>null</b> 或者是以 <b>/</b> 开头的字符串。</dd>
+</dl>
+
+
+<pre class="example">
+requestURI = contextPath + servletPath + pathInfo
+</pre>
+</div>
+</div>
+<div id="outline-container-org67c895b" class="outline-3">
+<h3 id="org67c895b">路径转换方法</h3>
+<div class="outline-text-3" id="text-org67c895b">
+<ul class="org-ul">
+<li>ServletContext.getRealPath</li>
+<li>HttpServletRequest.getPathTranslated</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org49dcb85" class="outline-3">
+<h3 id="org49dcb85">非阻塞IO</h3>
+<div class="outline-text-3" id="text-org49dcb85">
+<p>
+它仅在 Servlet 或 Filter 的异步请求处理工作。否则，当 <b>ServletInputStream.setReadListener</b> 会抛出 <b>IllegalStateException</b> 或 <b>ServletOutputStream.setWriteListener</b> 异常。
+</p>
+</div>
+</div>
+<div id="outline-container-orgc117fd5" class="outline-3">
+<h3 id="orgc117fd5">Cookies</h3>
+<div class="outline-text-3" id="text-orgc117fd5">
+<p>
+在客户端的每一个请求中，都会带上 Cookies 。如果一个 Cookie 设置了 <b>HttpOnly</b> ，这表示它不要暴露给客户端的脚本代码。
+</p>
+</div>
+</div>
+<div id="outline-container-orgf539d51" class="outline-3">
+<h3 id="orgf539d51">国际化</h3>
+<div class="outline-text-3" id="text-orgf539d51">
+<p>
+客户端可以指示Web服务器它更喜欢什么语言。客户端通过 <b>Accept-Language</b> header 告知。然后可以在 <b>ServletRequest</b> 使下面的方法来判断:
+</p>
+
+<ul class="org-ul">
+<li>getLocale</li>
+<li>getLocales</li>
+</ul>
+
+
+<p>
+如果没有指定的话，则返回 Servlet 容器默认的 locale
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orged7b3ec" class="outline-3">
+<h3 id="orged7b3ec">请求数据编码</h3>
+<div class="outline-text-3" id="text-orged7b3ec">
+<p>
+当前一些浏览器并没有发送一个 <b>Content-Type</b> header ，来开放编码机制。如果客户端请求没有指定编码的话，默认用来创建 request reader 和解析 post 数据的编码必须是 <b>ISO-8859-1</b> 。然而，在这种情况下，为了指示开发者，客户端并没有指明字符编码，容器应该在 <b>getCharacterEncoding</b> 方法返回 <b>null</b> 。
+</p>
+
+<p>
+如果客户端并没有设置字符编码，并且请求的数据是与上述不同的编码的各方面，就有可能出现损坏数据。为了修复这种情况，已经为 <b>ServletRequest</b> 对象添加了 <b>setCharacterEncoding</b> 方法了。开发者可以通过调用这个方法来覆盖 servlet 容器提供的默认编码。它必须在解析任何 POST 数据或从请求中读取任何数据之前调用。在已经读取了数据之后再调用的话是无效的。
+</p>
+</div>
+</div>
+<div id="outline-container-orgd6eff08" class="outline-3">
+<h3 id="orgd6eff08">请求对象的生命周期</h3>
+<div class="outline-text-3" id="text-orgd6eff08">
+<p>
+每个请求对象仅在 servlet 的 <b>service</b> 方法或 filter 的 <b>doFilter</b> 方法范围有效，除非是使用了异步处理。异步处理的话，请求的对象会一直有效，直到调用了 <b>complete</b> 方法。
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org0cf2bf4" class="outline-2">
+<h2 id="org0cf2bf4">Servlet Context</h2>
+<div class="outline-text-2" id="text-org0cf2bf4">
+</div><div id="outline-container-org9e4fd56" class="outline-3">
+<h3 id="org9e4fd56">概述</h3>
+<div class="outline-text-3" id="text-org9e4fd56">
+<p>
+它定义了 Web 应用中哪些 servlet 是正在运行的 servlet 视图。使用 <b>ServletContext</b> 对象，一个 servlet 可以记录事件，获取 URL 引用的资源，以及设置和保存可以在 context 中其他 servlet 访问的属性。
+</p>
+
+<p>
+一个 <b>ServletContext</b> 是 Web 服务器已知的根路径。例如，一个 servlet context 可以定位为 <b><a href="http://www.mycorp.com/catalog">http://www.mycorp.com/catalog</a></b> 。则所有以 <b>/catalog</b> 请求路径开头的请求，它就是作为 <b>Context Path</b> ，所有这些请求都会被 Web 应用路由到该与之相关联的 <b>ServletContext</b> 中。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4bdd156" class="outline-3">
+<h3 id="org4bdd156">作用域</h3>
+<div class="outline-text-3" id="text-org4bdd156">
+<p>
+一个 <b>ServletContext</b> 对象是与容器中每一个部署的 Web 应用相关系的。即在每一个 JVM 中，都有一个 <b>ServletContext</b> 对象与一个 Web 应用关联。
+</p>
+
+<p>
+在容器中并不作为 Web 应用的一部分来部署的 Servlet 是隐含于 <b>default</b> Web 应用的一部分，并且有一个默认的 <b>ServletContext</b> 。
+</p>
+</div>
+</div>
+<div id="outline-container-orgaa7f95b" class="outline-3">
+<h3 id="orgaa7f95b">初始参数</h3>
+<div class="outline-text-3" id="text-orgaa7f95b">
+<p>
+通过 ServletContext 的方法来获取
+</p>
+
+<ul class="org-ul">
+<li>getInitParameter</li>
+<li>getInitParameterNames</li>
+</ul>
+</div>
+</div>
+
+
+
+<div id="outline-container-orgbdedad2" class="outline-3">
+<h3 id="orgbdedad2">配置方法</h3>
+<div class="outline-text-3" id="text-orgbdedad2">
+<p>
+以下方法是在 Servlet 3.0 时加入到 <b>ServletContext</b> 的，以便可编程性地定义 servlets， filters 以及 url 映射。这些方法仅可以在一个应用初始化期间，从 <b>ServletContextListener</b> 的 <b>contexInitialized</b> 方法或者 <b>ServletContainerInitializer</b> 的 <b>onStartup</b> 方法中调用。否则要抛出 <b>UnsupportedOperationException</b> 。
+</p>
+
+<p>
+也可以通过查找 <b>Registration</b> 对象来添加 Servlets, Filters 。
+</p>
+</div>
+</div>
+<div id="outline-container-org65c6eb8" class="outline-3">
+<h3 id="org65c6eb8">Context 属性</h3>
+<div class="outline-text-3" id="text-org65c6eb8">
+<ul class="org-ul">
+<li>setAttribute</li>
+<li>getAttribute</li>
+<li>getAttributeNames</li>
+<li>removeAttribute</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga0d6c46" class="outline-3">
+<h3 id="orga0d6c46">资源</h3>
+<div class="outline-text-3" id="text-orga0d6c46">
+<blockquote>
+<p>
+它是用来获取静态资源的（如 HTML, GIF等文件）而不是动态资源（如 JSP 等）
+</p>
+</blockquote>
+
+<ul class="org-ul">
+<li>getResource</li>
+<li>getResourceAsStream</li>
+</ul>
+
+
+<p>
+它接受一个以 <b>/</b> 开头的字符串，表示 Context 中的根路径的相对路径 或是相对于 <b>WEB-INF/lib</b> 中的 jar 文件内部的  <b>META-INF/resources</b> 路径。 它首先搜索 Web 应用程序的根目录，然后才到 <b>WEB-INF/lib</b> 目录下的 jar 文件的路径。但是这些 jar 文件的搜索顺序是未定义的。
+</p>
+
+
+<p>
+比如，如果它获取的是 <b>JSP</b> 则返回的是 JSP 的源码，而不是解析之后的内容的。
+</p>
+</div>
+</div>
+<div id="outline-container-org01e22d6" class="outline-3">
+<h3 id="org01e22d6">多个主机和 Servlet Context</h3>
+<div class="outline-text-3" id="text-org01e22d6">
+<p>
+每个逻辑主机都有它自己的 Servlet Conext 或多个 ServletContext 。ServletContext 不能跨虚拟主机共享。
+<b>ServletContext.getVirtualServerName</b> 可以访问所在的虚拟主机名。
+</p>
+</div>
+</div>
+<div id="outline-container-org352be7e" class="outline-3">
+<h3 id="org352be7e">重载注意因素</h3>
+<div class="outline-text-3" id="text-org352be7e">
+<p>
+虽然并不要求容器提供者实现 class reload ，不过，所以这些实现必须保证所有的 servlets, 以及使用的 class 都是使用同一个 class loader 作用域。
+</p>
+</div>
+
+<div id="outline-container-orgd2bb1c0" class="outline-4">
+<h4 id="orgd2bb1c0">临时工作目录</h4>
+<div class="outline-text-4" id="text-orgd2bb1c0">
+<p>
+每个 Servlet Context 都要求有一个临时保存目录。Servlet 容器必须为每个 Servlet Context 提供一个私有的临时目录，并让它可以通过 <b>javax.servlet.context.tempdir</b> 的 Context 属性来访问。与之相关的对象，必须是 <b>java.io.File</b> 类型。
+</p>
+
+<p>
+当重启容器时，并不要求容器去维护这些临时工作目录的内容，但是要求确保这些 Servlet Context 的临时工作目录是不能被 Web 应用的其他的 ServletContext 访问的。
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org89928f0" class="outline-2">
+<h2 id="org89928f0">响应(response)对象</h2>
+<div class="outline-text-2" id="text-org89928f0">
+<blockquote>
+<p>
+它概括了所有从服务器返回给客户端的信息。对于 HTTP 协议，这些信息是从服务器通过 HTTP 头或 Body 来传递的。
+</p>
+</blockquote>
+</div>
+<div id="outline-container-orgb67bf23" class="outline-3">
+<h3 id="orgb67bf23">buffering</h3>
+<div class="outline-text-3" id="text-orgb67bf23">
+<p>
+servlet 容器允许但并不要求将发送到客户端的输出进行缓冲，以便提高效率。可以通过 <b>ServletResponse</b> 以下的方法来访问或设置这些缓冲信息:
+</p>
+
+<ul class="org-ul">
+<li>getBufferSize</li>
+<li>setBufferSize</li>
+<li>isCommitted</li>
+<li>reset</li>
+<li>resetBuffer</li>
+<li>flushBuffer</li>
+</ul>
+
+
+<p>
+这些在 <b>ServletResponse</b> 提供的方法，允许在使用 <b>ServletOutputStream</b> 或 <b>Writer</b> 时进行缓冲操作。
+</p>
+
+<p>
+<b>getBufferSize</b> 返回正在使用的 buffer 大小。如果没有正在使用的 buffer ，则必须返回 <b>int</b> 类型的 0 (zero) 。可以通过 <b>setBufferSize</b> 来要求 servlet 使用 buffer 大小，但注意，这个并不一定就是这么大的，但至少是会这么大的大小。即实际的大小 &gt;= setBufferSize 的大小。该方法必须要在任何的 <b>ServletOutputStream</b> 或 <b>Writer</b> 方法执行之前调用，否则它会抛出 <b>IllegalStateException</b> 。
+</p>
+
+<p>
+<b>isCommitted</b> 返回一个布尔值，指明是否响应的字节已经返回给客户端了。
+</p>
+
+<p>
+<b>flushBuffer</b> 方法强制在 buffer 的内容写回到客户端。
+</p>
+
+<p>
+当响应没有 commited 时， <b>reset</b> 方法会清除在 buffer 中的数据，并且也会清除它的 headers, status code 以及在 reset 之前调用的 <b>getWriter</b> 或 <b>getOutputStream</b> 的状态。
+如果已经 commited 的话，*reset* 或 <b>resetBuffer</b> 必须抛出 <b>IllegalStateException</b> 。
+</p>
+
+<p>
+当使用 buffer 时，如果 buffer 已经填充满了，则容器必须立即刷新数据给客户端。如果这是第一次发送给客户端的话，则认为响应是已经 commited 了的。
+</p>
+<ul class="org-ul">
+<li>setHeader</li>
+<li>addHeader</li>
+</ul>
+
+
+<p>
+<b>setHeader</b> 会代替之前已经的 header。
+<b>addHeader</b> 没有该header时就创建一个新的，如果已经存在，则追加一个。Header 包含的数据 ，可以为 <b>int</b> 或 <b>Data</b> 对象。可以通过下面方法来处理。
+</p>
+
+<ul class="org-ul">
+<li>setIntHeader</li>
+<li>setDateHeader</li>
+<li>addIntHeader</li>
+<li>addDateHeader</li>
+</ul>
+
+
+<p>
+Servlet 程序员负责确保 <b>Content-Type</b> 已经恰当地设置好了。HTTP 1.1 规范并不要求在 HTTP 响应中设置这个 Header 。如果 Servlet 程序员并没有设置它的话，Servlet 容器不能设置一个默认的 <b>Content-Type</b> 。
+</p>
+
+<p>
+建议容器使用 <b>X-Powered-By</b> HTTP header 来发布它的实现信息，它的值为它实现的类型，比如 <b>Servlet/3.1</b> 。
+</p>
+</div>
+</div>
+<div id="outline-container-org5f72dc5" class="outline-3">
+<h3 id="org5f72dc5">非阻塞IO</h3>
+<div class="outline-text-3" id="text-org5f72dc5">
+<p>
+这个与 request 请求对象类似。
+它仅在 Servlet 和 Filters 是异步的情况下才可以使用。否则会在 <b>ServletInputStream.setReadListener</b> 或 <b>ServletInputStream.setReadListener</b> 调用时抛出 <b>IllegalStateException</b> 。
+</p>
+
+<p>
+容器必须用线程安全的方法来访问 <b>WriteListener</b> 
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3340bc1" class="outline-3">
+<h3 id="org3340bc1">便捷方法</h3>
+<div class="outline-text-3" id="text-org3340bc1">
+<ul class="org-ul">
+<li>sendRedierct</li>
+<li>sendError</li>
+</ul>
+
+
+<p>
+这些方法会有一个 <b>side effect</b> —— commit 响应，如果还没有准备 committed 的话，就结束它。在调用这些方法之后，不再会有数据写回给客户端了。如果在这些方法之后向客户端写数据，则这些数据会被忽略。
+</p>
+</div>
+</div>
+<div id="outline-container-org41f5661" class="outline-3">
+<h3 id="org41f5661">国际化</h3>
+<div class="outline-text-3" id="text-org41f5661">
+<p>
+Servlet 应该设置响应的 locale 和 字符编码。
+locale 是通过 <b>ServletResponse.setLocale</b> 方法来设置的，该方法可以重复调用，但是在 committed 了响应之后再调用的话则是无效的。
+</p>
+
+<p>
+如果 Servlet 没有设置 locale ，则容器的 locale 将决定响应的 locale ，但并不会在 HTTP 的 <b>Content-Language</b> 设置返回给客户端。
+</p>
+
+<ul class="org-ul">
+<li>setLocale</li>
+<li>setCharacterEncoding</li>
+<li>setContentType</li>
+</ul>
+
+
+<p>
+在 <b>getWriter</b> 或 committed 响应之后再调用这些方法的话，则字符编码并不会生效。
+</p>
+
+<p>
+如果 <b>setContentType</b> 中含有 <b>charset</b> 属性的话，则以它来进行字符编码。
+如果之前既没有 <b>setCharacterEncoding</b> 也没有 <b>setContentType</b> 来设置字符编码的话，则调用 <b>setLocale</b> 来设置字符编码。
+</p>
+
+<p>
+如果在 <b>getWriter</b> 之前没有指定字符编码，则使用 <b>ISO-8859-1</b> 。
+</p>
+</div>
+</div>
+<div id="outline-container-orgbec1b25" class="outline-3">
+<h3 id="orgbec1b25">关闭 response 对象</h3>
+<div class="outline-text-3" id="text-orgbec1b25">
+<p>
+以下条件之一满足时，表示已经关闭了 response 对象
+</p>
+<ul class="org-ul">
+<li>终止了 servlet 的 <b>service</b> 方法</li>
+<li>指定了 response 的 <b>setContentLength</b> 或 <b>setContentLengthLong</b> 长度，而且它已经大于0并且已经写回了响应。</li>
+<li>调用了 <b>sendError</b> 方法</li>
+<li>调用了 <b>sendRedierct</b> 方法</li>
+<li>调用了 AsyncContext.complete 方法</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge6c0688" class="outline-2">
+<h2 id="orge6c0688">Filtering 过滤器</h2>
+<div class="outline-text-2" id="text-orge6c0688">
+</div><div id="outline-container-org0608385" class="outline-3">
+<h3 id="org0608385">filter 是什么</h3>
+<div class="outline-text-3" id="text-org0608385">
+<blockquote>
+<p>
+filter 是一段代码片段，它可以改变 HTTP 请求，响应，以及 header 信息。
+</p>
+</blockquote>
+
+<p>
+它可以执行在动态或静态内容上。以下是使用 filters 可以做的功能：
+</p>
+<ul class="org-ul">
+<li>在调用请求之前访问的资源</li>
+<li>在调用请求处理资源之前</li>
+<li>通过自定义包装的 request 对象版本来修改 request header 和 data</li>
+<li>通过自定义包装的 response 对象版本来修改 response header 和 data</li>
+<li>在调用访问资源之后拦截它</li>
+<li>在 servlet 或静态资源上按指定顺序执行动作</li>
+</ul>
+</div>
+
+
+<div id="outline-container-orgb6fc6b2" class="outline-4">
+<h4 id="orgb6fc6b2">例如</h4>
+<div class="outline-text-4" id="text-orgb6fc6b2">
+<ul class="org-ul">
+<li>Authentication filters</li>
+<li>Logging and auditing filters</li>
+<li>Image conversion filters</li>
+<li>Data compression filters</li>
+<li>Encryption filters</li>
+<li>Tokenizing filters</li>
+<li>Filters that trigger resource access events</li>
+<li>XSL/T filters that transform XML content</li>
+<li>MIME-type chain filters</li>
+<li>Caching filters</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org93c7718" class="outline-3">
+<h3 id="org93c7718">主要概念</h3>
+<div class="outline-text-3" id="text-org93c7718">
+<p>
+它是程序员通过实现 <b>javax.servlet.Filter</b> 接口并提供一个公共的，没有参数的构造器创建的。在部署描述中，通过 <b>&lt;filter&gt;</b> 元素来声明一个 filter ，然后通过 <b>&lt;filter-mapping&gt;</b> 来配置 url-pattern 设置规则。
+</p>
+</div>
+
+<div id="outline-container-orgc566ec9" class="outline-4">
+<h4 id="orgc566ec9">filter 生命周期</h4>
+<div class="outline-text-4" id="text-orgc566ec9">
+<p>
+它是由容器初始化这些声明的 filter 以及调用它的 <b>init</b> 方法。
+</p>
+
+<p>
+当容器接收到一个 request 时，它会首先调用 filter ，然后调用它的 <b>doFilter</b> 方法。
+</p>
+
+<p>
+<b>doFilter</b> 典型地会实现以些模式的一部分逻辑：
+</p>
+<ol class="org-ol">
+<li>检测 request header 信息</li>
+<li>通过实现 ServletRequest 或 HttpServletRequest 来自定义包装这些对象来修改它的 headers 或 data</li>
+<li>通过实现 ServletResponse 或 HttpServletResponse 来自定义包装这些对象来修改它的 headers 或 data</li>
+<li>可能调用一下个 filter 链。 <b>service</b> 方法要求是在同一条线程中执行的。</li>
+<li>在调用下一个 filter 链完成后，filter 可能也要测试 response headers</li>
+<li>或者，filter 可能抛出异常。如果一个 filter 抛出 <b>UnavailableException</b> 则不会处理后面的 filter 链了。</li>
+<li>当最后一个 filter 链已经调用后，下一个就是目标 servlet 或 resource 了。</li>
+<li>在一个 filter 实例从容器中移除服务之前，必须首先要调用它的 <b>destroy</b> 方法，以便让它释放各种资源。</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-org4ac9fc1" class="outline-4">
+<h4 id="org4ac9fc1">包装 request 和 response</h4>
+<div class="outline-text-4" id="text-org4ac9fc1">
+<p>
+可以继承
+</p>
+<ul class="org-ul">
+<li>ServletRequestWrapper</li>
+<li>HttpServletRequestWrapper</li>
+<li>ServletResponseWrapper</li>
+<li>HttpServletResponseWrapper</li>
+</ul>
+</div>
+</div>
+
+
+
+<div id="outline-container-org78e9d65" class="outline-4">
+<h4 id="org78e9d65">filter 环境</h4>
+<div class="outline-text-4" id="text-org78e9d65">
+<p>
+可以通过在部署描述符中的 <b>&lt;init-params&gt;</b> 设置初始参数。它可以通过 filter 的 <b>FilterConfig</b> 对象的 <b>getInitParameter</b> 和 <b>getInitParameterNames</b> 来访问。
+</p>
+</div>
+</div>
+<div id="outline-container-org61b9c2a" class="outline-4">
+<h4 id="org61b9c2a">在 Web 应用中配置 filters</h4>
+<div class="outline-text-4" id="text-org61b9c2a">
+<ul class="org-ul">
+<li>filter-name</li>
+<li>filter-class</li>
+<li>init-params</li>
+</ul>
+
+
+<p>
+每声明一个 filter 容器会仅会为它创建一个实例。即不管这个 filter 是什么类型的，只要它声明了多少次，就会创建多少个 filter 。
+容器使用的 filter 链是用以下规则的：
+</p>
+<ol class="org-ol">
+<li><b>&lt;url-pattern&gt;</b> 顺序与部署描述符里出现的顺序一致。</li>
+<li><b>&lt;servlet-name&gt;</b> 顺序与部署描述符里出现的顺序一致</li>
+</ol>
+
+
+<p>
+即下面的配置:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-xml">&lt;<span style="color: #bc6ec5; font-weight: bold;">filter-mapping</span>&gt;
+    &lt;<span style="color: #bc6ec5; font-weight: bold;">filter-name</span>&gt;Multipe Mappings Filter&lt;/<span style="color: #bc6ec5; font-weight: bold;">filter-name</span>&gt;
+    &lt;<span style="color: #bc6ec5; font-weight: bold;">url-pattern</span>&gt;/foo/*&lt;/<span style="color: #bc6ec5; font-weight: bold;">url-pattern</span>&gt;
+    &lt;<span style="color: #bc6ec5; font-weight: bold;">servlet-name</span>&gt;Servlet1&lt;/<span style="color: #bc6ec5; font-weight: bold;">servlet-name</span>&gt;
+    &lt;<span style="color: #bc6ec5; font-weight: bold;">servlet-name</span>&gt;Servlet2&lt;/<span style="color: #bc6ec5; font-weight: bold;">servlet-name</span>&gt;
+    &lt;<span style="color: #bc6ec5; font-weight: bold;">url-pattern</span>&gt;/bar/*&lt;/<span style="color: #bc6ec5; font-weight: bold;">url-pattern</span>&gt;
+&lt;/<span style="color: #bc6ec5; font-weight: bold;">filter-mapping</span>&gt;
+</pre>
+</div>
+
+<p>
+等同于：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-xml">&lt;<span style="color: #bc6ec5; font-weight: bold;">filter-mapping</span>&gt;
+    &lt;<span style="color: #bc6ec5; font-weight: bold;">filter-name</span>&gt;Multipe Mappings Filter&lt;/<span style="color: #bc6ec5; font-weight: bold;">filter-name</span>&gt;
+    &lt;<span style="color: #bc6ec5; font-weight: bold;">url-pattern</span>&gt;/foo/*&lt;/<span style="color: #bc6ec5; font-weight: bold;">url-pattern</span>&gt;
+&lt;/<span style="color: #bc6ec5; font-weight: bold;">filter-mapping</span>&gt;
+&lt;<span style="color: #bc6ec5; font-weight: bold;">filter-mapping</span>&gt;
+    &lt;<span style="color: #bc6ec5; font-weight: bold;">filter-name</span>&gt;Multipe Mappings Filter&lt;/<span style="color: #bc6ec5; font-weight: bold;">filter-name</span>&gt;
+    &lt;<span style="color: #bc6ec5; font-weight: bold;">servlet-name</span>&gt;Servlet1&lt;/<span style="color: #bc6ec5; font-weight: bold;">servlet-name</span>&gt;
+&lt;/<span style="color: #bc6ec5; font-weight: bold;">filter-mapping</span>&gt;
+&lt;<span style="color: #bc6ec5; font-weight: bold;">filter-mapping</span>&gt;
+    &lt;<span style="color: #bc6ec5; font-weight: bold;">filter-name</span>&gt;Multipe Mappings Filter&lt;/<span style="color: #bc6ec5; font-weight: bold;">filter-name</span>&gt;
+    &lt;<span style="color: #bc6ec5; font-weight: bold;">servlet-name</span>&gt;Servlet2&lt;/<span style="color: #bc6ec5; font-weight: bold;">servlet-name</span>&gt;
+&lt;/<span style="color: #bc6ec5; font-weight: bold;">filter-mapping</span>&gt;
+&lt;<span style="color: #bc6ec5; font-weight: bold;">filter-mapping</span>&gt;
+    &lt;<span style="color: #bc6ec5; font-weight: bold;">filter-name</span>&gt;Multipe Mappings Filter&lt;/<span style="color: #bc6ec5; font-weight: bold;">filter-name</span>&gt;
+    &lt;<span style="color: #bc6ec5; font-weight: bold;">url-pattern</span>&gt;/bar/*&lt;/<span style="color: #bc6ec5; font-weight: bold;">url-pattern</span>&gt;
+&lt;/<span style="color: #bc6ec5; font-weight: bold;">filter-mapping</span>&gt;
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org7e6e51c" class="outline-4">
+<h4 id="org7e6e51c">Filters 和 RequestDispatcher</h4>
+<div class="outline-text-4" id="text-org7e6e51c">
+<p>
+通过在部署描述符中使用 <b>&lt;dispatcher&gt;</b> 元素，开发者可以指示 <b>filter-mapping</b> 是否应用 filter 到这些请求中：
+</p>
+<dl class="org-dl">
+<dt>请求直接来自客户端</dt><dd>如果指示这种请求应用 filter 的话，则设置 &lt;dispatcher&gt; 的值为 <b>REQUEST</b></dd>
+<dt>通过匹配到 &lt;url-pattern&gt; 或 &lt;servlet-name&gt; 的 Web 组件处理下，使用 <b>forward()</b> 转发的请求</dt><dd>这种指示的话，则设置 &lt;dispatcher&gt; 的值为 <b>FORWARD</b></dd>
+<dt>通过匹配到 &lt;url-pattern&gt; 或 &lt;servlet-name&gt; 的 Web 组件处理下，使用 <b>include()</b> 转发的请求</dt><dd>这种指示的话，则设置 &lt;dispatcher&gt; 的值为 <b>INCLUDE</b></dd>
+<dt>通过匹配到 &lt;url-pattern&gt; 处理的请求并产生了 error page 机制</dt><dd>这种指示的话，则设置 &lt;dispatcher&gt; 的值为 <b>ERROR</b></dd>
+<dt>异步请求处理</dt><dd>这种指示的话，则设置 &lt;dispatcher&gt; 的值为 <b>ASYNC</b></dd>
+<dt>(no term)</dt><dd>或者是以上的任意组合</dd>
+</dl>
+
+
+<p>
+比如以下配置：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-xml">&lt;<span style="color: #bc6ec5; font-weight: bold;">filter-mapping</span>&gt;
+       &lt;<span style="color: #bc6ec5; font-weight: bold;">filter-name</span>&gt;Logging Filter&lt;/<span style="color: #bc6ec5; font-weight: bold;">filter-name</span>&gt;
+       &lt;<span style="color: #bc6ec5; font-weight: bold;">url-pattern</span>&gt;/products/*&lt;/<span style="color: #bc6ec5; font-weight: bold;">url-pattern</span>&gt;
+&lt;/<span style="color: #bc6ec5; font-weight: bold;">filter-mapping</span>&gt;
+</pre>
+</div>
+
+<p>
+它会在客户端以 <b><i>products</i>&#x2026;</b> 开头的请求中调用这些 filter 。但不会在通过 <b>dispatcher</b> 以 <b><i>products</i>&#x2026;</b>  开头的请求中调用。
+</p>
+
+
+<p>
+下面的配置：
+</p>
+<div class="org-src-container">
+<pre class="src src-xml">&lt;<span style="color: #bc6ec5; font-weight: bold;">filter-mapping</span>&gt;
+    &lt;<span style="color: #bc6ec5; font-weight: bold;">filter-name</span>&gt;Logging Filter&lt;/<span style="color: #bc6ec5; font-weight: bold;">filter-name</span>&gt;
+    &lt;<span style="color: #bc6ec5; font-weight: bold;">servlet-name</span>&gt;ProductServlet&lt;/<span style="color: #bc6ec5; font-weight: bold;">servlet-name</span>&gt;
+    &lt;<span style="color: #bc6ec5; font-weight: bold;">dispatcher</span>&gt;INCLUDE&lt;/<span style="color: #bc6ec5; font-weight: bold;">dispatcher</span>&gt;
+&lt;/<span style="color: #bc6ec5; font-weight: bold;">filter-mapping</span>&gt;
+</pre>
+</div>
+
+<p>
+这会导致该 filter 不会在客户端请求，或者 dispatcher 为 <b>forward()</b> 的请求中调用，但会在 dispatcher 为 <b>include()</b> 的请求中调用。
+</p>
+
+<p>
+下面的配置：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-xml">&lt;<span style="color: #bc6ec5; font-weight: bold;">filter-mapping</span>&gt;
+    &lt;<span style="color: #bc6ec5; font-weight: bold;">filter-name</span>&gt;Logging Filter&lt;/<span style="color: #bc6ec5; font-weight: bold;">filter-name</span>&gt;
+    &lt;<span style="color: #bc6ec5; font-weight: bold;">url-pattern</span>&gt;/products/*&lt;/<span style="color: #bc6ec5; font-weight: bold;">url-pattern</span>&gt;
+    &lt;<span style="color: #bc6ec5; font-weight: bold;">dispatcher</span>&gt;FORWARD&lt;/<span style="color: #bc6ec5; font-weight: bold;">dispatcher</span>&gt;
+    &lt;<span style="color: #bc6ec5; font-weight: bold;">dispatcher</span>&gt;REQUEST&lt;/<span style="color: #bc6ec5; font-weight: bold;">dispatcher</span>&gt;
+&lt;/<span style="color: #bc6ec5; font-weight: bold;">filter-mapping</span>&gt;
+</pre>
+</div>
+
+<p>
+它仅会在请求是客户端 或 dispatcher 为 <b>forward()</b> 的请求中调用。
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orge534cb4" class="outline-2">
+<h2 id="orge534cb4">Sessions 会话</h2>
+<div class="outline-text-2" id="text-orge534cb4">
+<p>
+HTTP 是状态的。为了分区不同的客户端，所以使用了 HttpSession 这个接口来定义会话。
+</p>
+</div>
+
+<div id="outline-container-orgbe85424" class="outline-3">
+<h3 id="orgbe85424">Session 跟踪机制</h3>
+<div class="outline-text-3" id="text-orgbe85424">
+</div><div id="outline-container-orgaac4251" class="outline-4">
+<h4 id="orgaac4251">Cookies</h4>
+<div class="outline-text-4" id="text-orgaac4251">
+<p>
+通过HTTP cookie 来跟踪 session 是最广泛使用的 session 跟踪机制，并且是要求所有的 servlet 容器都要支持的。
+</p>
+
+<p>
+容器发送一个 Cookie 给客户端。客户端在后面的请求中，都返回这个Cookie给服务器，这样子来明确将请求与一个 session 关联。用来跟踪会话的标准Cookie名必须为 <b>JSESSIONID</b> 。容器可能允许自定义这个名字。
+</p>
+</div>
+
+<div id="outline-container-org10ec8b7" class="outline-5">
+<h5 id="org10ec8b7">URL Rewriting</h5>
+<div class="outline-text-5" id="text-org10ec8b7">
+<p>
+它是最低限度来进行会话跟踪标准。当客户端并不接受一个 Cookie 时，它是服务器进行会话跟踪的基础。该 SessionID 必须在 URL字符串中作为路径参数中编码。它的参数为必须是 <b>jssessionid</b> 。以下是一个例子:
+</p>
+
+<pre class="example">
+http://www.myserver.com/catalog/index.html;jsessionid=1234
+</pre>
+
+<p>
+这种机制不应该在支持 Cookie 的情况下使用。
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgc2c84f8" class="outline-3">
+<h3 id="orgc2c84f8">创建一个 session</h3>
+<div class="outline-text-3" id="text-orgc2c84f8">
+<p>
+由于 HTTP 是一个基于 请求-响应 的协议，一个 HTTP session 被认为是 new 的，直到有一个 client "加入" 它。
+</p>
+</div>
+</div>
+<div id="outline-container-orgd2d7552" class="outline-3">
+<h3 id="orgd2d7552">session 作用域</h3>
+<div class="outline-text-3" id="text-orgd2d7552">
+<p>
+HttpSession 对象作用域，必须是在 application (或 servlet context) 级别。底层机制，比如用 Cookie 来建立一个 session ，对于不同的 context 是可以相同的，但对象的引用，包括对象的属性，必须不能在容器内的不同 context 共享。
+</p>
+
+<p>
+可以用一个例子来说明这个要求：一个 servlet 使用 <b>RequestDispatcher</b> 来调用另一个Web应用的 servlet ，被调用的servlet 创建的 session 及可见性必须与调用者的可见性不同。
+</p>
+</div>
+</div>
+<div id="outline-container-org5d1ffb8" class="outline-3">
+<h3 id="org5d1ffb8">绑定属性到 session</h3>
+<div class="outline-text-3" id="text-org5d1ffb8">
+<p>
+<b>HttpSessionBindingListener</b> 接口可以接收绑定和解绑属性时的事件通知
+</p>
+<ul class="org-ul">
+<li>valueBound （在 session.setAttribute 时触发）</li>
+<li>valueUnbound （ 在 session.getAttribute 不可用时触发，即返回的对象是不可用的）</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orge4dbc26" class="outline-3">
+<h3 id="orge4dbc26">Session timeouts</h3>
+<div class="outline-text-3" id="text-orge4dbc26">
+<p>
+在 HTTP 协议中，当客户端不再活动时，并没有显式的终止信号。这意味着唯一用来指示客户端不在活动的机制是使用一个 timeout 时间段。
+默认的 timeout 是由 servlet 容器定义的，并且可以通过 <b>HttpSession.getMaxInactiveInterval</b> 来获取。它可以通过开发者调用 <b>HttpSession.setMaxInactiveInterval</b> 来指定 timeout ，它们的单位是 <b>秒</b> 。按定义，如果 timeout 时间段设置为 <b>0</b> 或者更小的值，则该 Session 将永不过期。
+</p>
+
+<p>
+Session无效会在所有 servlet 中的 <b>service</b> 退出时才会正式生效。一旦无效了，一个新的请求必须禁止看到那些 session 。
+</p>
+</div>
+</div>
+
+
+
+<div id="outline-container-org41bf0bb" class="outline-3">
+<h3 id="org41bf0bb">最后访问时间</h3>
+<div class="outline-text-3" id="text-org41bf0bb">
+<p>
+<b>HttpSession.getLastAccessedTime</b> 当被容器第一次处理请求所属的 session 的一部分时，它就被认为是访问了的。
+</p>
+</div>
+</div>
+<div id="outline-container-org3ac9427" class="outline-3">
+<h3 id="org3ac9427">重要的 session 语义</h3>
+<div class="outline-text-3" id="text-org3ac9427">
+</div><div id="outline-container-orgb5bf4a5" class="outline-4">
+<h4 id="orgb5bf4a5">线程问题</h4>
+<div class="outline-text-4" id="text-orgb5bf4a5">
+<p>
+容器必须确保表示 session 内部数据结构的操作执行是线程安全的。
+开发者负责线程安全地访问这些对象。
+</p>
+</div>
+</div>
+<div id="outline-container-orgee537d5" class="outline-4">
+<h4 id="orgee537d5">分布式环境</h4>
+<div class="outline-text-4" id="text-orgee537d5">
+<p>
+在一个分布式环境中，一个 session 部分中的请求必须是同一时间仅被一个 JVM 处理。容器必须能够恰当地处理 <b>HttpSession</b> 实例的所有使用 <b>setAttribute</b> 或 <b>putValue</b> 对象。为了满足这些条件，以下的限制是强制的：
+</p>
+<ul class="org-ul">
+<li>容器必须接受实现 <b>Serializable</b> 接口的对象</li>
+<li>容器可以为 <b>HttpSession</b> 对象选择其他的存储方式</li>
+<li>可以通过容器指定的场所来进行迁移这些 session 。</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-org082ac8a" class="outline-2">
+<h2 id="org082ac8a">注解和可插拔性</h2>
+<div class="outline-text-2" id="text-org082ac8a">
+</div><div id="outline-container-orgc3b75b0" class="outline-3">
+<h3 id="orgc3b75b0">注解和可插拔性</h3>
+<div class="outline-text-3" id="text-orgc3b75b0">
+<p>
+在部署描述文件中的 <b>&lt;web-app&gt;</b> 元素，它有一个属性 <b>metadata-complete</b> ，它定义了该描述符是否已经是完整的。
+</p>
+<dl class="org-dl">
+<dt>true</dt><dd>则部署工具必须忽略任意的 servlet 注解的类（这些类是在 <b>WEB-INF/classes</b> 目录下，或者是在 <b>WEB-INF/lib</b> 目录下的 <b>jar</b> 包中）</dd>
+<dt>false</dt><dd>表示扫描这些类（与上述的类的概念相同）来加载含有相应注解的配置</dd>
+</dl>
+
+
+<p>
+这些注解是下面之一
+</p>
+
+<ul class="org-ul">
+<li>@WebServlet</li>
+<li>@WebFilter</li>
+<li>@WebInitParam</li>
+<li>@WebListener</li>
+<li>@MultipartConfig</li>
+<li>其他相应的注解</li>
+</ul>
+
+
+<p>
+从这些注解中加载的 <b>Listener</b> , <b>Servlet</b> 的顺序示指明的。这些顺序仅可以在部署描述符中指定的。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org2b20e00" class="outline-3">
+<h3 id="org2b20e00">可插拔性</h3>
+<div class="outline-text-3" id="text-org2b20e00">
+</div><div id="outline-container-org73605cf" class="outline-4">
+<h4 id="org73605cf">web.xml 的模块化</h4>
+<div class="outline-text-4" id="text-org73605cf">
+<p>
+一个 web fragment 是 web.xml 的一部分，它可以指示和包含在一个库或框架 jar 文件的 <b>META-INF</b> 目录中，一个在 <b>WEB-INF/lib</b> 目录的没有 <b>web-fragment.xml</b> 的也视作是一个 fragment 。它的名字必须是 <b>web-fragment.xml</b> 。
+</p>
+</div>
+</div>
+<div id="outline-container-orge10c544" class="outline-4">
+<h4 id="orge10c544">web.xml 和 web-fragment.xml 的顺序</h4>
+<div class="outline-text-4" id="text-orge10c544">
+<p>
+一个 <b>web-fragment.xml</b> 有一个顶级的 <b>&lt;name&gt;</b> 元素，且仅只能有一个 <b>&lt;name&gt;</b> 元素，如果出现了这个元素，它必须要考虑它的顺序。
+</p>
+
+<p>
+在 <b>web.xml</b> 的绝对顺序： <b>&lt;absolute-ordering&gt;</b> ，仅只有一个该元素在 web.xml 。
+在 <b>web-fragment.xml</b> 是相对顺序 ： <b>&lt;ordering&gt;</b> ，它的子元素有 <b>&lt;before&gt;</b> 和 <b>&lt;after&gt;</b> 
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org4766e81" class="outline-2">
+<h2 id="org4766e81">转发请求</h2>
+<div class="outline-text-2" id="text-org4766e81">
+<p>
+从一个请求中处理再转发给另一个 servlet 中处理，或包含另一个 servlet 输出的响应是比较常用的，而 <b>RequestDispatcher</b> 接口就是用来实现这种机制的。
+当是一个异步请求， <b>AsyncContext</b> 允许用户转发这个请求回到 servlet 容器中。
+</p>
+</div>
+
+<div id="outline-container-orgb7ede7a" class="outline-3">
+<h3 id="orgb7ede7a">获取一个 RequestDispatcher</h3>
+<div class="outline-text-3" id="text-orgb7ede7a">
+<p>
+通过 <b>ServletContext</b> 以下方法来获取
+</p>
+<ul class="org-ul">
+<li>getRequestDispatcher</li>
+<li>getNamedDispatcher</li>
+</ul>
+</div>
+
+
+<div id="outline-container-orgb25af37" class="outline-4">
+<h4 id="orgb25af37">在 RequestDispatcher 路径的查询字符串</h4>
+<div class="outline-text-4" id="text-orgb25af37">
+<p>
+例如:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="color: #ce537a; font-weight: bold;">String</span> <span style="color: #7590db;">path</span> = &#8220;/raisins.jsp?orderno=<span style="color: #a45bad;">5</span>&#8221;;
+<span style="color: #ce537a; font-weight: bold;">RequestDispatcher</span> <span style="color: #7590db;">rd</span> = context.getRequestDispatcher<span style="color: #4f97d7;">(</span>path<span style="color: #4f97d7;">)</span>;
+rd.include<span style="color: #4f97d7;">(</span>request, response<span style="color: #4f97d7;">)</span>;
+</pre>
+</div>
+
+<p>
+用来创建 <b>RequestDispatcher</b> 的查询字符串参数比其他传递的同名参数的优先级高。
+与 <b>RequestDispatcher</b> 相关联的参数的作用域仅在 <b>incldue</b> 或 <b>forward</b> 中有效。
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org7ea9ad9" class="outline-3">
+<h3 id="org7ea9ad9">使用 RequestDispatcher</h3>
+<div class="outline-text-3" id="text-org7ea9ad9">
+<p>
+调用 <b>RequestDispatcher</b> 的 <b>include</b> 或 <b>forward</b> 方法即可。容器应该保证转发的请求的目标与源请求是在JVM的同一条线程上执行的。
+</p>
+</div>
+</div>
+<div id="outline-container-orgb3f1856" class="outline-3">
+<h3 id="orgb3f1856">include 方法</h3>
+<div class="outline-text-3" id="text-orgb3f1856">
+<p>
+它可以在任意时候调用。 <b>include</b> 方法的目标 servlet ，可以访问 "request" 对象的所有方面，但是比较多限制地使用 <b>response</b> 对象。
+</p>
+
+<p>
+它仅可以写信息到 response 对象的 <b>ServletOutputStream</b> 或 <b>Writer</b> 以及 commit 一个 response 。
+但它不能设置 headers 或者其他会影响 headers 的方法（ getSession 除外）。所有试图设置 headers 的方法，必须忽略，并且所有调用 <b>getSession</b> 的方法要求添加一个 Cookie 响应头的，在 commit 响应时必须抛出 <b>IllegalStateException</b> 。
+</p>
+</div>
+
+<div id="outline-container-org71a59b3" class="outline-4">
+<h4 id="org71a59b3">include 请求参数</h4>
+<div class="outline-text-4" id="text-org71a59b3">
+<p>
+除了通过使用 <b>getNamedDispatcher</b> 之外获取的 servlets ，一个被另一个servlet 通过 <b>include</b> 调用的 servlet ，被请求的 servlet 可以通过以下的请求属性来访问是由哪些servlet请求的。
+这些属性是设置在 request 对象上的，由 dispatch 机制负责设置
+</p>
+
+<pre class="example">
+javax.servlet.include.request_uri
+javax.servlet.include.context_path
+javax.servlet.include.servlet_path
+javax.servlet.include.path_info
+javax.servlet.include.query_string
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgcbb64ed" class="outline-3">
+<h3 id="orgcbb64ed">forward 方法</h3>
+<div class="outline-text-3" id="text-orgcbb64ed">
+<p>
+它仅可以在没有 commit 输出返回到客户端时才可以调用。如果有输出的数据存放在 response 的 buffer，并且还没有 committed ，但这些内容在调用目标 servlet 的 <b>service</b> 方法之前必须被清理掉。如果 response 已经被 committed ，则必须抛出 <b>IllegalStateException</b> 。
+</p>
+</div>
+
+<div id="outline-container-org344fcb7" class="outline-4">
+<h4 id="org344fcb7">查询字符串</h4>
+<div class="outline-text-4" id="text-org344fcb7">
+<p>
+当 forward 或 include 时， RequestDispatcher 机制负责聚合查询字符串
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2bc9ad3" class="outline-4">
+<h4 id="org2bc9ad3">forward 请求参数</h4>
+<div class="outline-text-4" id="text-org2bc9ad3">
+<p>
+它是设置在 request 对象属性上的，由 dispatch 机制负责设置
+</p>
+<pre class="example">
+javax.servlet.forward.request_uri
+javax.servlet.forward.context_path
+javax.servlet.forward.servlet_path
+javax.servlet.forward.path_info
+javax.servlet.forward.query_string
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgbee7cf4" class="outline-3">
+<h3 id="orgbee7cf4">dispatch 方法</h3>
+<div class="outline-text-3" id="text-orgbee7cf4">
+<p>
+它是从 <b>AsyncContext</b> 中调用这些方法的
+</p>
+</div>
+
+<div id="outline-container-org39b5d53" class="outline-4">
+<h4 id="org39b5d53">dispatch 请求参数</h4>
+<div class="outline-text-4" id="text-org39b5d53">
+<p>
+它是设置在 request 对象属性上的（由 dispatch 机制负责设置）
+</p>
+<pre class="example">
+javax.servlet.async.request_uri
+javax.servlet.async.context_path
+javax.servlet.async.servlet_path
+javax.servlet.async.path_info
+javax.servlet.async.query_string
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orga1812de" class="outline-2">
+<h2 id="orga1812de">Web 应用程序</h2>
+<div class="outline-text-2" id="text-orga1812de">
+<p>
+一个 Web 应用程序对应一个 ServletContext 。
+</p>
+</div>
+
+<div id="outline-container-org97e6c90" class="outline-3">
+<h3 id="org97e6c90">目录结构</h3>
+<div class="outline-text-3" id="text-org97e6c90">
+<p>
+假设 <b>/catalog</b> 是 Context Path ，则访问 <b>/catalog/index.html</b> 时，Web容器可以通过以下情况下满足这个请求：
+</p>
+<ul class="org-ul">
+<li>在一个 Web 应用程序的基础目录里有一个 <b>index.html</b> 文件 （这个优先级最高）</li>
+<li>或者在 <b>WEB-INF/lib</b> 目录的 jar 包里的 <b>META-INF/resources</b> 目录下有 <b>index.html</b> 文件</li>
+</ul>
+
+
+<p>
+特殊的目录 ： <b>WEB-INF</b> 。该目录下的大部分文档并不是 public 的，除了在 <b>WEB-INF/lib</b> 目录下的 jar 文件里的 <b>META-INF/resources</b> 的静态文件或JSP 文件。
+</p>
+
+<p>
+但是，*WEB-INF* 目录的内容，可以通过 servlet 代码 <b>ServletContext</b> 对象的 <b>getResource</b> 和 <b>getResourceAsStream</b> 方法来访问。
+</p>
+
+<p>
+由于匹配资源的请求映射是大小写敏感的，客户端请求 <b>/WEB-INF/foo</b> <b>/WEb-iNf/foo</b> ，它们不应该返回这些内容，也不应该返回任何的目录列表。
+</p>
+
+<p>
+Web应用程序的 class loader 必须首先加载 <b>WEB-INF/classes</b> 目录，然后再到 <b>WEB-INF/lib</b> 目录。除了 Jar 包文件里的静态资源外，其他任何从客户端的请求访问 <b>WEB-INF</b> 目录，必须返回 404 。
+</p>
+</div>
+</div>
+<div id="outline-container-org2e9ea45" class="outline-3">
+<h3 id="org2e9ea45">Error Pages</h3>
+<div class="outline-text-3" id="text-org2e9ea45">
+<p>
+部署文件描述里可以有 <b>&lt;error-page&gt;</b> 元素.
+</p>
+</div>
+</div>
+<div id="outline-container-org8dda0b3" class="outline-3">
+<h3 id="org8dda0b3">Welcome Files</h3>
+<div class="outline-text-3" id="text-org8dda0b3">
+<p>
+这种机制的目的是当有一个URI请求响应一个 <b>目录</b> 入口但并没有映射的Web组件对应时，允许部署者为容器追加指定一个部分URL顺序列表。这种类型的请求，又称为有效的部分请求（ a valid partial request ）
+</p>
+
+<p>
+例如有一个 welcome file 为 <b>index.html</b> ，有一个请求为 <b>host:port/webapp/directory/</b> ， <b>directory</b> 是一个入口并没有映射到相应的 servlet 或 jsp 页面，则它会返回给客户端的是 <b>host:port/webapp/directory/index.html</b> 。
+</p>
+
+<p>
+Welcome files 是没有以 <b>/</b> 字符结尾或开头的。
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org9d97e33" class="outline-2">
+<h2 id="org9d97e33">应用程序生命周期事件</h2>
+<div class="outline-text-2" id="text-org9d97e33">
+</div><div id="outline-container-orgeea6ebf" class="outline-3">
+<h3 id="orgeea6ebf">事件类型和接口</h3>
+<div class="outline-text-3" id="text-orgeea6ebf">
+</div><div id="outline-container-org13686a6" class="outline-4">
+<h4 id="org13686a6">Servlet Context 事件</h4>
+<div class="outline-text-4" id="text-org13686a6">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">event</th>
+<th scope="col" class="org-left">desc</th>
+<th scope="col" class="org-left">interface</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Lifecycle</td>
+<td class="org-left">The servlet context has just been created and is available to service its first request, or the servlet context is about to be shut down</td>
+<td class="org-left">javax.servlet.ServletContextListener</td>
+</tr>
+
+<tr>
+<td class="org-left">Changes to attributes</td>
+<td class="org-left">Attributes on the servlet context have been added, removed, or replaced</td>
+<td class="org-left">javax.servlet. ServletContextAttributeListener</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+<div id="outline-container-org16aaf3d" class="outline-4">
+<h4 id="org16aaf3d">HTTP Session 事件</h4>
+<div class="outline-text-4" id="text-org16aaf3d">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">event</th>
+<th scope="col" class="org-left">desc</th>
+<th scope="col" class="org-left">interface</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Lifecycle</td>
+<td class="org-left">An HttpSession has been created, invalidated, or timed out</td>
+<td class="org-left">javax.servlet.http.HttpSessionListener</td>
+</tr>
+
+<tr>
+<td class="org-left">Changes to attributes</td>
+<td class="org-left">Attributes have been added, removed, or replaced on an HttpSession</td>
+<td class="org-left">javax.servlet.http HttpSessionAttributeListener</td>
+</tr>
+
+<tr>
+<td class="org-left">Changes to id</td>
+<td class="org-left">The id of HttpSession has been changed.</td>
+<td class="org-left">javax.servlet.http HttpSessionIdListener</td>
+</tr>
+
+<tr>
+<td class="org-left">Session migration</td>
+<td class="org-left">HttpSession has been activated or passivated</td>
+<td class="org-left">javax.servlet.http HttpSessionActivationListener</td>
+</tr>
+
+<tr>
+<td class="org-left">Object binding</td>
+<td class="org-left">Object has been bound to or unbound from HttpSession</td>
+<td class="org-left">javax.servlet.http HttpSessionBindingListener</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-orgb924091" class="outline-4">
+<h4 id="orgb924091">Servlet Request 事件</h4>
+<div class="outline-text-4" id="text-orgb924091">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">event</th>
+<th scope="col" class="org-left">desc</th>
+<th scope="col" class="org-left">interface</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Lifecycle</td>
+<td class="org-left">A servlet request has started being processed by Web components.</td>
+<td class="org-left">javax.servlet.ServletRequestListener</td>
+</tr>
+
+<tr>
+<td class="org-left">Changes to attributes</td>
+<td class="org-left">Attributes have been added, removed, or replaced on a ServletRequest.</td>
+<td class="org-left">javax.servlet. ServletRequestAttributeListener</td>
+</tr>
+
+<tr>
+<td class="org-left">Async events</td>
+<td class="org-left">A timeout, connection termination or completion of async processing</td>
+<td class="org-left">javax.servlet.AsyncListener</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orge4db601" class="outline-3">
+<h3 id="orge4db601">部署声明</h3>
+<div class="outline-text-3" id="text-orge4db601">
+<p>
+Listener 类可以在部署描述文件中用 <b>&lt;listener&gt;</b> 元素来声明。它们的出现顺序，也是它们的调用顺序。如果是 <b>AsyncListener</b> 的 listener， 它只能通过编程的方式来注册(ServletRequest)。
+</p>
+</div>
+</div>
+<div id="outline-container-orgd94c8d8" class="outline-3">
+<h3 id="orgd94c8d8">listener 异常</h3>
+<div class="outline-text-3" id="text-orgd94c8d8">
+<p>
+当一个事件的listener 出现异常时，该事件的后面的listener就不会再执行了。
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org35db54e" class="outline-2">
+<h2 id="org35db54e">映射请求到Servlet</h2>
+<div class="outline-text-2" id="text-org35db54e">
+</div><div id="outline-container-org468fcd0" class="outline-3">
+<h3 id="org468fcd0">使用URL路径</h3>
+<div class="outline-text-3" id="text-org468fcd0">
+<p>
+收到一个客户端请求时，Web容器要决定将它转发到哪个Web应用程序中。选择的Web程序程序必须从请求的URL中匹配最长的Context路径。匹配的URL部分就是映射到servlet的 Context 路径。
+</p>
+
+<p>
+以下是匹配的规则顺序，当其中有一个匹配时，刚不会进行后续的匹配了：
+</p>
+<ol class="org-ol">
+<li>容器会尝试寻找最精确匹配的路径。当成功找到时，则选择这个 servlet 来处理请求。</li>
+<li>容器会递归尝试匹配最长的路径前缀。它是通过一次一个路径树中的目录来完成的，使用 <b>/</b> 字符作为一个路径的分隔符。最长匹配的则选择该 servlet 。</li>
+<li>如果在URL路径的最后一段包含一个扩展名，则 servlet 容器将会尝试匹配那些处理这些扩展的 servlet 来处理。一个扩展名的定义是路径最后一段的在 <b>.</b> 字符后面的部分。</li>
+<li>如果上面的规则都不匹配，容器将试图提供适当的资源请求。如果应用程序定义了一个 <b>default</b> servlet，它将会被使用。一些容器提供了一个隐式的 <b>default</b> servlet 来服务这些内容。</li>
+</ol>
+
+
+<p>
+容器必须使用大小写敏感的字符串来进行比较。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgefa2fda" class="outline-3">
+<h3 id="orgefa2fda">映射规范</h3>
+<div class="outline-text-3" id="text-orgefa2fda">
+<ul class="org-ul">
+<li>一个以 <code>/</code> 字符开头并且以 <code>/*</code> 后缀结尾的字符串，是用作路径映射的。（path mapping)</li>
+<li>一个以 <code>*.</code> 前缀开头的字符串，是用作扩展名映射的。(extension mapping)</li>
+<li>一个空字符串 <code>""</code> 是特殊的URL模式，它精确映射到应用程序的 root context ，即，请求形式为 <code>http://host:port/&lt;context- root&gt;/</code> 。在这情况下，PathInfo 为 <code>/</code> ，Servlet Path 和 Context Path 都是空字符串 <code>""</code> 。</li>
+<li>一个仅包含 <code>/</code> 的字符串，表示它是应用程序的 <b>default</b> servlet 。在这情况下，Servlet Path 为请求的 URI 减去 Context Path ，并且 PathInfo 为 <b>null</b> 。</li>
+<li>其他字符串，仅用作精确匹配。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgfb54b6d" class="outline-3">
+<h3 id="orgfb54b6d">隐式映射</h3>
+<div class="outline-text-3" id="text-orgfb54b6d">
+<p>
+如果容器有一个内部的 JSP 容器，则 <code>*.jsp</code> 扩展会映射给它。这些映射就是隐式映射。
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">&#20316;&#32773;: emacsist</p>
+<p class="date">Created: 2017-03-22 Wed 00:10</p>
+<p class="validation"></p>
+</div>
+</body>
+</html>
