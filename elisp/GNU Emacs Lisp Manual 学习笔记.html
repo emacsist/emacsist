@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2017-03-22 Wed 00:10 -->
+<!-- 2017-03-23 四 14:21 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GNU Emacs Lisp Manual 学习笔记</title>
@@ -345,6 +345,31 @@ for the JavaScript code in this tag.
 <li><a href="#org9969ab4">Numeric Conversions</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li><a href="#org664d667">Strings and Characters</a>
+<ul>
+<li><a href="#org85f6778">basics</a></li>
+</ul>
+</li>
+<li><a href="#orga4efc28">Evaluation</a>
+<ul>
+<li><a href="#org12d3607">evaluation 简介</a></li>
+<li><a href="#org7fb8b6e">Forms 的类型</a>
+<ul>
+<li><a href="#orgeb9ba11">Self-Evaluating Forms</a></li>
+<li><a href="#org9986db3">Symbol Forms</a></li>
+<li><a href="#org2565f49">Classification of List Forms</a></li>
+<li><a href="#org1844fc4">Symbol Function Indirection</a></li>
+<li><a href="#orgdb1e6a7">Evaluation of Function Forms</a></li>
+<li><a href="#org00ad02a">Lisp Macro Evaluation</a></li>
+<li><a href="#orgf4f30cb">Special Forms</a></li>
+<li><a href="#org4812f09">Autoloading</a></li>
+</ul>
+</li>
+<li><a href="#org2fc5cb6">Quoting</a></li>
+<li><a href="#orgfa0404e">Backquote</a></li>
+<li><a href="#org8ce16af">Eval</a></li>
 </ul>
 </li>
 </ul>
@@ -1679,10 +1704,291 @@ integer =&gt; floating point ，使用 <b>float</b> function 。 floating point 
 </div>
 </div>
 </div>
+
+<div id="outline-container-org664d667" class="outline-2">
+<h2 id="org664d667">Strings and Characters</h2>
+<div class="outline-text-2" id="text-org664d667">
+</div><div id="outline-container-org85f6778" class="outline-3">
+<h3 id="org85f6778">basics</h3>
+<div class="outline-text-3" id="text-org85f6778">
+<p>
+charater 只是 integer 。一个 integer 是否是一个 charater 取决于它如何使用的。
+不像 C ，Emacs Lisp 的 <b>strings</b> 没有用终止字符码。
+</p>
+
+<p>
+<b>strings</b> 是 <b>arrays</b> ，因此也是 <b>sequences</b> ，所以，你可以用 <b>array</b> 和 <b>sequences</b> 相关的 function 来操作它。
+</p>
+
+<blockquote>
+<p>
+不过要注意， <b>length</b> 不应该用来计算 string 的长度，请用 <b>string-width</b> 来代替。
+</p>
+</blockquote>
+
+<p>
+它有两种表示：
+</p>
+<ol class="org-ol">
+<li>unibyte</li>
+<li>multibyte</li>
+</ol>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orga4efc28" class="outline-2">
+<h2 id="orga4efc28">Evaluation</h2>
+<div class="outline-text-2" id="text-orga4efc28">
+<p>
+在 Emacs Lisp 中将一个 expression 进行 evaluation 是由解析器执行的——将接收到的 Lisp object 的输入作为一个程序，然后进行计算它的值。解析器会自动地进行 evaluate ，但也可以显式地调用 <b>eval</b> 来执行。
+</p>
+</div>
+<div id="outline-container-org12d3607" class="outline-3">
+<h3 id="org12d3607">evaluation 简介</h3>
+<div class="outline-text-3" id="text-org12d3607">
+<p>
+一个试图准备 evaluation 的 Lisp object 被称为一个 <b>form</b> 或 <b>expression</b> 。 <b>form</b> 是数据对象而不仅仅是文本这个事实，是类Lisp语言与其他语言的根本区别之一。任何对象都可以被 <b>evaluated</b> ，但通常仅是 numbers, symbols, lists 和 strings 。
+</p>
+
+<p>
+读取然后 evaluate <b>form</b> 是非常觉的，但是，读取和 evaluation 是分开的两个动作的的，并且可以单独地执行。
+</p>
+
+<p>
+读取但没有进行任何的 evaluate 时，它将 Lisp object 的 <b>printed representation</b> 转换为 object 本身。
+</p>
+
+<p>
+<b>evaluation</b> 是一个递归处理，evaluate 一个 <b>form</b> 通常需要 evaluate 该 <b>form</b> 里的每部分。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7fb8b6e" class="outline-3">
+<h3 id="org7fb8b6e">Forms 的类型</h3>
+<div class="outline-text-3" id="text-org7fb8b6e">
+</div><div id="outline-container-orgeb9ba11" class="outline-4">
+<h4 id="orgeb9ba11">Self-Evaluating Forms</h4>
+<div class="outline-text-4" id="text-orgeb9ba11">
+<p>
+即除了 list 和 symbol 外的 <b>form</b> 。 <b>Self-evaluating</b> evaluate 为它自身，即它们进行 evaluate 之后，还是它们自身。因此， number 25 evaluate 为 25 ；string "foo" evaluate 之后还是 "foo" 。同样， evaluate 一个 vector 并不会导致将 vector 的 element 进行 evaluate ，它返回的是 vector 自身并且内容不变。
+</p>
+
+<ul class="org-ul">
+<li>numbers</li>
+<li>characters</li>
+<li>strings</li>
+<li>vectors</li>
+</ul>
+
+
+<p>
+都属于此类。
+</p>
+</div>
+</div>
+<div id="outline-container-org9986db3" class="outline-4">
+<h4 id="org9986db3">Symbol Forms</h4>
+<div class="outline-text-4" id="text-org9986db3">
+<p>
+当一个 <b>symbol</b> 进行 evaluate 时，它被视为一个 <b>variable</b> 。它的结果就是 <b>variable</b> 的 value ，如果有的话。如果 <b>symbol</b> 并没有作为 <b>variable</b> 的 value 的话，Lisp 解析器会产生一个错误。例如:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> a <span style="color: #a45bad;">123</span><span style="color: #4f97d7;">)</span>
+&#8658; <span style="color: #a45bad;">123</span>
+<span style="color: #4f97d7;">(</span>eval 'a<span style="color: #4f97d7;">)</span>
+&#8658; <span style="color: #a45bad;">123</span>
+a
+&#8658; <span style="color: #a45bad;">123</span>
+</pre>
+</div>
+
+<p>
+symbol 中的 <b>nil</b> 和 <b>t</b> 是特殊对待的， <b>nil</b> 的 value 永远是 <b>nil</b> ， <b>t</b> 的 value 永远是 <b>t</b> ，并且你不能设置或绑定其他 value 给它们。
+</p>
+
+<p>
+一些以 <b>:</b> 开头的 symbol 也是 <b>self-evaluate</b> 的， 同样地，它的 value 通常也是不能更改的。
+</p>
+</div>
+</div>
+<div id="outline-container-org2565f49" class="outline-4">
+<h4 id="org2565f49">Classification of List Forms</h4>
+<div class="outline-text-4" id="text-org2565f49">
+<p>
+一个 <b>form</b> 如果它是非空的 list ，则会根据它的第一个 element 来判断它是否是一个 <b>function call</b> ， 或 <b>macro call</b> 或 <b>special form</b> 。这三种类型的 <b>form</b> 是用不同的方式来进行 evaluate 。剩下的 list 元素组成这三种类型的 arguments 。
+</p>
+
+<p>
+在一个非空的 list 中，evaluating 的第一步就是检测它的第一个 element 。这个 element 决定了该 <b>form</b> 是什么类型，以及list中剩下的元素将如何处理。
+不过，在一些 Lisp dialects 中，第一个元素并不会被 evaluated ，比如 Scheme 。
+</p>
+</div>
+</div>
+<div id="outline-container-org1844fc4" class="outline-4">
+<h4 id="org1844fc4">Symbol Function Indirection</h4>
+<div class="outline-text-4" id="text-org1844fc4">
+<p>
+如果 list 中的第一个 element 是一个 symbol ，然后 evaluation 测试该 symbol 的 function cell ，并使用它的内容来代替原始的 symbol 。如果它的内容是其他的 symbol ，这种处理，就称为 <b>symbol function indirection</b> ，它会一直这样子重复处理，直到包含一个非 symbol 。
+</p>
+</div>
+</div>
+<div id="outline-container-orgdb1e6a7" class="outline-4">
+<h4 id="orgdb1e6a7">Evaluation of Function Forms</h4>
+<div class="outline-text-4" id="text-orgdb1e6a7">
+<p>
+如果 list 中的第一个 element 是一个 Lisp function object 或 byte-code object 或 primitive function object ，这种 list 就称为一个 <b>function call</b> 。例如 
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>+ <span style="color: #a45bad;">1</span> x<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+evaluate 一个 <b>function call</b> 的第一步就是从左到右地进行 evaluate 这个 list 中的剩余的元素。结果就是 argument 的实际 value ，每一个 element 对应一个 value 。下一步就是将这些 argument 的value 进行 <b>function call</b> 。
+</p>
+</div>
+</div>
+<div id="outline-container-org00ad02a" class="outline-4">
+<h4 id="org00ad02a">Lisp Macro Evaluation</h4>
+<div class="outline-text-4" id="text-org00ad02a">
+<p>
+如果准备进行 evaluated 的 list 的第一个 element 是一个 macro object ，则这个 list 就是一个 <b>macro call</b> 。
+当它进行 evaluating 时，剩下的 list elements 并不会初始化地 evaluate 。相反，这些 elements 自身是作为这个 macro 的 arguments 。 macro 的定义计算出一个代替的 <b>form</b> ，称为 macro 的 expression， 被 evaluated 后就会替代原来的 <b>form</b> 。这个 <b>expansion</b> 可能是以下的 <b>form</b> ：一个 <b>self-evaluating</b> 常量，一个 symbol， 或一个 list 。如果该 expansion 自身还是一个 macro call ，则进行递归处理，直到结果是其他形式的 <b>form</b> 。
+</p>
+</div>
+</div>
+<div id="outline-container-orgf4f30cb" class="outline-4">
+<h4 id="orgf4f30cb">Special Forms</h4>
+<div class="outline-text-4" id="text-orgf4f30cb">
+<p>
+一个 <b>special form</b> 是一个特别标识的 primitive function ，它的 arguments 并不会进行 evaluated 。绝大部分的 <b>special form</b> 定义控制结构或执行 <b>variable bindings</b> —— 这些是 function 做不到的。
+如果一个 <b>expression</b> 的第一个 symbol 是一个 <b>special form</b> ，则该 expression 应该遵循这个 <b>special form</b> 的规则，否则， Emacs 的行为是未定义的（尽管它不会崩溃）。例如 <code>((lambda (x) x . 3) 4)</code> 是一个以 <b>lambda</b> 开头的但并不是 <b>well-formed</b> 的 lambda expression ，所以 Emacs 可能会产生一个错误信息，或者返回 或 4 或 <b>nil</b> ，又或者是其他方式的行为。
+</p>
+</div>
+</div>
+<div id="outline-container-org4812f09" class="outline-4">
+<h4 id="org4812f09">Autoloading</h4>
+<div class="outline-text-4" id="text-org4812f09">
+<p>
+<b>autoload</b> 特性允许你调用一个还没有加载到 Emacs 的 function 或 macro 。它指出哪个文件包含它的定义。当一个 autoload object 作为一个 symbol 的 function definition ，作为 function 来调用这个 symbol 将会自动地加载所在的文件；然后从该文件中加载它真正要调用的 definition 。
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org2fc5cb6" class="outline-3">
+<h3 id="org2fc5cb6">Quoting</h3>
+<div class="outline-text-3" id="text-org2fc5cb6">
+<p>
+<b>quote</b> 这个 <b>special form</b> 返回它的单个 arguments，写的是什么就返回什么，并且不会 evaluating 。在程序中，这提供了一个包含 constant symbol 和 lists 的方式，它们并不是 <b>self-evaluating</b> object 。
+</p>
+<blockquote>
+<p>
+并不必要去  quote 一个 <b>self-evaluating</b> objects ，比如 numbers, strings, 和 vectors 。
+</p>
+</blockquote>
+
+<p>
+例子:
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">quote</span> <span style="color: #bc6ec5;">(</span>+ <span style="color: #a45bad;">1</span> <span style="color: #a45bad;">2</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658; <span style="color: #4f97d7;">(</span>+ <span style="color: #a45bad;">1</span> <span style="color: #a45bad;">2</span><span style="color: #4f97d7;">)</span>
+<span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">quote</span> foo<span style="color: #4f97d7;">)</span>
+&#8658; foo
+'foo
+&#8658; foo
+''foo
+&#8658; <span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">quote</span> foo<span style="color: #4f97d7;">)</span>
+'<span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">quote</span> foo<span style="color: #4f97d7;">)</span>
+&#8658; <span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">quote</span> foo<span style="color: #4f97d7;">)</span>
+<span style="color: #4f97d7;">[</span>'foo<span style="color: #4f97d7;">]</span>
+&#8658; <span style="color: #4f97d7;">[</span><span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">quote</span> foo<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">]</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgfa0404e" class="outline-3">
+<h3 id="orgfa0404e">Backquote</h3>
+<div class="outline-text-3" id="text-orgfa0404e">
+<p>
+<b>backquote</b> 结构允许你去 <b>quote</b> 一个 list ，但是选择性地进行 evaluate 该 list 的部分 element 。它与 <b>quote</b> 相同，例如:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">`<span style="color: #4f97d7;">(</span>a list of <span style="color: #bc6ec5;">(</span>+ <span style="color: #a45bad;">2</span> <span style="color: #a45bad;">3</span><span style="color: #bc6ec5;">)</span> elements<span style="color: #4f97d7;">)</span>
+&#8658; <span style="color: #4f97d7;">(</span>a list of <span style="color: #bc6ec5;">(</span>+ <span style="color: #a45bad;">2</span> <span style="color: #a45bad;">3</span><span style="color: #bc6ec5;">)</span> elements<span style="color: #4f97d7;">)</span>
+'<span style="color: #4f97d7;">(</span>a list of <span style="color: #bc6ec5;">(</span>+ <span style="color: #a45bad;">2</span> <span style="color: #a45bad;">3</span><span style="color: #bc6ec5;">)</span> elements<span style="color: #4f97d7;">)</span>
+&#8658; <span style="color: #4f97d7;">(</span>a list of <span style="color: #bc6ec5;">(</span>+ <span style="color: #a45bad;">2</span> <span style="color: #a45bad;">3</span><span style="color: #bc6ec5;">)</span> elements<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+在 backquote 中的 arguments 中，可以有一个特殊标记 <code>,</code> 来指示一个 value 它并不是 constant 的。Emacs Lisp evaluator 会 evaluate 那些带有 <code>,</code> 的 arguments，然后将 evaluate 后的 value 放回到 list 结构中。例如:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">`<span style="color: #4f97d7;">(</span>a list of ,<span style="color: #bc6ec5;">(</span>+ <span style="color: #a45bad;">2</span> <span style="color: #a45bad;">3</span><span style="color: #bc6ec5;">)</span> elements<span style="color: #4f97d7;">)</span>
+&#8658; <span style="color: #4f97d7;">(</span>a list of <span style="color: #a45bad;">5</span> elements<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+
+<p>
+并且 <code>,</code> 允许在list结构中更深层次中使用，例如:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">`<span style="color: #4f97d7;">(</span><span style="color: #a45bad;">1</span> <span style="color: #a45bad;">2</span> <span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">3</span> ,<span style="color: #2d9574;">(</span>+ <span style="color: #a45bad;">4</span> <span style="color: #a45bad;">5</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658; <span style="color: #4f97d7;">(</span><span style="color: #a45bad;">1</span> <span style="color: #a45bad;">2</span> <span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">3</span> <span style="color: #a45bad;">9</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+
+<p>
+你也可以拼接一个被 evaluated 的 value 到结果的 list 中， 使用特殊标记 <code>,@</code> 。这种拼接的结果的 elements 与其他 elements 会处于同等的级别。例如:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> some-list '<span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">2</span> <span style="color: #a45bad;">3</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658; <span style="color: #4f97d7;">(</span><span style="color: #a45bad;">2</span> <span style="color: #a45bad;">3</span><span style="color: #4f97d7;">)</span>
+<span style="color: #4f97d7;">(</span>cons <span style="color: #a45bad;">1</span> <span style="color: #bc6ec5;">(</span>append some-list '<span style="color: #2d9574;">(</span><span style="color: #a45bad;">4</span><span style="color: #2d9574;">)</span> some-list<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658; <span style="color: #4f97d7;">(</span><span style="color: #a45bad;">1</span> <span style="color: #a45bad;">2</span> <span style="color: #a45bad;">3</span> <span style="color: #a45bad;">4</span> <span style="color: #a45bad;">2</span> <span style="color: #a45bad;">3</span><span style="color: #4f97d7;">)</span>
+`<span style="color: #4f97d7;">(</span><span style="color: #a45bad;">1</span> ,@some-list <span style="color: #a45bad;">4</span> ,@some-list<span style="color: #4f97d7;">)</span>
+&#8658; <span style="color: #4f97d7;">(</span><span style="color: #a45bad;">1</span> <span style="color: #a45bad;">2</span> <span style="color: #a45bad;">3</span> <span style="color: #a45bad;">4</span> <span style="color: #a45bad;">2</span> <span style="color: #a45bad;">3</span><span style="color: #4f97d7;">)</span>
+
+<span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> list '<span style="color: #bc6ec5;">(</span>hack foo bar<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658; <span style="color: #4f97d7;">(</span>hack foo bar<span style="color: #4f97d7;">)</span>
+<span style="color: #4f97d7;">(</span>cons 'use
+      <span style="color: #bc6ec5;">(</span>cons 'the
+            <span style="color: #2d9574;">(</span>cons 'words <span style="color: #67b11d;">(</span>append <span style="color: #b1951d;">(</span>cdr list<span style="color: #b1951d;">)</span> '<span style="color: #b1951d;">(</span>as elements<span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+&#8658; <span style="color: #4f97d7;">(</span>use the words foo bar as elements<span style="color: #4f97d7;">)</span>
+`<span style="color: #4f97d7;">(</span>use the words ,@<span style="color: #bc6ec5;">(</span>cdr list<span style="color: #bc6ec5;">)</span> as elements<span style="color: #4f97d7;">)</span>
+&#8658; <span style="color: #4f97d7;">(</span>use the words foo bar as elements<span style="color: #4f97d7;">)</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org8ce16af" class="outline-3">
+<h3 id="org8ce16af">Eval</h3>
+<div class="outline-text-3" id="text-org8ce16af">
+<p>
+大部分情况下，在正被执行的程序中出现的 <b>form</b> 会自动地被 evaluate 。在一个罕见的时候，你可能需要在 runtime 的时候 evaluate 写的代码，比如从被编辑的文本中读取一个 <b>form</b> 或从一个 list property 中获取。在这种情况下，可以使用 <b>eval</b> function 。
+</p>
+
+<p>
+通常情况下是不需要 <b>eval</b> 的，并且有其他的东西可以代替它。例如，为了获取一个 variable 的 value ，虽然 <b>eval</b> 也可以，但更好的是使用 <b>symbol-value</b> ；或者其他保存在一个 list property 中的 expression 然后需要进行 <b>eval</b> 的，当它是 function 的时候，更好的方式是使用 <b>funcall</b> 而不是 <b>eval</b> 。
+</p>
+</div>
+</div>
+</div>
 </div>
 <div id="postamble" class="status">
 <p class="author">&#20316;&#32773;: emacsist</p>
-<p class="date">Created: 2017-03-22 Wed 00:10</p>
+<p class="date">Created: 2017-03-23 四 14:21</p>
 <p class="validation"></p>
 </div>
 </body>
