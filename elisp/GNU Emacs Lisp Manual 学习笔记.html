@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2017-03-23 四 14:21 -->
+<!-- 2017-03-31 五 01:23 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GNU Emacs Lisp Manual 学习笔记</title>
@@ -372,6 +372,33 @@ for the JavaScript code in this tag.
 <li><a href="#org8ce16af">Eval</a></li>
 </ul>
 </li>
+<li><a href="#org592f579">Control Structures</a>
+<ul>
+<li><a href="#orgfbefca1">Sequence</a></li>
+<li><a href="#orgcfbfedc">Conditionals</a>
+<ul>
+<li><a href="#org107c1c5">if</a></li>
+<li><a href="#org1f6cfc4">when</a></li>
+<li><a href="#org1de2c13">unless</a></li>
+<li><a href="#org22a8ad9">cond</a></li>
+</ul>
+</li>
+<li><a href="#org6110a57">Constructs for Combining Conditions</a>
+<ul>
+<li><a href="#org237320b">and</a></li>
+<li><a href="#org459fa7a">or</a></li>
+<li><a href="#org37bcba4">not</a></li>
+</ul>
+</li>
+<li><a href="#org9a1b9be">Iteration</a>
+<ul>
+<li><a href="#org546876a">while</a></li>
+<li><a href="#org8fe4068">Macro: dolist (var list [result]) body</a></li>
+<li><a href="#org79cd464">dotimes</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -414,10 +441,10 @@ for the JavaScript code in this tag.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>booleanp '<span style="color: #bc6ec5;">(</span>hell world<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span> =&gt; &#36820;&#22238; nil
-<span style="color: #4f97d7;">(</span>booleanp t<span style="color: #4f97d7;">)</span> =&gt; &#36820;&#22238; t
-<span style="color: #4f97d7;">(</span>booleanp nil<span style="color: #4f97d7;">)</span> =&gt; &#36820;&#22238; t
-<span style="color: #4f97d7;">(</span>booleanp <span style="color: #2d9574;">"hello world"</span><span style="color: #4f97d7;">)</span> =&gt; &#36820;&#22238; nil
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span>booleanp '<span style="color: #b58900;">(</span>hell world<span style="color: #b58900;">)</span><span style="color: #2aa198;">)</span> =&gt; &#36820;&#22238; nil
+<span style="color: #2aa198;">(</span>booleanp t<span style="color: #2aa198;">)</span> =&gt; &#36820;&#22238; t
+<span style="color: #2aa198;">(</span>booleanp nil<span style="color: #2aa198;">)</span> =&gt; &#36820;&#22238; t
+<span style="color: #2aa198;">(</span>booleanp <span style="color: #2aa198;">"hello world"</span><span style="color: #2aa198;">)</span> =&gt; &#36820;&#22238; nil
 </pre>
 </div>
 </div>
@@ -633,17 +660,17 @@ Emacs Lisp 中， <b>character</b> 只是一个 <b>integer</b> 。换句话说�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">?\a &#8658; <span style="color: #a45bad;">7</span>                 <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">control-g, C-g</span>
-?\b &#8658; <span style="color: #a45bad;">8</span>                 <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">backspace, BS, C-h</span>
-?\t &#8658; <span style="color: #a45bad;">9</span>                 <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">tab, TAB, C-i</span>
-?\n &#8658; <span style="color: #a45bad;">10</span>                <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">newline, C-j</span>
-?\v &#8658; <span style="color: #a45bad;">11</span>                <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">vertical tab, C-k</span>
-?\f &#8658; <span style="color: #a45bad;">12</span>                <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">formfeed character, C-l</span>
-?\r &#8658; <span style="color: #a45bad;">13</span>                <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">carriage return, RET, C-m</span>
-?\e &#8658; <span style="color: #a45bad;">27</span>                <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">escape character, ESC, C-[</span>
-?\s &#8658; <span style="color: #a45bad;">32</span>                <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">space character, SPC</span>
-?\\ &#8658; <span style="color: #a45bad;">92</span>                <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">backslash character, \</span>
-?\d &#8658; <span style="color: #a45bad;">127</span>               <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">delete character, DEL</span>
+<pre class="src src-emacs-lisp">?\a &#8658; <span style="color: #6c71c4;">7</span>                 <span style="color: #586e75;">; </span><span style="color: #586e75;">control-g, C-g</span>
+?\b &#8658; <span style="color: #6c71c4;">8</span>                 <span style="color: #586e75;">; </span><span style="color: #586e75;">backspace, BS, C-h</span>
+?\t &#8658; <span style="color: #6c71c4;">9</span>                 <span style="color: #586e75;">; </span><span style="color: #586e75;">tab, TAB, C-i</span>
+?\n &#8658; <span style="color: #6c71c4;">10</span>                <span style="color: #586e75;">; </span><span style="color: #586e75;">newline, C-j</span>
+?\v &#8658; <span style="color: #6c71c4;">11</span>                <span style="color: #586e75;">; </span><span style="color: #586e75;">vertical tab, C-k</span>
+?\f &#8658; <span style="color: #6c71c4;">12</span>                <span style="color: #586e75;">; </span><span style="color: #586e75;">formfeed character, C-l</span>
+?\r &#8658; <span style="color: #6c71c4;">13</span>                <span style="color: #586e75;">; </span><span style="color: #586e75;">carriage return, RET, C-m</span>
+?\e &#8658; <span style="color: #6c71c4;">27</span>                <span style="color: #586e75;">; </span><span style="color: #586e75;">escape character, ESC, C-[</span>
+?\s &#8658; <span style="color: #6c71c4;">32</span>                <span style="color: #586e75;">; </span><span style="color: #586e75;">space character, SPC</span>
+?\\ &#8658; <span style="color: #6c71c4;">92</span>                <span style="color: #586e75;">; </span><span style="color: #586e75;">backslash character, \</span>
+?\d &#8658; <span style="color: #6c71c4;">127</span>               <span style="color: #586e75;">; </span><span style="color: #586e75;">delete character, DEL</span>
 </pre>
 </div>
 
@@ -706,7 +733,7 @@ Emacs 提供了几种 escape syntax 来使用非 ASCII 文本 character 。
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">?\^? &#8658; <span style="color: #a45bad;">127</span>     ?\C-? &#8658; <span style="color: #a45bad;">127</span>
+<pre class="src src-emacs-lisp">?\^? &#8658; <span style="color: #6c71c4;">127</span>     ?\C-? &#8658; <span style="color: #6c71c4;">127</span>
 </pre>
 </div>
 
@@ -785,15 +812,15 @@ X Window System 定义了其他三种 <b>modifier bits</b> ：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">foo                 <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">A symbol named &#8216;</span><span style="color: #a45bad; background-color: #292e34;">foo</span><span style="color: #2aa1ae; background-color: #292e34;">&#8217;.</span>
-FOO                 <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">A symbol named &#8216;</span><span style="color: #a45bad; background-color: #292e34;">FOO</span><span style="color: #2aa1ae; background-color: #292e34;">&#8217;, different from &#8216;</span><span style="color: #a45bad; background-color: #292e34;">foo</span><span style="color: #2aa1ae; background-color: #292e34;">&#8217;.</span>
-1+                  <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">A symbol named &#8216;</span><span style="color: #a45bad; background-color: #292e34;">1+</span><span style="color: #2aa1ae; background-color: #292e34;">&#8217;</span>
-                                        <span style="color: #2aa1ae; background-color: #292e34;">;   </span><span style="color: #2aa1ae; background-color: #292e34;">(not &#8216;</span><span style="color: #a45bad; background-color: #292e34;">+1</span><span style="color: #2aa1ae; background-color: #292e34;">&#8217;, which is an integer).</span>
-\<span style="color: #a45bad;">+1</span>                 <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">A symbol named &#8216;</span><span style="color: #a45bad; background-color: #292e34;">+1</span><span style="color: #2aa1ae; background-color: #292e34;">&#8217;</span>
-                                        <span style="color: #2aa1ae; background-color: #292e34;">;   </span><span style="color: #2aa1ae; background-color: #292e34;">(not a very readable name).</span>
-\(*\ <span style="color: #a45bad;">1</span>\ <span style="color: #a45bad;">2</span>\)         <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">A symbol named &#8216;(* 1 2)&#8217; (a worse name).</span>
-+-*/_~!@$%^&amp;=:&lt;&gt;{}  <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">A symbol named &#8216;</span><span style="color: #a45bad; background-color: #292e34;">+-*/_~!@$%^&amp;=:&lt;&gt;{}</span><span style="color: #2aa1ae; background-color: #292e34;">&#8217;.</span>
-                                        <span style="color: #2aa1ae; background-color: #292e34;">;   </span><span style="color: #2aa1ae; background-color: #292e34;">These characters need not be escaped.</span>
+<pre class="src src-emacs-lisp">foo                 <span style="color: #586e75;">; </span><span style="color: #586e75;">A symbol named &#8216;</span><span style="color: #268bd2; font-weight: bold;">foo</span><span style="color: #586e75;">&#8217;.</span>
+FOO                 <span style="color: #586e75;">; </span><span style="color: #586e75;">A symbol named &#8216;</span><span style="color: #268bd2; font-weight: bold;">FOO</span><span style="color: #586e75;">&#8217;, different from &#8216;</span><span style="color: #268bd2; font-weight: bold;">foo</span><span style="color: #586e75;">&#8217;.</span>
+1+                  <span style="color: #586e75;">; </span><span style="color: #586e75;">A symbol named &#8216;</span><span style="color: #268bd2; font-weight: bold;">1+</span><span style="color: #586e75;">&#8217;</span>
+                                        <span style="color: #586e75;">;   </span><span style="color: #586e75;">(not &#8216;</span><span style="color: #268bd2; font-weight: bold;">+1</span><span style="color: #586e75;">&#8217;, which is an integer).</span>
+\<span style="color: #6c71c4;">+1</span>                 <span style="color: #586e75;">; </span><span style="color: #586e75;">A symbol named &#8216;</span><span style="color: #268bd2; font-weight: bold;">+1</span><span style="color: #586e75;">&#8217;</span>
+                                        <span style="color: #586e75;">;   </span><span style="color: #586e75;">(not a very readable name).</span>
+\(*\ <span style="color: #6c71c4;">1</span>\ <span style="color: #6c71c4;">2</span>\)         <span style="color: #586e75;">; </span><span style="color: #586e75;">A symbol named &#8216;(* 1 2)&#8217; (a worse name).</span>
++-*/_~!@$%^&amp;=:&lt;&gt;{}  <span style="color: #586e75;">; </span><span style="color: #586e75;">A symbol named &#8216;</span><span style="color: #268bd2; font-weight: bold;">+-*/_~!@$%^&amp;=:&lt;&gt;{}</span><span style="color: #586e75;">&#8217;.</span>
+                                        <span style="color: #586e75;">;   </span><span style="color: #586e75;">These characters need not be escaped.</span>
 </pre>
 </div>
 </div>
@@ -872,14 +899,14 @@ list 的 <b>read syntax</b> 和 <b>printed representation</b> 是相同的：由
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>A <span style="color: #a45bad;">2</span> <span style="color: #2d9574;">"A"</span><span style="color: #4f97d7;">)</span>            <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">A list of three elements.</span>
-<span style="color: #4f97d7;">()</span>                   <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">A list of no elements (the empty list).</span>
-nil                  <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">A list of no elements (the empty list).</span>
-<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"A ()"</span><span style="color: #4f97d7;">)</span>             <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">A list of one element: the string "A ()".</span>
-<span style="color: #4f97d7;">(</span>A <span style="color: #bc6ec5;">()</span><span style="color: #4f97d7;">)</span>               <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">A list of two elements: A and the empty list.</span>
-<span style="color: #4f97d7;">(</span>A nil<span style="color: #4f97d7;">)</span>              <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">Equivalent to the previous.</span>
-<span style="color: #4f97d7;">(</span><span style="color: #bc6ec5;">(</span>A B C<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>            <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">A list of one element</span>
-                                        <span style="color: #2aa1ae; background-color: #292e34;">;   </span><span style="color: #2aa1ae; background-color: #292e34;">(which is a list of three elements).</span>
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span>A <span style="color: #6c71c4;">2</span> <span style="color: #2aa198;">"A"</span><span style="color: #2aa198;">)</span>            <span style="color: #586e75;">; </span><span style="color: #586e75;">A list of three elements.</span>
+<span style="color: #2aa198;">()</span>                   <span style="color: #586e75;">; </span><span style="color: #586e75;">A list of no elements (the empty list).</span>
+nil                  <span style="color: #586e75;">; </span><span style="color: #586e75;">A list of no elements (the empty list).</span>
+<span style="color: #2aa198;">(</span><span style="color: #2aa198;">"A ()"</span><span style="color: #2aa198;">)</span>             <span style="color: #586e75;">; </span><span style="color: #586e75;">A list of one element: the string "A ()".</span>
+<span style="color: #2aa198;">(</span>A <span style="color: #b58900;">()</span><span style="color: #2aa198;">)</span>               <span style="color: #586e75;">; </span><span style="color: #586e75;">A list of two elements: A and the empty list.</span>
+<span style="color: #2aa198;">(</span>A nil<span style="color: #2aa198;">)</span>              <span style="color: #586e75;">; </span><span style="color: #586e75;">Equivalent to the previous.</span>
+<span style="color: #2aa198;">(</span><span style="color: #b58900;">(</span>A B C<span style="color: #b58900;">)</span><span style="color: #2aa198;">)</span>            <span style="color: #586e75;">; </span><span style="color: #586e75;">A list of one element</span>
+                                        <span style="color: #586e75;">;   </span><span style="color: #586e75;">(which is a list of three elements).</span>
 </pre>
 </div>
 
@@ -1002,8 +1029,8 @@ CAR 和 CDR 的名字，是从 Lisp 的历史中获得的。原始的 Lisp 实�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> alist-of-colors
- '<span style="color: #bc6ec5;">(</span><span style="color: #2d9574;">(</span>rose . red<span style="color: #2d9574;">)</span> <span style="color: #2d9574;">(</span>lily . white<span style="color: #2d9574;">)</span> <span style="color: #2d9574;">(</span>buttercup . yellow<span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span><span style="color: #859900; font-weight: bold;">setq</span> alist-of-colors
+ '<span style="color: #b58900;">(</span><span style="color: #268bd2;">(</span>rose . red<span style="color: #268bd2;">)</span> <span style="color: #268bd2;">(</span>lily . white<span style="color: #268bd2;">)</span> <span style="color: #268bd2;">(</span>buttercup . yellow<span style="color: #268bd2;">)</span><span style="color: #b58900;">)</span><span style="color: #2aa198;">)</span>
 </pre>
 </div>
 
@@ -1044,13 +1071,13 @@ CAR 和 CDR 的名字，是从 Lisp 的历史中获得的。原始的 Lisp 实�
 
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #2d9574;">"It is useful to include newlines</span>
-<span style="color: #2d9574;">in documentation strings,</span>
-<span style="color: #2d9574;">but the newline is \</span>
-<span style="color: #2d9574;">ignored if escaped."</span>
-     &#8658; <span style="color: #2d9574;">"It is useful to include newlines</span>
-<span style="color: #2d9574;">in documentation strings,</span>
-<span style="color: #2d9574;">but the newline is ignored if escaped."</span>
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">"It is useful to include newlines</span>
+<span style="color: #2aa198;">in documentation strings,</span>
+<span style="color: #2aa198;">but the newline is \</span>
+<span style="color: #2aa198;">ignored if escaped."</span>
+     &#8658; <span style="color: #2aa198;">"It is useful to include newlines</span>
+<span style="color: #2aa198;">in documentation strings,</span>
+<span style="color: #2aa198;">but the newline is ignored if escaped."</span>
 </pre>
 </div>
 </div>
@@ -1137,7 +1164,7 @@ beg end plist
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">#<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"foo bar"</span> <span style="color: #a45bad;">0</span> <span style="color: #a45bad;">3</span> <span style="color: #bc6ec5;">(</span>face bold<span style="color: #bc6ec5;">)</span> <span style="color: #a45bad;">3</span> <span style="color: #a45bad;">4</span> nil <span style="color: #a45bad;">4</span> <span style="color: #a45bad;">7</span> <span style="color: #bc6ec5;">(</span>face italic<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+<pre class="src src-emacs-lisp">#<span style="color: #2aa198;">(</span><span style="color: #2aa198;">"foo bar"</span> <span style="color: #6c71c4;">0</span> <span style="color: #6c71c4;">3</span> <span style="color: #b58900;">(</span>face bold<span style="color: #b58900;">)</span> <span style="color: #6c71c4;">3</span> <span style="color: #6c71c4;">4</span> nil <span style="color: #6c71c4;">4</span> <span style="color: #6c71c4;">7</span> <span style="color: #b58900;">(</span>face italic<span style="color: #b58900;">)</span><span style="color: #2aa198;">)</span>
 </pre>
 </div>
 
@@ -1162,8 +1189,8 @@ beg end plist
 
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">[</span><span style="color: #a45bad;">1</span> <span style="color: #2d9574;">"two"</span> <span style="color: #bc6ec5;">(</span>three<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">]</span>      <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">A vector of three elements.</span>
- &#8658; <span style="color: #4f97d7;">[</span><span style="color: #a45bad;">1</span> <span style="color: #2d9574;">"two"</span> <span style="color: #bc6ec5;">(</span>three<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">]</span>
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">[</span><span style="color: #6c71c4;">1</span> <span style="color: #2aa198;">"two"</span> <span style="color: #b58900;">(</span>three<span style="color: #b58900;">)</span><span style="color: #2aa198;">]</span>      <span style="color: #586e75;">; </span><span style="color: #586e75;">A vector of three elements.</span>
+ &#8658; <span style="color: #2aa198;">[</span><span style="color: #6c71c4;">1</span> <span style="color: #2aa198;">"two"</span> <span style="color: #b58900;">(</span>three<span style="color: #b58900;">)</span><span style="color: #2aa198;">]</span>
 </pre>
 </div>
 </div>
@@ -1198,10 +1225,10 @@ beg end plist
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>make-bool-vector <span style="color: #a45bad;">3</span> t<span style="color: #4f97d7;">)</span>
-&#8658; #<span style="color: #ce537a; font-weight: bold;">&amp;3</span><span style="color: #2d9574;">"^G"</span>
-<span style="color: #4f97d7;">(</span>make-bool-vector <span style="color: #a45bad;">3</span> nil<span style="color: #4f97d7;">)</span>
-&#8658; #<span style="color: #ce537a; font-weight: bold;">&amp;3</span><span style="color: #2d9574;">"^@"</span>
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span>make-bool-vector <span style="color: #6c71c4;">3</span> t<span style="color: #2aa198;">)</span>
+&#8658; #<span style="color: #b58900;">&amp;3</span><span style="color: #2aa198;">"^G"</span>
+<span style="color: #2aa198;">(</span>make-bool-vector <span style="color: #6c71c4;">3</span> nil<span style="color: #2aa198;">)</span>
+&#8658; #<span style="color: #b58900;">&amp;3</span><span style="color: #2aa198;">"^@"</span>
 </pre>
 </div>
 
@@ -1220,9 +1247,9 @@ beg end plist
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>make-hash-table<span style="color: #4f97d7;">)</span>
- &#8658; #s<span style="color: #4f97d7;">(</span>hash-table size <span style="color: #a45bad;">65</span> test eql rehash-size <span style="color: #a45bad;">1.5</span>
-                         rehash-threshold <span style="color: #a45bad;">0.8</span> data <span style="color: #bc6ec5;">()</span><span style="color: #4f97d7;">)</span>
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span>make-hash-table<span style="color: #2aa198;">)</span>
+ &#8658; #s<span style="color: #2aa198;">(</span>hash-table size <span style="color: #6c71c4;">65</span> test eql rehash-size <span style="color: #6c71c4;">1.5</span>
+                         rehash-threshold <span style="color: #6c71c4;">0.8</span> data <span style="color: #b58900;">()</span><span style="color: #2aa198;">)</span>
 </pre>
 </div>
 </div>
@@ -1288,11 +1315,11 @@ Lisp macro 通过用内建的 <b>defmacro</b> 来定义。
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>symbol-function 'car<span style="color: #4f97d7;">)</span>          <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">Access the function cell</span>
-                                        <span style="color: #2aa1ae; background-color: #292e34;">;   </span><span style="color: #2aa1ae; background-color: #292e34;">of the symbol.</span>
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span>symbol-function 'car<span style="color: #2aa198;">)</span>          <span style="color: #586e75;">; </span><span style="color: #586e75;">Access the function cell</span>
+                                        <span style="color: #586e75;">;   </span><span style="color: #586e75;">of the symbol.</span>
 &#8658; #&lt;subr car&gt;
-<span style="color: #4f97d7;">(</span>subrp <span style="color: #bc6ec5;">(</span>symbol-function 'car<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>  <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">Is this a primitive function?</span>
-&#8658; t                       <span style="color: #2aa1ae; background-color: #292e34;">; </span><span style="color: #2aa1ae; background-color: #292e34;">Yes.</span>
+<span style="color: #2aa198;">(</span>subrp <span style="color: #b58900;">(</span>symbol-function 'car<span style="color: #b58900;">)</span><span style="color: #2aa198;">)</span>  <span style="color: #586e75;">; </span><span style="color: #586e75;">Is this a primitive function?</span>
+&#8658; t                       <span style="color: #586e75;">; </span><span style="color: #586e75;">Yes.</span>
 </pre>
 </div>
 </div>
@@ -1351,7 +1378,7 @@ Lisp macro 通过用内建的 <b>defmacro</b> 来定义。
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>current-buffer<span style="color: #4f97d7;">)</span>
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span>current-buffer<span style="color: #2aa198;">)</span>
  &#8658; #&lt;buffer objects.texi&gt;
 </pre>
 </div>
@@ -1367,8 +1394,8 @@ Lisp macro 通过用内建的 <b>defmacro</b> 来定义。
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>point-marker<span style="color: #4f97d7;">)</span>
- &#8658; #&lt;marker at <span style="color: #a45bad;">10779</span> in objects.texi&gt;
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span>point-marker<span style="color: #2aa198;">)</span>
+ &#8658; #&lt;marker at <span style="color: #6c71c4;">10779</span> in objects.texi&gt;
 </pre>
 </div>
 </div>
@@ -1394,8 +1421,8 @@ Lisp macro 通过用内建的 <b>defmacro</b> 来定义。
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>selected-window<span style="color: #4f97d7;">)</span>
- &#8658; #&lt;window <span style="color: #a45bad;">1</span> on objects.texi&gt;
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span>selected-window<span style="color: #2aa198;">)</span>
+ &#8658; #&lt;window <span style="color: #6c71c4;">1</span> on objects.texi&gt;
 </pre>
 </div>
 </div>
@@ -1413,7 +1440,7 @@ Lisp macro 通过用内建的 <b>defmacro</b> 来定义。
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>selected-frame<span style="color: #4f97d7;">)</span>
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span>selected-frame<span style="color: #2aa198;">)</span>
  &#8658; #&lt;frame emacs@psilocin.gnu.org 0xdac80&gt;
 </pre>
 </div>
@@ -1429,8 +1456,8 @@ Lisp macro 通过用内建的 <b>defmacro</b> 来定义。
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>get-device-terminal nil<span style="color: #4f97d7;">)</span>
- &#8658; #&lt;terminal <span style="color: #a45bad;">1</span> on /dev/tty&gt;
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span>get-device-terminal nil<span style="color: #2aa198;">)</span>
+ &#8658; #&lt;terminal <span style="color: #6c71c4;">1</span> on /dev/tty&gt;
 </pre>
 </div>
 </div>
@@ -1463,8 +1490,8 @@ Lisp macro 通过用内建的 <b>defmacro</b> 来定义。
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>process-list<span style="color: #4f97d7;">)</span>
- &#8658; <span style="color: #4f97d7;">(</span>#&lt;process shell&gt;<span style="color: #4f97d7;">)</span>
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span>process-list<span style="color: #2aa198;">)</span>
+ &#8658; <span style="color: #2aa198;">(</span>#&lt;process shell&gt;<span style="color: #2aa198;">)</span>
 </pre>
 </div>
 </div>
@@ -1535,7 +1562,7 @@ Lisp macro 通过用内建的 <b>defmacro</b> 来定义。
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>#1=<span style="color: #bc6ec5;">(</span>a<span style="color: #bc6ec5;">)</span> b #<span style="color: #a45bad;">1</span>#<span style="color: #4f97d7;">)</span>
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span>#1=<span style="color: #b58900;">(</span>a<span style="color: #b58900;">)</span> b #<span style="color: #6c71c4;">1</span>#<span style="color: #2aa198;">)</span>
 </pre>
 </div>
 </div>
@@ -1550,7 +1577,7 @@ Emacs Lisp 并不进行 type checking ，所以这个要自己去判断。所有
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>+ <span style="color: #a45bad;">2</span> 'a<span style="color: #4f97d7;">)</span>
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span>+ <span style="color: #6c71c4;">2</span> 'a<span style="color: #2aa198;">)</span>
 </pre>
 </div>
 
@@ -1567,34 +1594,34 @@ Emacs Lisp 提供了这些判断 argument 是否是特定类型的 object ，它
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>eq 'foo 'foo<span style="color: #4f97d7;">)</span>
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span>eq 'foo 'foo<span style="color: #2aa198;">)</span>
 &#8658; t
 
-<span style="color: #4f97d7;">(</span>eq <span style="color: #a45bad;">456</span> <span style="color: #a45bad;">456</span><span style="color: #4f97d7;">)</span>
+<span style="color: #2aa198;">(</span>eq <span style="color: #6c71c4;">456</span> <span style="color: #6c71c4;">456</span><span style="color: #2aa198;">)</span>
 &#8658; t
 
-<span style="color: #4f97d7;">(</span>eq <span style="color: #2d9574;">"asdf"</span> <span style="color: #2d9574;">"asdf"</span><span style="color: #4f97d7;">)</span>
+<span style="color: #2aa198;">(</span>eq <span style="color: #2aa198;">"asdf"</span> <span style="color: #2aa198;">"asdf"</span><span style="color: #2aa198;">)</span>
 &#8658; nil
 
-<span style="color: #4f97d7;">(</span>eq <span style="color: #2d9574;">""</span> <span style="color: #2d9574;">""</span><span style="color: #4f97d7;">)</span>
+<span style="color: #2aa198;">(</span>eq <span style="color: #2aa198;">""</span> <span style="color: #2aa198;">""</span><span style="color: #2aa198;">)</span>
 &#8658; t
-<span style="color: #2aa1ae; background-color: #292e34;">;; </span><span style="color: #2aa1ae; background-color: #292e34;">This exception occurs because Emacs Lisp</span>
-<span style="color: #2aa1ae; background-color: #292e34;">;; </span><span style="color: #2aa1ae; background-color: #292e34;">makes just one multibyte empty string, to save space.</span>
+<span style="color: #586e75;">;; </span><span style="color: #586e75;">This exception occurs because Emacs Lisp</span>
+<span style="color: #586e75;">;; </span><span style="color: #586e75;">makes just one multibyte empty string, to save space.</span>
 
-<span style="color: #4f97d7;">(</span>eq '<span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">1</span> <span style="color: #2d9574;">(</span><span style="color: #a45bad;">2</span> <span style="color: #67b11d;">(</span><span style="color: #a45bad;">3</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span> '<span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">1</span> <span style="color: #2d9574;">(</span><span style="color: #a45bad;">2</span> <span style="color: #67b11d;">(</span><span style="color: #a45bad;">3</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+<span style="color: #2aa198;">(</span>eq '<span style="color: #b58900;">(</span><span style="color: #6c71c4;">1</span> <span style="color: #268bd2;">(</span><span style="color: #6c71c4;">2</span> <span style="color: #6c71c4;">(</span><span style="color: #6c71c4;">3</span><span style="color: #6c71c4;">)</span><span style="color: #268bd2;">)</span><span style="color: #b58900;">)</span> '<span style="color: #b58900;">(</span><span style="color: #6c71c4;">1</span> <span style="color: #268bd2;">(</span><span style="color: #6c71c4;">2</span> <span style="color: #6c71c4;">(</span><span style="color: #6c71c4;">3</span><span style="color: #6c71c4;">)</span><span style="color: #268bd2;">)</span><span style="color: #b58900;">)</span><span style="color: #2aa198;">)</span>
 &#8658; nil
 
-<span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> foo '<span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">1</span> <span style="color: #2d9574;">(</span><span style="color: #a45bad;">2</span> <span style="color: #67b11d;">(</span><span style="color: #a45bad;">3</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
-&#8658; <span style="color: #4f97d7;">(</span><span style="color: #a45bad;">1</span> <span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">2</span> <span style="color: #2d9574;">(</span><span style="color: #a45bad;">3</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
-<span style="color: #4f97d7;">(</span>eq foo foo<span style="color: #4f97d7;">)</span>
+<span style="color: #2aa198;">(</span><span style="color: #859900; font-weight: bold;">setq</span> foo '<span style="color: #b58900;">(</span><span style="color: #6c71c4;">1</span> <span style="color: #268bd2;">(</span><span style="color: #6c71c4;">2</span> <span style="color: #6c71c4;">(</span><span style="color: #6c71c4;">3</span><span style="color: #6c71c4;">)</span><span style="color: #268bd2;">)</span><span style="color: #b58900;">)</span><span style="color: #2aa198;">)</span>
+&#8658; <span style="color: #2aa198;">(</span><span style="color: #6c71c4;">1</span> <span style="color: #b58900;">(</span><span style="color: #6c71c4;">2</span> <span style="color: #268bd2;">(</span><span style="color: #6c71c4;">3</span><span style="color: #268bd2;">)</span><span style="color: #b58900;">)</span><span style="color: #2aa198;">)</span>
+<span style="color: #2aa198;">(</span>eq foo foo<span style="color: #2aa198;">)</span>
 &#8658; t
-<span style="color: #4f97d7;">(</span>eq foo '<span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">1</span> <span style="color: #2d9574;">(</span><span style="color: #a45bad;">2</span> <span style="color: #67b11d;">(</span><span style="color: #a45bad;">3</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+<span style="color: #2aa198;">(</span>eq foo '<span style="color: #b58900;">(</span><span style="color: #6c71c4;">1</span> <span style="color: #268bd2;">(</span><span style="color: #6c71c4;">2</span> <span style="color: #6c71c4;">(</span><span style="color: #6c71c4;">3</span><span style="color: #6c71c4;">)</span><span style="color: #268bd2;">)</span><span style="color: #b58900;">)</span><span style="color: #2aa198;">)</span>
 &#8658; nil
 
-<span style="color: #4f97d7;">(</span>eq <span style="color: #bc6ec5;">[</span><span style="color: #2d9574;">(</span><span style="color: #a45bad;">1</span> <span style="color: #a45bad;">2</span><span style="color: #2d9574;">)</span> <span style="color: #a45bad;">3</span><span style="color: #bc6ec5;">]</span> <span style="color: #bc6ec5;">[</span><span style="color: #2d9574;">(</span><span style="color: #a45bad;">1</span> <span style="color: #a45bad;">2</span><span style="color: #2d9574;">)</span> <span style="color: #a45bad;">3</span><span style="color: #bc6ec5;">]</span><span style="color: #4f97d7;">)</span>
+<span style="color: #2aa198;">(</span>eq <span style="color: #b58900;">[</span><span style="color: #268bd2;">(</span><span style="color: #6c71c4;">1</span> <span style="color: #6c71c4;">2</span><span style="color: #268bd2;">)</span> <span style="color: #6c71c4;">3</span><span style="color: #b58900;">]</span> <span style="color: #b58900;">[</span><span style="color: #268bd2;">(</span><span style="color: #6c71c4;">1</span> <span style="color: #6c71c4;">2</span><span style="color: #268bd2;">)</span> <span style="color: #6c71c4;">3</span><span style="color: #b58900;">]</span><span style="color: #2aa198;">)</span>
 &#8658; nil
 
-<span style="color: #4f97d7;">(</span>eq <span style="color: #bc6ec5;">(</span>point-marker<span style="color: #bc6ec5;">)</span> <span style="color: #bc6ec5;">(</span>point-marker<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+<span style="color: #2aa198;">(</span>eq <span style="color: #b58900;">(</span>point-marker<span style="color: #b58900;">)</span> <span style="color: #b58900;">(</span>point-marker<span style="color: #b58900;">)</span><span style="color: #2aa198;">)</span>
 &#8658; nil
 </pre>
 </div>
@@ -1605,31 +1632,31 @@ Emacs Lisp 提供了这些判断 argument 是否是特定类型的 object ，它
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>equal 'foo 'foo<span style="color: #4f97d7;">)</span>
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span>equal 'foo 'foo<span style="color: #2aa198;">)</span>
 &#8658; t
 
-<span style="color: #4f97d7;">(</span>equal <span style="color: #a45bad;">456</span> <span style="color: #a45bad;">456</span><span style="color: #4f97d7;">)</span>
+<span style="color: #2aa198;">(</span>equal <span style="color: #6c71c4;">456</span> <span style="color: #6c71c4;">456</span><span style="color: #2aa198;">)</span>
 &#8658; t
 
-<span style="color: #4f97d7;">(</span>equal <span style="color: #2d9574;">"asdf"</span> <span style="color: #2d9574;">"asdf"</span><span style="color: #4f97d7;">)</span>
+<span style="color: #2aa198;">(</span>equal <span style="color: #2aa198;">"asdf"</span> <span style="color: #2aa198;">"asdf"</span><span style="color: #2aa198;">)</span>
 &#8658; t
-<span style="color: #4f97d7;">(</span>eq <span style="color: #2d9574;">"asdf"</span> <span style="color: #2d9574;">"asdf"</span><span style="color: #4f97d7;">)</span>
+<span style="color: #2aa198;">(</span>eq <span style="color: #2aa198;">"asdf"</span> <span style="color: #2aa198;">"asdf"</span><span style="color: #2aa198;">)</span>
 &#8658; nil
 
-<span style="color: #4f97d7;">(</span>equal '<span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">1</span> <span style="color: #2d9574;">(</span><span style="color: #a45bad;">2</span> <span style="color: #67b11d;">(</span><span style="color: #a45bad;">3</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span> '<span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">1</span> <span style="color: #2d9574;">(</span><span style="color: #a45bad;">2</span> <span style="color: #67b11d;">(</span><span style="color: #a45bad;">3</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+<span style="color: #2aa198;">(</span>equal '<span style="color: #b58900;">(</span><span style="color: #6c71c4;">1</span> <span style="color: #268bd2;">(</span><span style="color: #6c71c4;">2</span> <span style="color: #6c71c4;">(</span><span style="color: #6c71c4;">3</span><span style="color: #6c71c4;">)</span><span style="color: #268bd2;">)</span><span style="color: #b58900;">)</span> '<span style="color: #b58900;">(</span><span style="color: #6c71c4;">1</span> <span style="color: #268bd2;">(</span><span style="color: #6c71c4;">2</span> <span style="color: #6c71c4;">(</span><span style="color: #6c71c4;">3</span><span style="color: #6c71c4;">)</span><span style="color: #268bd2;">)</span><span style="color: #b58900;">)</span><span style="color: #2aa198;">)</span>
 &#8658; t
-<span style="color: #4f97d7;">(</span>eq '<span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">1</span> <span style="color: #2d9574;">(</span><span style="color: #a45bad;">2</span> <span style="color: #67b11d;">(</span><span style="color: #a45bad;">3</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span> '<span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">1</span> <span style="color: #2d9574;">(</span><span style="color: #a45bad;">2</span> <span style="color: #67b11d;">(</span><span style="color: #a45bad;">3</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+<span style="color: #2aa198;">(</span>eq '<span style="color: #b58900;">(</span><span style="color: #6c71c4;">1</span> <span style="color: #268bd2;">(</span><span style="color: #6c71c4;">2</span> <span style="color: #6c71c4;">(</span><span style="color: #6c71c4;">3</span><span style="color: #6c71c4;">)</span><span style="color: #268bd2;">)</span><span style="color: #b58900;">)</span> '<span style="color: #b58900;">(</span><span style="color: #6c71c4;">1</span> <span style="color: #268bd2;">(</span><span style="color: #6c71c4;">2</span> <span style="color: #6c71c4;">(</span><span style="color: #6c71c4;">3</span><span style="color: #6c71c4;">)</span><span style="color: #268bd2;">)</span><span style="color: #b58900;">)</span><span style="color: #2aa198;">)</span>
 &#8658; nil
 
-<span style="color: #4f97d7;">(</span>equal <span style="color: #bc6ec5;">[</span><span style="color: #2d9574;">(</span><span style="color: #a45bad;">1</span> <span style="color: #a45bad;">2</span><span style="color: #2d9574;">)</span> <span style="color: #a45bad;">3</span><span style="color: #bc6ec5;">]</span> <span style="color: #bc6ec5;">[</span><span style="color: #2d9574;">(</span><span style="color: #a45bad;">1</span> <span style="color: #a45bad;">2</span><span style="color: #2d9574;">)</span> <span style="color: #a45bad;">3</span><span style="color: #bc6ec5;">]</span><span style="color: #4f97d7;">)</span>
+<span style="color: #2aa198;">(</span>equal <span style="color: #b58900;">[</span><span style="color: #268bd2;">(</span><span style="color: #6c71c4;">1</span> <span style="color: #6c71c4;">2</span><span style="color: #268bd2;">)</span> <span style="color: #6c71c4;">3</span><span style="color: #b58900;">]</span> <span style="color: #b58900;">[</span><span style="color: #268bd2;">(</span><span style="color: #6c71c4;">1</span> <span style="color: #6c71c4;">2</span><span style="color: #268bd2;">)</span> <span style="color: #6c71c4;">3</span><span style="color: #b58900;">]</span><span style="color: #2aa198;">)</span>
 &#8658; t
-<span style="color: #4f97d7;">(</span>eq <span style="color: #bc6ec5;">[</span><span style="color: #2d9574;">(</span><span style="color: #a45bad;">1</span> <span style="color: #a45bad;">2</span><span style="color: #2d9574;">)</span> <span style="color: #a45bad;">3</span><span style="color: #bc6ec5;">]</span> <span style="color: #bc6ec5;">[</span><span style="color: #2d9574;">(</span><span style="color: #a45bad;">1</span> <span style="color: #a45bad;">2</span><span style="color: #2d9574;">)</span> <span style="color: #a45bad;">3</span><span style="color: #bc6ec5;">]</span><span style="color: #4f97d7;">)</span>
+<span style="color: #2aa198;">(</span>eq <span style="color: #b58900;">[</span><span style="color: #268bd2;">(</span><span style="color: #6c71c4;">1</span> <span style="color: #6c71c4;">2</span><span style="color: #268bd2;">)</span> <span style="color: #6c71c4;">3</span><span style="color: #b58900;">]</span> <span style="color: #b58900;">[</span><span style="color: #268bd2;">(</span><span style="color: #6c71c4;">1</span> <span style="color: #6c71c4;">2</span><span style="color: #268bd2;">)</span> <span style="color: #6c71c4;">3</span><span style="color: #b58900;">]</span><span style="color: #2aa198;">)</span>
 &#8658; nil
 
-<span style="color: #4f97d7;">(</span>equal <span style="color: #bc6ec5;">(</span>point-marker<span style="color: #bc6ec5;">)</span> <span style="color: #bc6ec5;">(</span>point-marker<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+<span style="color: #2aa198;">(</span>equal <span style="color: #b58900;">(</span>point-marker<span style="color: #b58900;">)</span> <span style="color: #b58900;">(</span>point-marker<span style="color: #b58900;">)</span><span style="color: #2aa198;">)</span>
 &#8658; t
 
-<span style="color: #4f97d7;">(</span>eq <span style="color: #bc6ec5;">(</span>point-marker<span style="color: #bc6ec5;">)</span> <span style="color: #bc6ec5;">(</span>point-marker<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+<span style="color: #2aa198;">(</span>eq <span style="color: #b58900;">(</span>point-marker<span style="color: #b58900;">)</span> <span style="color: #b58900;">(</span>point-marker<span style="color: #b58900;">)</span><span style="color: #2aa198;">)</span>
 &#8658; nil
 </pre>
 </div>
@@ -1665,8 +1692,8 @@ integer 的最大值，可以通过 variable <b>most-positive-fixnum</b> 来获�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">most-positive-fixnum <span style="color: #a45bad;">2305843009213693951</span>
-most-negative-fixnum <span style="color: #a45bad;">-2305843009213693952</span>
+<pre class="src src-emacs-lisp">most-positive-fixnum <span style="color: #6c71c4;">2305843009213693951</span>
+most-negative-fixnum <span style="color: #6c71c4;">-2305843009213693952</span>
 </pre>
 </div>
 </div>
@@ -1797,12 +1824,12 @@ charater 只是 integer 。一个 integer 是否是一个 charater 取决于它�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> a <span style="color: #a45bad;">123</span><span style="color: #4f97d7;">)</span>
-&#8658; <span style="color: #a45bad;">123</span>
-<span style="color: #4f97d7;">(</span>eval 'a<span style="color: #4f97d7;">)</span>
-&#8658; <span style="color: #a45bad;">123</span>
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span><span style="color: #859900; font-weight: bold;">setq</span> a <span style="color: #6c71c4;">123</span><span style="color: #2aa198;">)</span>
+&#8658; <span style="color: #6c71c4;">123</span>
+<span style="color: #2aa198;">(</span>eval 'a<span style="color: #2aa198;">)</span>
+&#8658; <span style="color: #6c71c4;">123</span>
 a
-&#8658; <span style="color: #a45bad;">123</span>
+&#8658; <span style="color: #6c71c4;">123</span>
 </pre>
 </div>
 
@@ -1844,7 +1871,7 @@ symbol 中的 <b>nil</b> 和 <b>t</b> 是特殊对待的， <b>nil</b> 的 value
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span>+ <span style="color: #a45bad;">1</span> x<span style="color: #4f97d7;">)</span>
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span>+ <span style="color: #6c71c4;">1</span> x<span style="color: #2aa198;">)</span>
 </pre>
 </div>
 
@@ -1896,18 +1923,18 @@ evaluate 一个 <b>function call</b> 的第一步就是从左到右地进行 eva
 例子:
 </p>
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">quote</span> <span style="color: #bc6ec5;">(</span>+ <span style="color: #a45bad;">1</span> <span style="color: #a45bad;">2</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
-&#8658; <span style="color: #4f97d7;">(</span>+ <span style="color: #a45bad;">1</span> <span style="color: #a45bad;">2</span><span style="color: #4f97d7;">)</span>
-<span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">quote</span> foo<span style="color: #4f97d7;">)</span>
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span><span style="color: #859900; font-weight: bold;">quote</span> <span style="color: #b58900;">(</span>+ <span style="color: #6c71c4;">1</span> <span style="color: #6c71c4;">2</span><span style="color: #b58900;">)</span><span style="color: #2aa198;">)</span>
+&#8658; <span style="color: #2aa198;">(</span>+ <span style="color: #6c71c4;">1</span> <span style="color: #6c71c4;">2</span><span style="color: #2aa198;">)</span>
+<span style="color: #2aa198;">(</span><span style="color: #859900; font-weight: bold;">quote</span> foo<span style="color: #2aa198;">)</span>
 &#8658; foo
 'foo
 &#8658; foo
 ''foo
-&#8658; <span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">quote</span> foo<span style="color: #4f97d7;">)</span>
-'<span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">quote</span> foo<span style="color: #4f97d7;">)</span>
-&#8658; <span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">quote</span> foo<span style="color: #4f97d7;">)</span>
-<span style="color: #4f97d7;">[</span>'foo<span style="color: #4f97d7;">]</span>
-&#8658; <span style="color: #4f97d7;">[</span><span style="color: #bc6ec5;">(</span><span style="color: #4f97d7; font-weight: bold;">quote</span> foo<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">]</span>
+&#8658; <span style="color: #2aa198;">(</span><span style="color: #859900; font-weight: bold;">quote</span> foo<span style="color: #2aa198;">)</span>
+'<span style="color: #2aa198;">(</span><span style="color: #859900; font-weight: bold;">quote</span> foo<span style="color: #2aa198;">)</span>
+&#8658; <span style="color: #2aa198;">(</span><span style="color: #859900; font-weight: bold;">quote</span> foo<span style="color: #2aa198;">)</span>
+<span style="color: #2aa198;">[</span>'foo<span style="color: #2aa198;">]</span>
+&#8658; <span style="color: #2aa198;">[</span><span style="color: #b58900;">(</span><span style="color: #859900; font-weight: bold;">quote</span> foo<span style="color: #b58900;">)</span><span style="color: #2aa198;">]</span>
 </pre>
 </div>
 </div>
@@ -1920,10 +1947,10 @@ evaluate 一个 <b>function call</b> 的第一步就是从左到右地进行 eva
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">`<span style="color: #4f97d7;">(</span>a list of <span style="color: #bc6ec5;">(</span>+ <span style="color: #a45bad;">2</span> <span style="color: #a45bad;">3</span><span style="color: #bc6ec5;">)</span> elements<span style="color: #4f97d7;">)</span>
-&#8658; <span style="color: #4f97d7;">(</span>a list of <span style="color: #bc6ec5;">(</span>+ <span style="color: #a45bad;">2</span> <span style="color: #a45bad;">3</span><span style="color: #bc6ec5;">)</span> elements<span style="color: #4f97d7;">)</span>
-'<span style="color: #4f97d7;">(</span>a list of <span style="color: #bc6ec5;">(</span>+ <span style="color: #a45bad;">2</span> <span style="color: #a45bad;">3</span><span style="color: #bc6ec5;">)</span> elements<span style="color: #4f97d7;">)</span>
-&#8658; <span style="color: #4f97d7;">(</span>a list of <span style="color: #bc6ec5;">(</span>+ <span style="color: #a45bad;">2</span> <span style="color: #a45bad;">3</span><span style="color: #bc6ec5;">)</span> elements<span style="color: #4f97d7;">)</span>
+<pre class="src src-emacs-lisp">`<span style="color: #2aa198;">(</span>a list of <span style="color: #b58900;">(</span>+ <span style="color: #6c71c4;">2</span> <span style="color: #6c71c4;">3</span><span style="color: #b58900;">)</span> elements<span style="color: #2aa198;">)</span>
+&#8658; <span style="color: #2aa198;">(</span>a list of <span style="color: #b58900;">(</span>+ <span style="color: #6c71c4;">2</span> <span style="color: #6c71c4;">3</span><span style="color: #b58900;">)</span> elements<span style="color: #2aa198;">)</span>
+'<span style="color: #2aa198;">(</span>a list of <span style="color: #b58900;">(</span>+ <span style="color: #6c71c4;">2</span> <span style="color: #6c71c4;">3</span><span style="color: #b58900;">)</span> elements<span style="color: #2aa198;">)</span>
+&#8658; <span style="color: #2aa198;">(</span>a list of <span style="color: #b58900;">(</span>+ <span style="color: #6c71c4;">2</span> <span style="color: #6c71c4;">3</span><span style="color: #b58900;">)</span> elements<span style="color: #2aa198;">)</span>
 </pre>
 </div>
 
@@ -1932,8 +1959,8 @@ evaluate 一个 <b>function call</b> 的第一步就是从左到右地进行 eva
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">`<span style="color: #4f97d7;">(</span>a list of ,<span style="color: #bc6ec5;">(</span>+ <span style="color: #a45bad;">2</span> <span style="color: #a45bad;">3</span><span style="color: #bc6ec5;">)</span> elements<span style="color: #4f97d7;">)</span>
-&#8658; <span style="color: #4f97d7;">(</span>a list of <span style="color: #a45bad;">5</span> elements<span style="color: #4f97d7;">)</span>
+<pre class="src src-emacs-lisp">`<span style="color: #2aa198;">(</span>a list of ,<span style="color: #b58900;">(</span>+ <span style="color: #6c71c4;">2</span> <span style="color: #6c71c4;">3</span><span style="color: #b58900;">)</span> elements<span style="color: #2aa198;">)</span>
+&#8658; <span style="color: #2aa198;">(</span>a list of <span style="color: #6c71c4;">5</span> elements<span style="color: #2aa198;">)</span>
 </pre>
 </div>
 
@@ -1943,8 +1970,8 @@ evaluate 一个 <b>function call</b> 的第一步就是从左到右地进行 eva
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">`<span style="color: #4f97d7;">(</span><span style="color: #a45bad;">1</span> <span style="color: #a45bad;">2</span> <span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">3</span> ,<span style="color: #2d9574;">(</span>+ <span style="color: #a45bad;">4</span> <span style="color: #a45bad;">5</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
-&#8658; <span style="color: #4f97d7;">(</span><span style="color: #a45bad;">1</span> <span style="color: #a45bad;">2</span> <span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">3</span> <span style="color: #a45bad;">9</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+<pre class="src src-emacs-lisp">`<span style="color: #2aa198;">(</span><span style="color: #6c71c4;">1</span> <span style="color: #6c71c4;">2</span> <span style="color: #b58900;">(</span><span style="color: #6c71c4;">3</span> ,<span style="color: #268bd2;">(</span>+ <span style="color: #6c71c4;">4</span> <span style="color: #6c71c4;">5</span><span style="color: #268bd2;">)</span><span style="color: #b58900;">)</span><span style="color: #2aa198;">)</span>
+&#8658; <span style="color: #2aa198;">(</span><span style="color: #6c71c4;">1</span> <span style="color: #6c71c4;">2</span> <span style="color: #b58900;">(</span><span style="color: #6c71c4;">3</span> <span style="color: #6c71c4;">9</span><span style="color: #b58900;">)</span><span style="color: #2aa198;">)</span>
 </pre>
 </div>
 
@@ -1953,21 +1980,21 @@ evaluate 一个 <b>function call</b> 的第一步就是从左到右地进行 eva
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> some-list '<span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">2</span> <span style="color: #a45bad;">3</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
-&#8658; <span style="color: #4f97d7;">(</span><span style="color: #a45bad;">2</span> <span style="color: #a45bad;">3</span><span style="color: #4f97d7;">)</span>
-<span style="color: #4f97d7;">(</span>cons <span style="color: #a45bad;">1</span> <span style="color: #bc6ec5;">(</span>append some-list '<span style="color: #2d9574;">(</span><span style="color: #a45bad;">4</span><span style="color: #2d9574;">)</span> some-list<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
-&#8658; <span style="color: #4f97d7;">(</span><span style="color: #a45bad;">1</span> <span style="color: #a45bad;">2</span> <span style="color: #a45bad;">3</span> <span style="color: #a45bad;">4</span> <span style="color: #a45bad;">2</span> <span style="color: #a45bad;">3</span><span style="color: #4f97d7;">)</span>
-`<span style="color: #4f97d7;">(</span><span style="color: #a45bad;">1</span> ,@some-list <span style="color: #a45bad;">4</span> ,@some-list<span style="color: #4f97d7;">)</span>
-&#8658; <span style="color: #4f97d7;">(</span><span style="color: #a45bad;">1</span> <span style="color: #a45bad;">2</span> <span style="color: #a45bad;">3</span> <span style="color: #a45bad;">4</span> <span style="color: #a45bad;">2</span> <span style="color: #a45bad;">3</span><span style="color: #4f97d7;">)</span>
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span><span style="color: #859900; font-weight: bold;">setq</span> some-list '<span style="color: #b58900;">(</span><span style="color: #6c71c4;">2</span> <span style="color: #6c71c4;">3</span><span style="color: #b58900;">)</span><span style="color: #2aa198;">)</span>
+&#8658; <span style="color: #2aa198;">(</span><span style="color: #6c71c4;">2</span> <span style="color: #6c71c4;">3</span><span style="color: #2aa198;">)</span>
+<span style="color: #2aa198;">(</span>cons <span style="color: #6c71c4;">1</span> <span style="color: #b58900;">(</span>append some-list '<span style="color: #268bd2;">(</span><span style="color: #6c71c4;">4</span><span style="color: #268bd2;">)</span> some-list<span style="color: #b58900;">)</span><span style="color: #2aa198;">)</span>
+&#8658; <span style="color: #2aa198;">(</span><span style="color: #6c71c4;">1</span> <span style="color: #6c71c4;">2</span> <span style="color: #6c71c4;">3</span> <span style="color: #6c71c4;">4</span> <span style="color: #6c71c4;">2</span> <span style="color: #6c71c4;">3</span><span style="color: #2aa198;">)</span>
+`<span style="color: #2aa198;">(</span><span style="color: #6c71c4;">1</span> ,@some-list <span style="color: #6c71c4;">4</span> ,@some-list<span style="color: #2aa198;">)</span>
+&#8658; <span style="color: #2aa198;">(</span><span style="color: #6c71c4;">1</span> <span style="color: #6c71c4;">2</span> <span style="color: #6c71c4;">3</span> <span style="color: #6c71c4;">4</span> <span style="color: #6c71c4;">2</span> <span style="color: #6c71c4;">3</span><span style="color: #2aa198;">)</span>
 
-<span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">setq</span> list '<span style="color: #bc6ec5;">(</span>hack foo bar<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
-&#8658; <span style="color: #4f97d7;">(</span>hack foo bar<span style="color: #4f97d7;">)</span>
-<span style="color: #4f97d7;">(</span>cons 'use
-      <span style="color: #bc6ec5;">(</span>cons 'the
-            <span style="color: #2d9574;">(</span>cons 'words <span style="color: #67b11d;">(</span>append <span style="color: #b1951d;">(</span>cdr list<span style="color: #b1951d;">)</span> '<span style="color: #b1951d;">(</span>as elements<span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
-&#8658; <span style="color: #4f97d7;">(</span>use the words foo bar as elements<span style="color: #4f97d7;">)</span>
-`<span style="color: #4f97d7;">(</span>use the words ,@<span style="color: #bc6ec5;">(</span>cdr list<span style="color: #bc6ec5;">)</span> as elements<span style="color: #4f97d7;">)</span>
-&#8658; <span style="color: #4f97d7;">(</span>use the words foo bar as elements<span style="color: #4f97d7;">)</span>
+<span style="color: #2aa198;">(</span><span style="color: #859900; font-weight: bold;">setq</span> list '<span style="color: #b58900;">(</span>hack foo bar<span style="color: #b58900;">)</span><span style="color: #2aa198;">)</span>
+&#8658; <span style="color: #2aa198;">(</span>hack foo bar<span style="color: #2aa198;">)</span>
+<span style="color: #2aa198;">(</span>cons 'use
+      <span style="color: #b58900;">(</span>cons 'the
+            <span style="color: #268bd2;">(</span>cons 'words <span style="color: #6c71c4;">(</span>append <span style="color: #859900;">(</span>cdr list<span style="color: #859900;">)</span> '<span style="color: #859900;">(</span>as elements<span style="color: #859900;">)</span><span style="color: #6c71c4;">)</span><span style="color: #268bd2;">)</span><span style="color: #b58900;">)</span><span style="color: #2aa198;">)</span>
+&#8658; <span style="color: #2aa198;">(</span>use the words foo bar as elements<span style="color: #2aa198;">)</span>
+`<span style="color: #2aa198;">(</span>use the words ,@<span style="color: #b58900;">(</span>cdr list<span style="color: #b58900;">)</span> as elements<span style="color: #2aa198;">)</span>
+&#8658; <span style="color: #2aa198;">(</span>use the words foo bar as elements<span style="color: #2aa198;">)</span>
 </pre>
 </div>
 </div>
@@ -1985,10 +2012,182 @@ evaluate 一个 <b>function call</b> 的第一步就是从左到右地进行 eva
 </div>
 </div>
 </div>
+
+<div id="outline-container-org592f579" class="outline-2">
+<h2 id="org592f579">Control Structures</h2>
+<div class="outline-text-2" id="text-org592f579">
+</div><div id="outline-container-orgfbefca1" class="outline-3">
+<h3 id="orgfbefca1">Sequence</h3>
+<div class="outline-text-3" id="text-orgfbefca1">
+<p>
+例如:
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span><span style="color: #859900; font-weight: bold;">progn</span> <span style="color: #b58900;">(</span>print <span style="color: #2aa198;">"The first form"</span><span style="color: #b58900;">)</span>
+    <span style="color: #b58900;">(</span>print <span style="color: #2aa198;">"The second form"</span><span style="color: #b58900;">)</span>
+    <span style="color: #b58900;">(</span>print <span style="color: #2aa198;">"The third form"</span><span style="color: #b58900;">)</span><span style="color: #2aa198;">)</span>
+</pre>
+</div>
+
+<p>
+<b>progn</b> 的返回值是最后一个 expression 的返回值。它们按顺序从上到下执行。
+</p>
+</div>
+</div>
+<div id="outline-container-orgcfbfedc" class="outline-3">
+<h3 id="orgcfbfedc">Conditionals</h3>
+<div class="outline-text-3" id="text-orgcfbfedc">
+</div><div id="outline-container-org107c1c5" class="outline-4">
+<h4 id="org107c1c5">if</h4>
+<div class="outline-text-4" id="text-org107c1c5">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span><span style="color: #859900; font-weight: bold;">if</span> nil
+    <span style="color: #b58900;">(</span>print 'true<span style="color: #b58900;">)</span>
+  'very-false<span style="color: #2aa198;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1f6cfc4" class="outline-4">
+<h4 id="org1f6cfc4">when</h4>
+<div class="outline-text-4" id="text-org1f6cfc4">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span><span style="color: #859900; font-weight: bold;">when</span> condition a b c<span style="color: #2aa198;">)</span>
+</pre>
+</div>
+
+<p>
+它等同于:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span><span style="color: #859900; font-weight: bold;">if</span> condition <span style="color: #b58900;">(</span><span style="color: #859900; font-weight: bold;">progn</span> a b c<span style="color: #b58900;">)</span> nil<span style="color: #2aa198;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org1de2c13" class="outline-4">
+<h4 id="org1de2c13">unless</h4>
+<div class="outline-text-4" id="text-org1de2c13">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span><span style="color: #859900; font-weight: bold;">unless</span> condition a b c<span style="color: #2aa198;">)</span>
+</pre>
+</div>
+
+<p>
+它等同于:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span><span style="color: #859900; font-weight: bold;">if</span> condition nil
+  a b c<span style="color: #2aa198;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org22a8ad9" class="outline-4">
+<h4 id="org22a8ad9">cond</h4>
+<div class="outline-text-4" id="text-org22a8ad9">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span><span style="color: #859900; font-weight: bold;">cond</span> <span style="color: #b58900;">(</span>case1 do-when-case1<span style="color: #b58900;">)</span>
+      <span style="color: #b58900;">(</span>case2 do-when-case2<span style="color: #b58900;">)</span>
+      ...
+      <span style="color: #b58900;">(</span>t do-when-none-meet<span style="color: #b58900;">)</span><span style="color: #2aa198;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org6110a57" class="outline-3">
+<h3 id="org6110a57">Constructs for Combining Conditions</h3>
+<div class="outline-text-3" id="text-org6110a57">
+</div><div id="outline-container-org237320b" class="outline-4">
+<h4 id="org237320b">and</h4>
+<div class="outline-text-4" id="text-org237320b">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span><span style="color: #859900; font-weight: bold;">and</span> <span style="color: #b58900;">(</span>print <span style="color: #6c71c4;">1</span><span style="color: #b58900;">)</span> <span style="color: #b58900;">(</span>print <span style="color: #6c71c4;">2</span><span style="color: #b58900;">)</span> nil <span style="color: #b58900;">(</span>print <span style="color: #6c71c4;">3</span><span style="color: #b58900;">)</span><span style="color: #2aa198;">)</span>
+-| <span style="color: #6c71c4;">1</span>
+-| <span style="color: #6c71c4;">2</span>
+&#8658; nil
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org459fa7a" class="outline-4">
+<h4 id="org459fa7a">or</h4>
+<div class="outline-text-4" id="text-org459fa7a">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span><span style="color: #859900; font-weight: bold;">or</span> <span style="color: #b58900;">(</span>eq x nil<span style="color: #b58900;">)</span> <span style="color: #b58900;">(</span>eq x <span style="color: #6c71c4;">0</span><span style="color: #b58900;">)</span><span style="color: #2aa198;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org37bcba4" class="outline-4">
+<h4 id="org37bcba4">not</h4>
+<div class="outline-text-4" id="text-org37bcba4">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span>not nil<span style="color: #2aa198;">)</span> =&gt; t
+<span style="color: #2aa198;">(</span>not t<span style="color: #2aa198;">)</span> =&gt; nil
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org9a1b9be" class="outline-3">
+<h3 id="org9a1b9be">Iteration</h3>
+<div class="outline-text-3" id="text-org9a1b9be">
+</div><div id="outline-container-org546876a" class="outline-4">
+<h4 id="org546876a">while</h4>
+<div class="outline-text-4" id="text-org546876a">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span><span style="color: #859900; font-weight: bold;">setq</span> num <span style="color: #6c71c4;">0</span><span style="color: #2aa198;">)</span>
+&#8658; <span style="color: #6c71c4;">0</span>
+<span style="color: #2aa198;">(</span><span style="color: #859900; font-weight: bold;">while</span> <span style="color: #b58900;">(</span>&lt; num <span style="color: #6c71c4;">4</span><span style="color: #b58900;">)</span>
+  <span style="color: #b58900;">(</span>princ <span style="color: #268bd2;">(</span>format <span style="color: #2aa198;">"Iteration %d."</span> num<span style="color: #268bd2;">)</span><span style="color: #b58900;">)</span>
+  <span style="color: #b58900;">(</span><span style="color: #859900; font-weight: bold;">setq</span> num <span style="color: #268bd2;">(</span>1+ num<span style="color: #268bd2;">)</span><span style="color: #b58900;">)</span><span style="color: #2aa198;">)</span>
+-| Iteration <span style="color: #6c71c4;">0.</span>
+-| Iteration <span style="color: #6c71c4;">1.</span>
+-| Iteration <span style="color: #6c71c4;">2.</span>
+-| Iteration <span style="color: #6c71c4;">3.</span>
+&#8658; nil
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org8fe4068" class="outline-4">
+<h4 id="org8fe4068">Macro: dolist (var list [result]) body</h4>
+<div class="outline-text-4" id="text-org8fe4068">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span><span style="color: #859900; font-weight: bold;">defun</span> <span style="color: #268bd2;">reverse</span> <span style="color: #b58900;">(</span>list<span style="color: #b58900;">)</span>
+  <span style="color: #b58900;">(</span><span style="color: #859900; font-weight: bold;">let</span> <span style="color: #268bd2;">(</span>value<span style="color: #268bd2;">)</span>
+    <span style="color: #268bd2;">(</span><span style="color: #859900; font-weight: bold;">dolist</span> <span style="color: #6c71c4;">(</span>elt list value<span style="color: #6c71c4;">)</span>
+      <span style="color: #6c71c4;">(</span><span style="color: #859900; font-weight: bold;">setq</span> value <span style="color: #859900;">(</span>cons elt value<span style="color: #859900;">)</span><span style="color: #6c71c4;">)</span><span style="color: #268bd2;">)</span><span style="color: #b58900;">)</span><span style="color: #2aa198;">)</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org79cd464" class="outline-4">
+<h4 id="org79cd464">dotimes</h4>
+<div class="outline-text-4" id="text-org79cd464">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #2aa198;">(</span><span style="color: #859900; font-weight: bold;">dotimes</span> <span style="color: #b58900;">(</span>i <span style="color: #6c71c4;">100</span><span style="color: #b58900;">)</span>
+  <span style="color: #b58900;">(</span>insert <span style="color: #2aa198;">"I will not obey absurd orders\n"</span><span style="color: #b58900;">)</span><span style="color: #2aa198;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="postamble" class="status">
 <p class="author">&#20316;&#32773;: emacsist</p>
-<p class="date">Created: 2017-03-23 四 14:21</p>
+<p class="date">Created: 2017-03-31 五 01:23</p>
 <p class="validation"></p>
 </div>
 </body>

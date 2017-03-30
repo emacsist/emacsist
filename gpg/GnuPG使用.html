@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2017-03-31 五 01:23 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GnuPG 使用</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="emacsist">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/emacsist/css/org-mode.css"/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="/emacsist/index.html"> UP </a>
+ |
+ <a accesskey="H" href="/emacsist/index.html"> HOME </a>
+</div><div id="content">
+<h1 class="title">GnuPG 使用</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org7d2e6e3">开始使用</a>
+<ul>
+<li><a href="#org392ad3a">生成密钥</a>
+<ul>
+<li><a href="#org1438f7d">gpg &#x2013;gen-key</a></li>
+</ul>
+</li>
+<li><a href="#org29a80fe">密钥的废除</a></li>
+<li><a href="#orgd3f86f7">交换密钥</a></li>
+<li><a href="#org97485cd">导出公钥</a>
+<ul>
+<li><a href="#orgf8db28e">列出公密钥</a></li>
+<li><a href="#org401cd11">导入公钥</a></li>
+<li><a href="#org17862c4">删除某个公钥</a></li>
+<li><a href="#org578290a">验证公钥</a></li>
+</ul>
+</li>
+<li><a href="#org37705d7">导出私钥</a>
+<ul>
+<li><a href="#org6fa56bd">导入私钥</a></li>
+<li><a href="#orgc2fe638">列出私钥</a></li>
+<li><a href="#org2cf5ed1">删除一个私钥:</a></li>
+</ul>
+</li>
+<li><a href="#orgeb256e3">信任密钥</a></li>
+<li><a href="#org4974ffd">加解密文档</a>
+<ul>
+<li><a href="#org555bf28">加密文档</a>
+<ul>
+<li><a href="#orgfad36b1">使用公钥来进行加密</a></li>
+<li><a href="#orgbac1ee6">使用对称密码来进行加密</a></li>
+</ul>
+</li>
+<li><a href="#org3fb2194">解密文档</a>
+<ul>
+<li><a href="#org77ebfd6">解密使用公钥来进行加密的文档</a></li>
+<li><a href="#org6b9acc6">解密使用对称密码来进行加密的文档</a></li>
+</ul>
+</li>
+<li><a href="#org636b2f1">数字签名</a>
+<ul>
+<li><a href="#org98c1f3e">签名</a></li>
+<li><a href="#org9a1fd39">验证或恢复原文</a></li>
+<li><a href="#org3f60de9">签名但并不压缩文档</a></li>
+<li><a href="#org986c02b">分开签名</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgefede4c">概念</a>
+<ul>
+<li><a href="#org722d809">数字签名</a></li>
+</ul>
+</li>
+<li><a href="#org391bb18">密钥管理</a></li>
+<li><a href="#orge20de8d">GnuPG1 与 GnuPG2 、GnuPG2.1 区别</a>
+<ul>
+<li><a href="#orgd2c1caa">GnuPG 1</a></li>
+<li><a href="#orgd75d019">GnuPG 2</a></li>
+<li><a href="#org6e59ddf">GnuPG 2.1</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7d2e6e3" class="outline-2">
+<h2 id="org7d2e6e3">开始使用</h2>
+<div class="outline-text-2" id="text-org7d2e6e3">
+</div><div id="outline-container-org392ad3a" class="outline-3">
+<h3 id="org392ad3a">生成密钥</h3>
+<div class="outline-text-3" id="text-org392ad3a">
+<p>
+GnuPG 使用公钥来进行加密，使用私钥来解密。
+</p>
+</div>
+
+<div id="outline-container-org1438f7d" class="outline-4">
+<h4 id="org1438f7d">gpg &#x2013;gen-key</h4>
+<div class="outline-text-4" id="text-org1438f7d">
+<p>
+它用来生成你的密钥：流程如下:
+</p>
+
+<pre class="example">
+[11:26:12] emacsist:~ $ gpg --gen-key
+gpg (GnuPG) 2.0.30; Copyright (C) 2015 Free Software Foundation, Inc.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+# 使用哪种类型的密钥（默认的就够了）
+Please select what kind of key you want:
+   (1) RSA and RSA (default)
+   (2) DSA and Elgamal
+   (3) DSA (sign only)
+   (4) RSA (sign only)
+Your selection? 1
+RSA keys may be between 1024 and 4096 bits long.
+# 密钥的长度
+What keysize do you want? (2048) 2048
+Requested keysize is 2048 bits
+# 密钥有效期（默认为永不过期，默认的也够了）
+Please specify how long the key should be valid.
+         0 = key does not expire
+      &lt;n&gt;  = key expires in n days
+      &lt;n&gt;w = key expires in n weeks
+      &lt;n&gt;m = key expires in n months
+      &lt;n&gt;y = key expires in n years
+Key is valid for? (0) 0
+Key does not expire at all
+# 以上信息是否正确
+Is this correct? (y/N) y
+
+GnuPG needs to construct a user ID to identify your key.
+# 你的真实名
+Real name: emacsist
+# 你的邮箱
+Email address: emacsist@qq.com
+# 备注
+Comment:
+You selected this USER-ID:
+    "emacsist &lt;emacsist@qq.com&gt;"
+
+# 是否要修改名字，备注，邮箱或OK、退出？
+Change (N)ame, (C)omment, (E)mail or (O)kay/(Q)uit? O
+You need a Passphrase to protect your secret key.
+
+# 以上步骤完成后，就要输入保护私钥的密码了，这个也是整个GnuPG最脆弱的环节
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org29a80fe" class="outline-3">
+<h3 id="org29a80fe">密钥的废除</h3>
+<div class="outline-text-3" id="text-org29a80fe">
+<p>
+如果你忘记了私钥的保护密码或者丢失了私钥，你可以使用这个来发布通知，让其他人知道该公钥已经不再会使用：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">gpg --output revoke.asc --gen-revoke emacsist@qq.com
+</pre>
+</div>
+
+<blockquote>
+<p>
+这个要在确认你的密钥无效了的情况下才公布这个证书，在此之前，要确保其他人访问不了这个证书，否则其他人也可以发布这个证书然后让你的公钥失效。
+</p>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-orgd3f86f7" class="outline-3">
+<h3 id="orgd3f86f7">交换密钥</h3>
+</div>
+
+<div id="outline-container-org97485cd" class="outline-3">
+<h3 id="org97485cd">导出公钥</h3>
+<div class="outline-text-3" id="text-org97485cd">
+<p>
+为了发送你的公钥给其他人，首先你要导出它。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">gpg --output emacsist.gpg --export emacsist@qq.com
+</pre>
+</div>
+
+
+<blockquote>
+<p>
+默认情况下，导出的是二进制格式的。GnuPG 支持一个选项： <b>&#x2013;armor</b> 它可以导出为 ASCII 格式。在任何导出的选项中，都可以使用这个选项来指定导出为 ASCII 格式。
+</p>
+</blockquote>
+</div>
+
+<div id="outline-container-orgf8db28e" class="outline-4">
+<h4 id="orgf8db28e">列出公密钥</h4>
+<div class="outline-text-4" id="text-orgf8db28e">
+<div class="org-src-container">
+<pre class="src src-bash">gpg --list-keys
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org401cd11" class="outline-4">
+<h4 id="org401cd11">导入公钥</h4>
+<div class="outline-text-4" id="text-org401cd11">
+<div class="org-src-container">
+<pre class="src src-bash">gpg --import emacsist.gpg
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org17862c4" class="outline-4">
+<h4 id="org17862c4">删除某个公钥</h4>
+<div class="outline-text-4" id="text-org17862c4">
+<div class="org-src-container">
+<pre class="src src-bash">gpg --delete-key emacsist@qq.com
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org578290a" class="outline-4">
+<h4 id="org578290a">验证公钥</h4>
+<div class="outline-text-4" id="text-org578290a">
+<blockquote>
+<p>
+一旦导入了一个公钥，就需要去进行验证它了
+</p>
+</blockquote>
+
+<div class="org-src-container">
+<pre class="src src-bash"><span style="color: #2aa198;">[</span><span style="color: #6c71c4;">11:56:22</span><span style="color: #2aa198;">]</span> emacsist:/tmp $ gpg --edit-key emacsist@qq.co
+<span style="color: #268bd2;">gpg</span> <span style="color: #2aa198;">(</span>GnuPG<span style="color: #2aa198;">)</span> <span style="color: #6c71c4;">2.0.30</span>; Copyright <span style="color: #2aa198;">(</span>C<span style="color: #2aa198;">)</span> <span style="color: #6c71c4;">2015</span> Free Software Foundation, Inc.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Secret key is available.
+
+pub  <span style="color: #6c71c4;">2048R/2E67BCA8</span>  created: <span style="color: #6c71c4;">2017-03-29</span>  expires: never       usage: SC
+trust: ultimate      validity: ultimate
+sub  <span style="color: #6c71c4;">2048R/FCB22855</span>  created: <span style="color: #6c71c4;">2017-03-29</span>  expires: never       usage: E
+<span style="color: #2aa198;">[</span>ultimate<span style="color: #2aa198;">]</span> <span style="color: #2aa198;">(</span><span style="color: #6c71c4;">1</span><span style="color: #2aa198;">)</span>. emacsist <a href="mailto:emacsist%40qq.com">&lt;emacsist@qq.com&gt;</a>
+
+gpg&gt; fpr
+pub   <span style="color: #6c71c4;">2048R/2E67BCA8</span> <span style="color: #6c71c4;">2017-03-29</span> emacsist <a href="mailto:emacsist%40qq.com">&lt;emacsist@qq.com&gt;</a>
+Primary key fingerprint: B698 <span style="color: #6c71c4;">23B4</span> <span style="color: #6c71c4;">571F</span> <span style="color: #6c71c4;">98EE</span> CEDA  <span style="color: #6c71c4;">59C9</span> <span style="color: #6c71c4;">2B07</span> <span style="color: #6c71c4;">0A29</span> <span style="color: #6c71c4;">2E67</span> BCA8
+
+gpg&gt;
+</pre>
+</div>
+
+<p>
+<b>fpr</b> 就会打印出该密钥的指纹，然后再通过拥有者的电话，或者email（或其他任何方式，只要你能保证他是该密钥的真实拥有者即可），然后让密钥拥有者将它的密钥指纹发给你，然后再进行二者对比，验证是否一致即可。
+</p>
+
+
+<p>
+检测完密钥的指纹后，就可以进行签名认证它了。在上面后续命令中，输入 <b>sign</b> 即可。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org37705d7" class="outline-3">
+<h3 id="org37705d7">导出私钥</h3>
+<div class="outline-text-3" id="text-org37705d7">
+<div class="org-src-container">
+<pre class="src src-bash">gpg --output emacsist@qq.com.private.key --export-secret-keys emacsist@qq.com
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org6fa56bd" class="outline-4">
+<h4 id="org6fa56bd">导入私钥</h4>
+<div class="outline-text-4" id="text-org6fa56bd">
+<div class="org-src-container">
+<pre class="src src-bash">gpg --allow-secret-key-import --import emacsist@qq.com.private.key
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc2fe638" class="outline-4">
+<h4 id="orgc2fe638">列出私钥</h4>
+<div class="outline-text-4" id="text-orgc2fe638">
+<div class="org-src-container">
+<pre class="src src-bash">gpg --list-secret-keys
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2cf5ed1" class="outline-4">
+<h4 id="org2cf5ed1">删除一个私钥:</h4>
+<div class="outline-text-4" id="text-org2cf5ed1">
+<div class="org-src-container">
+<pre class="src src-bash">gpg --delete-secret-key emacsist@qq.com
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgeb256e3" class="outline-3">
+<h3 id="orgeb256e3">信任密钥</h3>
+<div class="outline-text-3" id="text-orgeb256e3">
+<div class="org-src-container">
+<pre class="src src-bash">gpg -edit-key emacsist@qq.com
+</pre>
+</div>
+
+<p>
+然后输入 <b>trust</b> 
+注意，此时要将相应的 gpg 进程退出后才能重新生效。不然，还会报 <b>untrust</b> 的警告。
+</p>
+</div>
+</div>
+<div id="outline-container-org4974ffd" class="outline-3">
+<h3 id="org4974ffd">加解密文档</h3>
+<div class="outline-text-3" id="text-org4974ffd">
+</div><div id="outline-container-org555bf28" class="outline-4">
+<h4 id="org555bf28">加密文档</h4>
+<div class="outline-text-4" id="text-org555bf28">
+</div><div id="outline-container-orgfad36b1" class="outline-5">
+<h5 id="orgfad36b1">使用公钥来进行加密</h5>
+<div class="outline-text-5" id="text-orgfad36b1">
+<div class="org-src-container">
+<pre class="src src-bash">gpg --output hello.txt.gpg --encrypt --recipient emacsist@qq.com hello.txt
+</pre>
+</div>
+
+
+<p>
+<b>&#x2013;recipient</b> 可以有多个同名选项来分别指定不同的公钥，加密后的文档，只能用这些公钥对应的私钥之一来进行解密。
+</p>
+
+<p>
+多个公钥的话，可以这样子指定:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">gpg --output hello.txt.gpg --encrypt --recipient emacsist@qqcom --recipient emacsist1@qq.com hello.txt
+</pre>
+</div>
+
+<blockquote>
+<p>
+特别地，你自己并不能解密你加密后的文档，除非你将你自己的公钥与写在了 &#x2013;recipient 列表中
+</p>
+</blockquote>
+</div>
+</div>
+
+
+<div id="outline-container-orgbac1ee6" class="outline-5">
+<h5 id="orgbac1ee6">使用对称密码来进行加密</h5>
+<div class="outline-text-5" id="text-orgbac1ee6">
+<div class="org-src-container">
+<pre class="src src-bash">gpg --output hello.symmetric.gpg.txt --symmetric hello.txt
+</pre>
+</div>
+
+<blockquote>
+<p>
+回车后，它会要求你输入密码来保护这个文档，注意，这个密码，并不是那个保护私钥的密码，也不要与保护私钥的密码相同。这个在解密时，也需要输入同样的文档密码来进行解密。这一般用在不需要与其他人进行通信时使用的加密方式。
+</p>
+</blockquote>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3fb2194" class="outline-4">
+<h4 id="org3fb2194">解密文档</h4>
+<div class="outline-text-4" id="text-org3fb2194">
+</div><div id="outline-container-org77ebfd6" class="outline-5">
+<h5 id="org77ebfd6">解密使用公钥来进行加密的文档</h5>
+<div class="outline-text-5" id="text-org77ebfd6">
+<div class="org-src-container">
+<pre class="src src-bash">gpg --output hello.decrypt.txt --decrypt hello.txt.gpg
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6b9acc6" class="outline-5">
+<h5 id="org6b9acc6">解密使用对称密码来进行加密的文档</h5>
+<div class="outline-text-5" id="text-org6b9acc6">
+<div class="org-src-container">
+<pre class="src src-bash">gpg --output hello.symmetric.txt --decrypt hello.symmetric.gpg.txt
+
+<span style="color: #2aa198;">[</span><span style="color: #6c71c4;">12:18:26</span><span style="color: #2aa198;">]</span> emacsist:/tmp $ cat hello.symmetric.txt
+Hello World
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org636b2f1" class="outline-4">
+<h4 id="org636b2f1">数字签名</h4>
+<div class="outline-text-4" id="text-org636b2f1">
+</div><div id="outline-container-org98c1f3e" class="outline-5">
+<h5 id="org98c1f3e">签名</h5>
+<div class="outline-text-5" id="text-org98c1f3e">
+<p>
+它是使用私钥来创建，然后使用公钥来进行验证的。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">gpg --output hello.txt.sign --sign hello.txt
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9a1fd39" class="outline-5">
+<h5 id="org9a1fd39">验证或恢复原文</h5>
+<div class="outline-text-5" id="text-org9a1fd39">
+<p>
+给出一个签名的文档，你可以验证它或者验证并恢复原文。（因为签名后的内容是压缩的，并且是二进制格式的）
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">&#20165;&#39564;&#35777;
+gpg --verify hello.txt.sign
+&#39564;&#35777;&#21644;&#24674;&#22797;
+gpg --output hello.sig.txt --decrypt hello.txt.sign
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org3f60de9" class="outline-5">
+<h5 id="org3f60de9">签名但并不压缩文档</h5>
+<div class="outline-text-5" id="text-org3f60de9">
+<p>
+默认情况下，使用 <b>&#x2013;sign</b> 会进行签名并压缩文档。
+但也可以使用 <b>&#x2013;clearsign</b> 选项，来将文档和签名分开显示。例如:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">gpg --output hello.sign --clearsign hello.txt
+</pre>
+</div>
+
+
+<p>
+它的输出如下:
+</p>
+
+<pre class="example">
+[12:36:42] emacsist:/tmp $ cat hello.sign
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+Hello World
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJY3ItWAAoJECsHCikuZ7yo7rwH/1mfxVtxXexHsnKamR434Fjt
+jjhIy27PajVecm7byyHLHrBCP/meDk4jl+wDDPpE8+0FJE17M8opW1YFZUzUXj52
+bG+0kLZNtuIn2f3ybbsXGfcvmxo4n7B7jvDHJBqHDS8OMoc2nfUurN/XbYO10Mm3
+YmBoEKjxk2Q6DHU3eJlnaOWXdPhZzCt24zjCrMdkG5iZln80TMHJyxXJD63zBzB1
+dkHpX/vYgmy2EzDMZXBApatzSoys0/siGlZ64jnS8m61zlWPLhpMl3haSAPk5VDx
++ydw/c/9SO3cVjTzWLmXfW3hvvN/UW/HDOHb1j29yUhalztI1zTtEm2VyHiKJFo=
+=LP7m
+-----END PGP SIGNATURE-----
+</pre>
+
+<p>
+可以看到，上面显示了文档的原文，下面显示了文档的签名。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org986c02b" class="outline-5">
+<h5 id="org986c02b">分开签名</h5>
+<div class="outline-text-5" id="text-org986c02b">
+<div class="org-src-container">
+<pre class="src src-bash">gpg --output hello.detached.sign.txt --detach-sign hello.txt
+</pre>
+</div>
+
+<p>
+这样子签名后，需要同时验证原文件和签名文件，用选项： <b>&#x2013;verify</b> :
+</p>
+<div class="org-src-container">
+<pre class="src src-bash"><span style="color: #2aa198;">[</span><span style="color: #6c71c4;">12:40:37</span><span style="color: #2aa198;">]</span> emacsist:/tmp $ gpg --verify hello.detached.sign.txt hello.txt
+gpg: Signature made Thu Mar <span style="color: #6c71c4;">30</span> <span style="color: #6c71c4;">12:40:28</span> <span style="color: #6c71c4;">2017</span> CST using RSA key ID <span style="color: #6c71c4;">2E67BCA8</span>
+gpg: Good signature from <span style="color: #2aa198;">"emacsist <a href="mailto:emacsist%40qq.com">&lt;emacsist@qq.com&gt;</a>"</span> <span style="color: #2aa198;">[</span>ultimate<span style="color: #2aa198;">]</span>
+</pre>
+</div>
+
+<p>
+没问题的话，它会报告: <b>Good signature</b> 
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgefede4c" class="outline-2">
+<h2 id="orgefede4c">概念</h2>
+<div class="outline-text-2" id="text-orgefede4c">
+<p>
+GnuPG 使用几种加密方式:
+</p>
+<dl class="org-dl">
+<dt>对称加密</dt><dd>使用同样的 key 来进行加解密，例子有:  <b>3DES</b> ,  <b>Blowfish</b> , 以及 <b>IDEA</b></dd>
+<dt>公钥加密</dt><dd>使用对称加密的问题并不在于它的安全性，而是在交换 key 。攻击者容易拦截 key 并破解它；另一个问题是如果有N个人需要通信，则就需要有 n(n-1)/2 个 key了。这在小范围通信还好，如果是与大量的人进行这样子的通信，就不是一个明智的选择了。 公钥加密就是用来避交换 key 的问题的。公钥用来进行加密，私钥来来进行解密。</dd>
+<dt>(no term)</dt><dd>单向散列</dd>
+<dt>杂交加密</dt><dd>公钥加密并不是万能的。它同时使用对称加密和公钥加密。</dd>
+</dl>
+</div>
+
+<div id="outline-container-org722d809" class="outline-3">
+<h3 id="org722d809">数字签名</h3>
+<div class="outline-text-3" id="text-org722d809">
+<p>
+一个哈希函数，是一个多对一映射的函数。一个文档的数字签名就是将一份文档应用到一个哈希函数得出的结果。这个函数要满足以下两个特性：
+</p>
+<ol class="org-ol">
+<li>比较困难地将两份不同的文档产生出同一个值</li>
+<li>给出一个哈希值，比较困难地还原该文档</li>
+</ol>
+</div>
+</div>
+</div>
+<div id="outline-container-org391bb18" class="outline-2">
+<h2 id="org391bb18">密钥管理</h2>
+<div class="outline-text-2" id="text-org391bb18">
+<blockquote>
+<p>
+篡改密钥是一个使用公钥方式的一个主要弱点。在GnuPG 中管理密钥的关键就是 <b>签名密钥</b> 
+</p>
+</blockquote>
+
+<p>
+比如:
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">chloe% gpg -edit-key chloe@cyb.org
+Secret key is available.
+pub  <span style="color: #6c71c4;">1024D/26B6AAE1</span>  created: <span style="color: #6c71c4;">1999-06-15</span> expires: never
+sub  <span style="color: #6c71c4;">2048g/0CF8CB7A</span>  created: <span style="color: #6c71c4;">1999-06-15</span> expires: never
+sub  <span style="color: #6c71c4;">1792G/08224617</span>  created: <span style="color: #6c71c4;">1999-06-15</span> expires: <span style="color: #6c71c4;">2002-06-14</span>
+sub  <span style="color: #6c71c4;">960D/B1F423E7</span>   created: <span style="color: #6c71c4;">1999-06-15</span> expires: <span style="color: #6c71c4;">2002-06-14</span>
+<span style="color: #2aa198;">(</span><span style="color: #6c71c4;">1</span><span style="color: #2aa198;">)</span>  Chloe <span style="color: #2aa198;">(</span>Jester<span style="color: #2aa198;">)</span> <a href="mailto:chloe%40cyb.org">&lt;chloe@cyb.org&gt;</a>
+<span style="color: #2aa198;">(</span><span style="color: #6c71c4;">2</span><span style="color: #2aa198;">)</span>  Chloe <span style="color: #2aa198;">(</span>Plebian<span style="color: #2aa198;">)</span> <a href="mailto:chloe%40tel.net">&lt;chloe@tel.net&gt;</a>
+Command&gt;
+</pre>
+</div>
+
+<p>
+说明:
+</p>
+<dl class="org-dl">
+<dt>第一列</dt><dd><b>pub</b> 表示是 master signing key 的公开部分</dd>
+<dt>第二列</dt><dd>指示该 key 的位的长度，类型以及ID。D表示类型为 DSA； g表示是仅为加密的 ElGamal key ；G表示是 ElGamal key 它可用时用于加密和签名。</dd>
+<dt>第三列</dt><dd>创建时间</dd>
+<dt>第四列</dt><dd>过期时间</dd>
+</dl>
+
+
+<p>
+用户的ID也紧跟其后。
+</p>
+</div>
+</div>
+<div id="outline-container-orge20de8d" class="outline-2">
+<h2 id="orge20de8d">GnuPG1 与 GnuPG2 、GnuPG2.1 区别</h2>
+<div class="outline-text-2" id="text-orge20de8d">
+<p>
+<a href="https://superuser.com/questions/655246/are-gnupg-1-and-gnupg-2-compatible-with-each-other">https://superuser.com/questions/655246/are-gnupg-1-and-gnupg-2-compatible-with-each-other</a>
+</p>
+</div>
+
+<div id="outline-container-orgd2c1caa" class="outline-3">
+<h3 id="orgd2c1caa">GnuPG 1</h3>
+<div class="outline-text-3" id="text-orgd2c1caa">
+<p>
+<b>gpg</b> 仍然保留用作嵌入式和服务器端使用，这个更少依赖以及更小的二进制文件。
+来自 <b>man gpg</b> :
+</p>
+
+<blockquote>
+<p>
+This is the standalone version of gpg. For desktop use you should consider using gpg2.
+</p>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-orgd75d019" class="outline-3">
+<h3 id="orgd75d019">GnuPG 2</h3>
+<div class="outline-text-3" id="text-orgd75d019">
+<p>
+<b>gpg2</b> 是 <b>gpg</b> 的重新设计版本—— 但是更多的是在内部级别的更改。较新的版本分为多个模块，例如，有可用于 X.509 的模块
+</p>
+
+<p>
+来自 <b>man gpg2</b>
+</p>
+
+<blockquote>
+<p>
+In contrast to the standalone version gpg, which is more suited for server and embedded platforms, this version is commonly installed under the name gpg2 and more targeted to the desktop as it requires several other modules to be installed.
+</p>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-org6e59ddf" class="outline-3">
+<h3 id="org6e59ddf">GnuPG 2.1</h3>
+<div class="outline-text-3" id="text-org6e59ddf">
+<p>
+GnuPG 2.1是一个重要的变化，它将以前分开的公钥和私钥（pubring.gpg vs secring.gpg）组合到公钥匙中。这是以兼容的方式实现的，所以当GnuPG 2.1集成了私有密钥环时，您仍然可以使用GnuPG 1，但私有密钥的更改不会出现在相应的其他实现中。
+</p>
+
+<blockquote>
+<p>
+[&#x2026;]允许与GnuPG 2.1共同存在较旧的GnuPG版本。 然而，使用新gpg的私钥的任何更改在使用2.1版本的GnuPG之前都不会出现，反之亦然。
+</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">&#20316;&#32773;: emacsist</p>
+<p class="date">Created: 2017-03-31 五 01:23</p>
+<p class="validation"></p>
+</div>
+</body>
+</html>
