@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2017-03-31 五 01:23 -->
+<!-- 2017-03-31 五 01:26 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GnuPG 使用</title>
@@ -275,7 +275,7 @@ for the JavaScript code in this tag.
 <li><a href="#org6b9acc6">解密使用对称密码来进行加密的文档</a></li>
 </ul>
 </li>
-<li><a href="#org636b2f1">数字签名</a>
+<li><a href="#org722d809">数字签名</a>
 <ul>
 <li><a href="#org98c1f3e">签名</a></li>
 <li><a href="#org9a1fd39">验证或恢复原文</a></li>
@@ -289,7 +289,7 @@ for the JavaScript code in this tag.
 </li>
 <li><a href="#orgefede4c">概念</a>
 <ul>
-<li><a href="#org722d809">数字签名</a></li>
+<li><a href="#orge85a5b6">数字签名</a></li>
 </ul>
 </li>
 <li><a href="#org391bb18">密钥管理</a></li>
@@ -300,6 +300,7 @@ for the JavaScript code in this tag.
 <li><a href="#org6e59ddf">GnuPG 2.1</a></li>
 </ul>
 </li>
+<li><a href="#org94cc6d7">emacs 中使用 GnuPG 来加解密注意事项</a></li>
 </ul>
 </div>
 </div>
@@ -620,9 +621,9 @@ Hello World
 </div>
 
 
-<div id="outline-container-org636b2f1" class="outline-4">
-<h4 id="org636b2f1">数字签名</h4>
-<div class="outline-text-4" id="text-org636b2f1">
+<div id="outline-container-org722d809" class="outline-4">
+<h4 id="org722d809">数字签名</h4>
+<div class="outline-text-4" id="text-org722d809">
 </div><div id="outline-container-org98c1f3e" class="outline-5">
 <h5 id="org98c1f3e">签名</h5>
 <div class="outline-text-5" id="text-org98c1f3e">
@@ -737,9 +738,9 @@ GnuPG 使用几种加密方式:
 </dl>
 </div>
 
-<div id="outline-container-org722d809" class="outline-3">
-<h3 id="org722d809">数字签名</h3>
-<div class="outline-text-3" id="text-org722d809">
+<div id="outline-container-orge85a5b6" class="outline-3">
+<h3 id="orge85a5b6">数字签名</h3>
+<div class="outline-text-3" id="text-orge85a5b6">
 <p>
 一个哈希函数，是一个多对一映射的函数。一个文档的数字签名就是将一份文档应用到一个哈希函数得出的结果。这个函数要满足以下两个特性：
 </p>
@@ -849,10 +850,23 @@ GnuPG 2.1是一个重要的变化，它将以前分开的公钥和私钥（pubri
 </div>
 </div>
 </div>
+
+<div id="outline-container-org94cc6d7" class="outline-2">
+<h2 id="org94cc6d7">emacs 中使用 GnuPG 来加解密注意事项</h2>
+<div class="outline-text-2" id="text-org94cc6d7">
+<p>
+本人在使用的过程中，最好在 emacs orgmode 中使用 GnuPG1 来进行加解密。不然容易有一些其他的问题。比如这个:
+</p>
+
+<p>
+<a href="https://emacs-china.org/t/org-crypt/2585">https://emacs-china.org/t/org-crypt/2585</a>
+</p>
+</div>
+</div>
 </div>
 <div id="postamble" class="status">
 <p class="author">&#20316;&#32773;: emacsist</p>
-<p class="date">Created: 2017-03-31 五 01:23</p>
+<p class="date">Created: 2017-03-31 五 01:26</p>
 <p class="validation"></p>
 </div>
 </body>
