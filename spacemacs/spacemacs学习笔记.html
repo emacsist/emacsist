@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2017-03-15 Wed 16:58 -->
+<!-- 2017-04-01 六 23:37 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title></title>
@@ -235,24 +235,18 @@ for the JavaScript code in this tag.
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org9358e3c">Emacs 杂项</a>
-<ul>
 <li><a href="#orgacdd32f">启动 spacemacs 时，显示 agenda buffer</a></li>
 <li><a href="#org6c76f94">添加自定义的 layer</a></li>
 <li><a href="#orgb5c98b5">多光标编辑</a></li>
 <li><a href="#orgaceb450">Emacs中使用 restclient 报  <b>url-http-create-request: Multibyte text in HTTP request</b></a></li>
 <li><a href="#org9edc243">搜索完成后，取消高亮</a></li>
-</ul>
-</li>
+<li><a href="#org54460b2">新建 buffer 时，设置默认的 major mode</a></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org9358e3c" class="outline-2">
-<h2 id="org9358e3c">Emacs 杂项</h2>
-<div class="outline-text-2" id="text-org9358e3c">
-</div><div id="outline-container-orgacdd32f" class="outline-3">
-<h3 id="orgacdd32f">启动 spacemacs 时，显示 agenda buffer</h3>
-<div class="outline-text-3" id="text-orgacdd32f">
+<div id="outline-container-orgacdd32f" class="outline-2">
+<h2 id="orgacdd32f">启动 spacemacs 时，显示 agenda buffer</h2>
+<div class="outline-text-2" id="text-orgacdd32f">
 <p>
 在 <b>~/.spacemacs</b> 配置文件中的 <b>dotspacemacs/user-config</b> 位置加入以下配置内容即可.
 </p>
@@ -269,10 +263,9 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-
-<div id="outline-container-org6c76f94" class="outline-3">
-<h3 id="org6c76f94">添加自定义的 layer</h3>
-<div class="outline-text-3" id="text-org6c76f94">
+<div id="outline-container-org6c76f94" class="outline-2">
+<h2 id="org6c76f94">添加自定义的 layer</h2>
+<div class="outline-text-2" id="text-org6c76f94">
 <p>
 这里以一个具体的场景来说明一下。例如，我现在想安装 <a href="https://github.com/bcbcarl/emacs-wttrin">wttrin</a> 这个emacs插件。（默认情况下，你通过 <b>M-x package-install RET wttrin RET</b> 安装后，如果重启了emacs，就没有效果了。）
 下面是具体的步骤（这里，我创建的layer名为 <b>life-layer</b> ）
@@ -391,9 +384,9 @@ dotspacemacs-configuration-layers
 </ol>
 </div>
 </div>
-<div id="outline-container-orgb5c98b5" class="outline-3">
-<h3 id="orgb5c98b5">多光标编辑</h3>
-<div class="outline-text-3" id="text-orgb5c98b5">
+<div id="outline-container-orgb5c98b5" class="outline-2">
+<h2 id="orgb5c98b5">多光标编辑</h2>
+<div class="outline-text-2" id="text-orgb5c98b5">
 <p>
 这里，以一个具体的例子来进行多光标编辑。假设有一段文本：
 </p>
@@ -414,9 +407,9 @@ hello2 world
 </ol>
 </div>
 </div>
-<div id="outline-container-orgaceb450" class="outline-3">
-<h3 id="orgaceb450">Emacs中使用 restclient 报  <b>url-http-create-request: Multibyte text in HTTP request</b></h3>
-<div class="outline-text-3" id="text-orgaceb450">
+<div id="outline-container-orgaceb450" class="outline-2">
+<h2 id="orgaceb450">Emacs中使用 restclient 报  <b>url-http-create-request: Multibyte text in HTTP request</b></h2>
+<div class="outline-text-2" id="text-orgaceb450">
 <p>
 发现emacs里有个非常好用的 HTTP 客户端: <a href="https://github.com/pashky/restclient.el">restclient</a> 但是在emacs 25.1中发现使用中文请求参数时，报 'multibyte' 的问题。
 然后Google了一下，有篇文章帮忙解决了这个问题：<a href="http://www.cnblogs.com/yangwen0228/p/6238528.html">cnblogs</a> 下面是具体的步骤（这里以 Mac 下的 emacs 25.1为例）
@@ -474,19 +467,32 @@ hello2 world
 </ol>
 </div>
 </div>
-<div id="outline-container-org9edc243" class="outline-3">
-<h3 id="org9edc243">搜索完成后，取消高亮</h3>
-<div class="outline-text-3" id="text-org9edc243">
+<div id="outline-container-org9edc243" class="outline-2">
+<h2 id="org9edc243">搜索完成后，取消高亮</h2>
+<div class="outline-text-2" id="text-org9edc243">
 <p>
 <b>M-x evil-search-highlight-persist-remove-all RET</b>
 </p>
 </div>
 </div>
+<div id="outline-container-org54460b2" class="outline-2">
+<h2 id="org54460b2">新建 buffer 时，设置默认的 major mode</h2>
+<div class="outline-text-2" id="text-org54460b2">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #AE81FF;">(</span><span style="color: #F92672;">setq-default</span> major-mode 'org-mode<span style="color: #AE81FF;">)</span>
+</pre>
+</div>
+
+
+<p>
+参考资料: <a href="http://emacs.stackexchange.com/questions/14013/change-the-default-mode-used-when-opening-a-new-buffer">http://emacs.stackexchange.com/questions/14013/change-the-default-mode-used-when-opening-a-new-buffer</a>
+</p>
+</div>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">&#20316;&#32773;: emacsist</p>
-<p class="date">Created: 2017-03-15 Wed 16:58</p>
+<p class="date">Created: 2017-04-01 六 23:37</p>
 <p class="validation"></p>
 </div>
 </body>
