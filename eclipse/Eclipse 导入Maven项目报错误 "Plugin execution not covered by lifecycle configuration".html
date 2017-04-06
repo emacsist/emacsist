@@ -4,7 +4,7 @@
 <!-- 2017-04-06 四 12:15 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>使用 curl 与 grep 获取网页的下载链接</title>
+<title>Eclipse 导入Maven项目报错误 "Plugin execution not covered by lifecycle configuration"</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="emacsist">
 <style type="text/css">
@@ -231,36 +231,52 @@ for the JavaScript code in this tag.
  |
  <a accesskey="H" href="/emacsist/index.html"> HOME </a>
 </div><div id="content">
-<h1 class="title">使用 curl 与 grep 获取网页的下载链接</h1>
+<h1 class="title">Eclipse 导入Maven项目报错误 "Plugin execution not covered by lifecycle configuration"</h1>
+<p>
+只要在项目的 <b>pom.xml</b> 文件里添加如下配置即可:
+</p>
+
 <div class="org-src-container">
-<pre class="src src-bash"><span style="color: #AE81FF;">[</span><span style="color: #AE81FF;">16:52:38</span><span style="color: #AE81FF;">]</span> emacsist:~ $ curl  --silent http://www.lbldy.com/television/72024.html <span style="color: #AE81FF;">2</span>&gt;&amp;<span style="color: #AE81FF;">1</span> | grep -o <span style="color: #E6DB74;">'"ed2k[^"]\+"'</span> | tr -d <span style="color: #E6DB74;">'\"'</span>
-ed2k://|file|%E7%94%9F%E6%B4%BB%E5%A4%A7%E7%88%86%E7%82%B8.The.Big.Bang.Theory.S10E01.%E4%B8%AD%E8%8B%B1%E5%AD%97%E5%B9%95.HDTVrip.1024X576.mp4|<span style="color: #AE81FF;">217430316</span>|d34b72dfcef0d2e1e8b86d4d8f90e363|<span style="color: #FD971F;">h</span>=cdvb46pocwrajlqzd3uo7ozgbp5ias4l|/
-ed2k://|file|%E7%94%9F%E6%B4%BB%E5%A4%A7%E7%88%86%E7%82%B8.The.Big.Bang.Theory.S10E02.%E4%B8%AD%E8%8B%B1%E5%AD%97%E5%B9%95.HDTVrip.1024X576.mp4|<span style="color: #AE81FF;">188260542</span>|dcf2ff3d936da32c4821066a648b7eff|<span style="color: #FD971F;">h</span>=idx7ygjof7fsprwy4hdl55kty3gvqflk|/
-ed2k://|file|%E7%94%9F%E6%B4%BB%E5%A4%A7%E7%88%86%E7%82%B8.The.Big.Bang.Theory.S10E03.%E4%B8%AD%E8%8B%B1%E5%AD%97%E5%B9%95.HDTVrip.1024X576.mp4|<span style="color: #AE81FF;">203307833</span>|<span style="color: #AE81FF;">91a81a79e55067c040c25077de8f7535</span>|<span style="color: #FD971F;">h</span>=uwmu4pwh5frfdlqf7ac2kwwm6koyuj2d|/
-ed2k://|file|%E7%94%9F%E6%B4%BB%E5%A4%A7%E7%88%86%E7%82%B8.The.Big.Bang.Theory.S10E04.%E4%B8%AD%E8%8B%B1%E5%AD%97%E5%B9%95.HDTVrip.1024X576.mp4|<span style="color: #AE81FF;">206276750</span>|<span style="color: #AE81FF;">844576d591dcb8a010bf254ed1834a33</span>|<span style="color: #FD971F;">h</span>=<span style="color: #AE81FF;">7tuhnvt6q5vbsimiknbua4b5u7jszmny</span>|/
-ed2k://|file|%E7%94%9F%E6%B4%BB%E5%A4%A7%E7%88%86%E7%82%B8.The.Big.Bang.Theory.S10E05.%E4%B8%AD%E8%8B%B1%E5%AD%97%E5%B9%95.HDTVrip.1024X576.mp4|<span style="color: #AE81FF;">198795742</span>|<span style="color: #AE81FF;">655f53e661f3d6f3a892923a16b54e2b</span>|<span style="color: #FD971F;">h</span>=<span style="color: #AE81FF;">7d2sqw2i75clssjpi4fnljzbbw3ix7tl</span>|/
-ed2k://|file|%E7%94%9F%E6%B4%BB%E5%A4%A7%E7%88%86%E7%82%B8.The.Big.Bang.Theory.S10E06.%E4%B8%AD%E8%8B%B1%E5%AD%97%E5%B9%95.HDTVrip.1024X576.mp4|<span style="color: #AE81FF;">186204507</span>|bc0f5d5b1117a59cade0a1a28f3b2252|<span style="color: #FD971F;">h</span>=ssi5aym77xhypvazycngocoeynrtbt7z|/
-ed2k://|file|%E7%94%9F%E6%B4%BB%E5%A4%A7%E7%88%86%E7%82%B8.The.Big.Bang.Theory.S10E07.%E4%B8%AD%E8%8B%B1%E5%AD%97%E5%B9%95.HDTVrip.1024X576.mp4|<span style="color: #AE81FF;">207350618</span>|<span style="color: #AE81FF;">9d1356fbbcf3785091aed80b46dd89e1</span>|<span style="color: #FD971F;">h</span>=yhy3dw32tezvvvzqig7rb2qe5oleoavw|/
-ed2k://|file|%E7%94%9F%E6%B4%BB%E5%A4%A7%E7%88%86%E7%82%B8.The.Big.Bang.Theory.S10E08.%E4%B8%AD%E8%8B%B1%E5%AD%97%E5%B9%95.HDTVrip.1024X576.mp4|<span style="color: #AE81FF;">186792383</span>|<span style="color: #AE81FF;">0622167794368b5ae1c5bcda58c02c6f</span>|<span style="color: #FD971F;">h</span>=rzu342bf5tyjzb3djht62kj2d6jnkp67|/
-ed2k://|file|%E7%94%9F%E6%B4%BB%E5%A4%A7%E7%88%86%E7%82%B8.The.Big.Bang.Theory.S10E09.%E4%B8%AD%E8%8B%B1%E5%AD%97%E5%B9%95.HDTVrip.1024X576.mp4|<span style="color: #AE81FF;">193014844</span>|<span style="color: #AE81FF;">6ff5767ad911465572f990fe05f20ed5</span>|<span style="color: #FD971F;">h</span>=bkqcrffge55aqbx7jvpseevudjcwhyj5|/
-ed2k://|file|%E7%94%9F%E6%B4%BB%E5%A4%A7%E7%88%86%E7%82%B8.The.Big.Bang.Theory.S10E10.%E4%B8%AD%E8%8B%B1%E5%AD%97%E5%B9%95.HDTVrip.1024X576.mp4|<span style="color: #AE81FF;">198178738</span>|<span style="color: #AE81FF;">14cb8ccd5db6656facffc503b27c2cc3</span>|<span style="color: #FD971F;">h</span>=hcjk72tzcmajoon62o2mbjt2v43iqktf|/
-ed2k://|file|%E7%94%9F%E6%B4%BB%E5%A4%A7%E7%88%86%E7%82%B8.The.Big.Bang.Theory.S10E11.%E4%B8%AD%E8%8B%B1%E5%AD%97%E5%B9%95.HDTVrip.1024X576.mp4|<span style="color: #AE81FF;">203982433</span>|<span style="color: #AE81FF;">57d0d4eb2d02435fc17e90f3f30d2e19</span>|<span style="color: #FD971F;">h</span>=jcsugr6ox2ro3rtzv46ag4nsqfpjy4bd|/
-ed2k://|file|%E7%94%9F%E6%B4%BB%E5%A4%A7%E7%88%86%E7%82%B8.The.Big.Bang.Theory.S10E12.%E4%B8%AD%E8%8B%B1%E5%AD%97%E5%B9%95.HDTVrip.1024X576.v2.mp4|<span style="color: #AE81FF;">210227467</span>|e83e75d0fa81cbdaa9ba35495b93d31f|<span style="color: #FD971F;">h</span>=cmzm7v5yscoof3khxvnyssqpcyehbkb4|/
-ed2k://|file|%E7%94%9F%E6%B4%BB%E5%A4%A7%E7%88%86%E7%82%B8.The.Big.Bang.Theory.S10E13.%E4%B8%AD%E8%8B%B1%E5%AD%97%E5%B9%95.HDTVrip.1024X576.mp4|<span style="color: #AE81FF;">187429785</span>|<span style="color: #AE81FF;">8b4e512f505d3fed25c0b703092860ad</span>|<span style="color: #FD971F;">h</span>=zik4dqg6yp67nyk5jyc5xoff2wlswigd|/
-ed2k://|file|%E7%94%9F%E6%B4%BB%E5%A4%A7%E7%88%86%E7%82%B8.The.Big.Bang.Theory.S10E14.%E4%B8%AD%E8%8B%B1%E5%AD%97%E5%B9%95.HDTVrip.1024X576.mp4|<span style="color: #AE81FF;">196391461</span>|b420738baf486d44e407ce0ef259f9e8|<span style="color: #FD971F;">h</span>=qjstiru6yn3n5dbuomnbyixd4ik7plct|/
-ed2k://|file|%E7%94%9F%E6%B4%BB%E5%A4%A7%E7%88%86%E7%82%B8.The.Big.Bang.Theory.S10E15.%E4%B8%AD%E8%8B%B1%E5%AD%97%E5%B9%95.HDTVrip.1024X576.mp4|<span style="color: #AE81FF;">204695336</span>|<span style="color: #AE81FF;">336f659034ac6a1b5ec341038db915a6</span>|<span style="color: #FD971F;">h</span>=awnbkm7voicjvmmqqclnzvtow5nkvttz|/
-ed2k://|file|%E7%94%9F%E6%B4%BB%E5%A4%A7%E7%88%86%E7%82%B8.The.Big.Bang.Theory.S10E16.%E4%B8%AD%E8%8B%B1%E5%AD%97%E5%B9%95.HDTVrip.1024X576.mp4|<span style="color: #AE81FF;">178207313</span>|d47ffacfb63592c7e9eaa95274b22ac0|<span style="color: #FD971F;">h</span>=zix2zg5k4k2wbf44pe53w47z3uwcq5xb|/
-ed2k://|file|%E7%94%9F%E6%B4%BB%E5%A4%A7%E7%88%86%E7%82%B8.The.Big.Bang.Theory.S10E17.%E4%B8%AD%E8%8B%B1%E5%AD%97%E5%B9%95.HDTVrip.1024x576.mp4|<span style="color: #AE81FF;">195341631</span>|a1d3622755d9b6f17c66270d496f6423|<span style="color: #FD971F;">h</span>=z44kjncvlxeto7ezuwemikd53tho6v7j|/
-ed2k://|file|%E7%94%9F%E6%B4%BB%E5%A4%A7%E7%88%86%E7%82%B8.The.Big.Bang.Theory.S10E18.%E4%B8%AD%E8%8B%B1%E5%AD%97%E5%B9%95.HDTVrip.1024X576.mp4|<span style="color: #AE81FF;">198522588</span>|c365eceab60203ec14ec397881d462e2|<span style="color: #FD971F;">h</span>=kyg7xftnw5evozv2kufq7iy6e7yyp75u|/
-ed2k://|file|%E7%94%9F%E6%B4%BB%E5%A4%A7%E7%88%86%E7%82%B8.The.Big.Bang.Theory.S10E19.%E4%B8%AD%E8%8B%B1%E5%AD%97%E5%B9%95.HDTVrip.1024X576.mp4|<span style="color: #AE81FF;">184325444</span>|<span style="color: #AE81FF;">6a7e63087849fd63c56dd2b9439fbcf4</span>|<span style="color: #FD971F;">h</span>=dnjqyv7362imqm7brhktorxld54c7amz|/
-<span style="color: #AE81FF;">[</span><span style="color: #AE81FF;">16:52:47</span><span style="color: #AE81FF;">]</span> emacsist:~ $
+<pre class="src src-xml">&lt;<span style="color: #A6E22E;">build</span>&gt;
+    &lt;<span style="color: #A6E22E;">pluginManagement</span>&gt;
+      &lt;<span style="color: #A6E22E;">plugins</span>&gt;
+        <span style="color: #75715E;">&lt;!--</span><span style="color: #75715E;">This plugin's configuration is used to store Eclipse m2e settings </span>
+<span style="color: #75715E;">          only. It has no influence on the Maven build itself. </span><span style="color: #75715E;">--&gt;</span>
+        &lt;<span style="color: #A6E22E;">plugin</span>&gt;
+          &lt;<span style="color: #A6E22E;">groupId</span>&gt;org.eclipse.m2e&lt;/<span style="color: #A6E22E;">groupId</span>&gt;
+          &lt;<span style="color: #A6E22E;">artifactId</span>&gt;lifecycle-mapping&lt;/<span style="color: #A6E22E;">artifactId</span>&gt;
+          &lt;<span style="color: #A6E22E;">version</span>&gt;1.0.0&lt;/<span style="color: #A6E22E;">version</span>&gt;
+          &lt;<span style="color: #A6E22E;">configuration</span>&gt;
+            &lt;<span style="color: #A6E22E;">lifecycleMappingMetadata</span>&gt;
+              &lt;<span style="color: #A6E22E;">pluginExecutions</span>&gt;
+                &lt;<span style="color: #A6E22E;">pluginExecution</span>&gt;
+                  &lt;<span style="color: #A6E22E;">pluginExecutionFilter</span>&gt;
+                    &lt;<span style="color: #A6E22E;">groupId</span>&gt;org.apache.maven.plugins&lt;/<span style="color: #A6E22E;">groupId</span>&gt;
+                    &lt;<span style="color: #A6E22E;">artifactId</span>&gt;maven-antrun-plugin&lt;/<span style="color: #A6E22E;">artifactId</span>&gt;
+                    &lt;<span style="color: #A6E22E;">versionRange</span>&gt;[1.7,)&lt;/<span style="color: #A6E22E;">versionRange</span>&gt;
+                    &lt;<span style="color: #A6E22E;">goals</span>&gt;
+                      &lt;<span style="color: #A6E22E;">goal</span>&gt;run&lt;/<span style="color: #A6E22E;">goal</span>&gt;
+                    &lt;/<span style="color: #A6E22E;">goals</span>&gt;
+                  &lt;/<span style="color: #A6E22E;">pluginExecutionFilter</span>&gt;
+                  &lt;<span style="color: #A6E22E;">action</span>&gt;
+                    &lt;<span style="color: #A6E22E;">ignore</span> /&gt;
+                  &lt;/<span style="color: #A6E22E;">action</span>&gt;
+                &lt;/<span style="color: #A6E22E;">pluginExecution</span>&gt;
+              &lt;/<span style="color: #A6E22E;">pluginExecutions</span>&gt;
+            &lt;/<span style="color: #A6E22E;">lifecycleMappingMetadata</span>&gt;
+          &lt;/<span style="color: #A6E22E;">configuration</span>&gt;
+        &lt;/<span style="color: #A6E22E;">plugin</span>&gt;
+      &lt;/<span style="color: #A6E22E;">plugins</span>&gt;
+    &lt;/<span style="color: #A6E22E;">pluginManagement</span>&gt;
+  &lt;/<span style="color: #A6E22E;">build</span>&gt;
 </pre>
 </div>
 
-
+<blockquote>
 <p>
-然后就可以全复制这些链接到迅雷批量下载了，这样子就不用一条一条链接来复制了。
+不过，要注意下自己的插件版本的问题，自行修改下为对应自己的插件的版本
 </p>
+</blockquote>
 </div>
 <div id="postamble" class="status">
 <p class="author">&#20316;&#32773;: emacsist</p>
