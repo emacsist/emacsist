@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2017-04-12 Wed 23:34 -->
+<!-- 2017-04-12 Wed 22:53 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Emacsist</title>
+<title></title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="emacsist">
 <style type="text/css">
@@ -231,63 +231,276 @@ for the JavaScript code in this tag.
  |
  <a accesskey="H" href="/emacsist/index.html"> HOME </a>
 </div><div id="content">
-<h1 class="title">Emacsist</h1>
-<ul class="org-ul">
-<li>go
-<ul class="org-ul">
-<li><a href="go/Golang中的channel学习笔记.html">2017-04-12 ====&gt; Golang 中的 channel 学习笔记</a></li>
-</ul></li>
-<li>spacemacs
-<ul class="org-ul">
-<li><a href="spacemacs/spacemacs学习笔记.html">2017-04-02 ====&gt; spacemacs学习笔记</a></li>
-</ul></li>
-<li>rust
-<ul class="org-ul">
-<li><a href="rust/Rust学习笔记.html">2017-04-08 ====&gt; Rust 学习笔记</a></li>
-</ul></li>
-<li>http
-<ul class="org-ul">
-<li><a href="http/判断是否支持Http keey-alive.html">2017-04-10 ====&gt; 判断是否支持Http keey-alive</a></li>
-</ul></li>
-<li>elisp
-<ul class="org-ul">
-<li><a href="elisp/Emacs Lisp 源码调试.html">2017-03-31 ====&gt; Emacs Lisp 源码调试</a></li>
-<li><a href="elisp/GNU Emacs Lisp Manual 学习笔记.html">2017-03-25 ====&gt; GNU Emacs Lisp Manual 学习笔记</a></li>
-<li><a href="elisp/Lisp本质.html">2017-03-15 ====&gt; Lisp本质</a></li>
-<li><a href="elisp/GNU emacs lisp学习笔记.html">2017-03-15 ====&gt; GNU Emacs Lisp 学习笔记</a></li>
-</ul></li>
-<li>eclipse
-<ul class="org-ul">
-<li><a href="eclipse/Eclipse导入Maven项目报 Plugin execution not covered by lifecycle configuration.html">2017-04-06 ====&gt; Eclipse 导入Maven项目报错误 "Plugin execution not covered by lifecycle configuration"</a></li>
-</ul></li>
-<li>mac
-<ul class="org-ul">
-<li><a href="mac/Mac中如何快速输入按键.html">2017-03-15 ====&gt; Mac中如何快速输入按键</a></li>
-</ul></li>
-<li>gpg
-<ul class="org-ul">
-<li><a href="gpg/GnuPG使用.html">2017-03-31 ====&gt; GnuPG 使用</a></li>
-</ul></li>
-<li>bash
-<ul class="org-ul">
-<li><a href="bash/使用 curl 与 grep 获取网页的下载链接.html">2017-04-06 ====&gt; 使用 curl 与 grep 获取网页的下载链接</a></li>
-</ul></li>
-<li>orgmode
-<ul class="org-ul">
-<li><a href="orgmode/orgmode杂项.html">2017-03-25 ====&gt; orgmode杂项</a></li>
-<li><a href="orgmode/使用Orgmode写博客.html">2017-03-11 ====&gt; 使用Orgmode写博客</a></li>
-<li><a href="orgmode/orgmode手册学习笔记.html">2017-03-10 ====&gt; orgmode手册学习笔记</a></li>
-<li><a href="orgmode/Org-mode发布项目缓存说明.html">2017-03-10 ====&gt; Org-mode发布项目缓存说明</a></li>
-</ul></li>
-<li>servlet
-<ul class="org-ul">
-<li><a href="servlet/Java Servlet 3.1 规范笔记.html">2017-03-21 ====&gt; Java Servlet 3.1 规范笔记</a></li>
-</ul></li>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org1928842">方法一</a>
+<ul>
+<li><a href="#orgee86916">没有开启Nginx Keepalive</a></li>
+<li><a href="#org2244204">开启了Nginx Keepalive</a></li>
+<li><a href="#orge1155fd">它们的区别:</a></li>
 </ul>
+</li>
+<li><a href="#org9de6734">方法二</a></li>
+<li><a href="#org763a4ed">关于 http keey-alive 与 tcp keeyalive 的资料</a></li>
+</ul>
+</div>
+</div>
+<p>
+#+TITLE 判断是否支持Http keep-alive
+</p>
+
+<div id="outline-container-org1928842" class="outline-2">
+<h2 id="org1928842">方法一</h2>
+<div class="outline-text-2" id="text-org1928842">
+</div><div id="outline-container-orgee86916" class="outline-3">
+<h3 id="orgee86916">没有开启Nginx Keepalive</h3>
+<div class="outline-text-3" id="text-orgee86916">
+<pre class="example">
+curl -Iv https://beta.company/ --next https://beta.company/
+*   Trying 127.0.0.1...
+* TCP_NODELAY set
+* Connected to beta.company (127.0.0.1) port 443 (#0)
+* TLS 1.2 connection using TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+* Server certificate: beta.company
+* Server certificate: TrustAsia DV SSL CA - G5
+* Server certificate: VeriSign Class 3 Public Primary Certification Authority - G5
+&gt; HEAD / HTTP/1.1
+&gt; Host: beta.company
+&gt; User-Agent: curl/7.51.0
+&gt; Accept: */*
+&gt;
+&lt; HTTP/1.1 302 Found
+HTTP/1.1 302 Found
+&lt; Server: nginx/1.9.3
+Server: nginx/1.9.3
+&lt; Date: Mon, 10 Apr 2017 04:57:35 GMT
+Date: Mon, 10 Apr 2017 04:57:35 GMT
+&lt; Content-Length: 0
+Content-Length: 0
+&lt; Connection: close
+Connection: close
+&lt; Access-Control-Allow-Origin: *
+Access-Control-Allow-Origin: *
+&lt; Access-Control-Allow-Methods: POST, GET, OPTIONS
+Access-Control-Allow-Methods: POST, GET, OPTIONS
+&lt; Access-Control-Max-Age: 1000
+Access-Control-Max-Age: 1000
+&lt; Set-Cookie: SESSION=3a52bf55-385e-46af-895d-b078d76c1145; Path=/; Secure; HttpOnly
+Set-Cookie: SESSION=3a52bf55-385e-46af-895d-b078d76c1145; Path=/; Secure; HttpOnly
+&lt; Location: https://beta.company/login
+Location: https://beta.company/login
+&lt; Content-Language: en-US
+Content-Language: en-US
+
+&lt;
+* Curl_http_done: called premature == 0
+* Closing connection 0
+* Hostname beta.company was found in DNS cache
+*   Trying 127.0.0.1...
+* TCP_NODELAY set
+* Connected to beta.company (127.0.0.1) port 443 (#1)
+* SSL re-using session ID
+* TLS 1.2 connection using TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+* Server certificate: beta.company
+* Server certificate: TrustAsia DV SSL CA - G5
+* Server certificate: VeriSign Class 3 Public Primary Certification Authority - G5
+&gt; HEAD / HTTP/1.1
+&gt; Host: beta.company
+&gt; User-Agent: curl/7.51.0
+&gt; Accept: */*
+&gt;
+&lt; HTTP/1.1 302 Found
+&lt; Server: nginx/1.9.3
+&lt; Date: Mon, 10 Apr 2017 04:57:36 GMT
+&lt; Content-Length: 0
+&lt; Connection: close
+&lt; Access-Control-Allow-Origin: *
+&lt; Access-Control-Allow-Methods: POST, GET, OPTIONS
+&lt; Access-Control-Max-Age: 1000
+&lt; Set-Cookie: SESSION=950715f2-b8dc-4aad-a91e-68cc2b70aa98; Path=/; Secure; HttpOnly
+&lt; Location: https://beta.company/login
+&lt; Content-Language: en-US
+&lt;
+* Curl_http_done: called premature == 0
+* Closing connection 1
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org2244204" class="outline-3">
+<h3 id="org2244204">开启了Nginx Keepalive</h3>
+<div class="outline-text-3" id="text-org2244204">
+<pre class="example">
+curl -Iv https://beta.company/ --next https://beta.company/
+*   Trying 127.0.0.1...
+* TCP_NODELAY set
+* Connected to beta.company (127.0.0.1) port 443 (#0)
+* TLS 1.2 connection using TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+* Server certificate: beta.company
+* Server certificate: TrustAsia DV SSL CA - G5
+* Server certificate: VeriSign Class 3 Public Primary Certification Authority - G5
+&gt; HEAD / HTTP/1.1
+&gt; Host: beta.company
+&gt; User-Agent: curl/7.51.0
+&gt; Accept: */*
+&gt;
+&lt; HTTP/1.1 302 Found
+HTTP/1.1 302 Found
+&lt; Server: nginx/1.9.3
+Server: nginx/1.9.3
+&lt; Date: Mon, 10 Apr 2017 05:06:42 GMT
+Date: Mon, 10 Apr 2017 05:06:42 GMT
+&lt; Content-Length: 0
+Content-Length: 0
+&lt; Connection: keep-alive
+Connection: keep-alive
+&lt; Access-Control-Allow-Origin: *
+Access-Control-Allow-Origin: *
+&lt; Access-Control-Allow-Methods: POST, GET, OPTIONS
+Access-Control-Allow-Methods: POST, GET, OPTIONS
+&lt; Access-Control-Max-Age: 1000
+Access-Control-Max-Age: 1000
+&lt; Set-Cookie: SESSION=9ddf4115-654a-40a1-8894-8975b334a5dc; Path=/; Secure; HttpOnly
+Set-Cookie: SESSION=9ddf4115-654a-40a1-8894-8975b334a5dc; Path=/; Secure; HttpOnly
+&lt; Location: https://beta.company/login
+Location: https://beta.company/login
+&lt; Content-Language: en-US
+Content-Language: en-US
+
+&lt;
+* Curl_http_done: called premature == 0
+* Connection #0 to host beta.company left intact
+* Found bundle for host beta.company: 0x7fe3cac0c7f0 [can pipeline]
+* Re-using existing connection! (#0) with host beta.company
+* Connected to beta.company (127.0.0.1) port 443 (#0)
+&gt; HEAD / HTTP/1.1
+&gt; Host: beta.company
+&gt; User-Agent: curl/7.51.0
+&gt; Accept: */*
+&gt;
+&lt; HTTP/1.1 302 Found
+&lt; Server: nginx/1.9.3
+&lt; Date: Mon, 10 Apr 2017 05:06:43 GMT
+&lt; Content-Length: 0
+&lt; Connection: keep-alive
+&lt; Access-Control-Allow-Origin: *
+&lt; Access-Control-Allow-Methods: POST, GET, OPTIONS
+&lt; Access-Control-Max-Age: 1000
+&lt; Set-Cookie: SESSION=9647d698-1779-4e09-8080-fcc7770e5701; Path=/; Secure; HttpOnly
+&lt; Location: https://beta.company/login
+&lt; Content-Language: en-US
+&lt;
+* Curl_http_done: called premature == 0
+* Connection #0 to host beta.company left intact
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orge1155fd" class="outline-3">
+<h3 id="orge1155fd">它们的区别:</h3>
+<div class="outline-text-3" id="text-orge1155fd">
+<p>
+<code>diff /tmp/keep.txt /tmp/no-keep.txt</code>
+</p>
+
+<pre class="example">
+&lt; * Connection #0 to host beta.company left intact
+&lt; * Found bundle for host beta.company: 0x7fe3cac0c7f0 [can pipeline]
+&lt; * Re-using existing connection! (#0) with host beta.company
+&lt; * Connected to beta.company (127.0.0.1) port 443 (#0)
+---
+&gt; * Closing connection 0
+&gt; * Hostname beta.company was found in DNS cache
+&gt; *   Trying 127.0.0.1...
+&gt; * TCP_NODELAY set
+&gt; * Connected to beta.company (127.0.0.1) port 443 (#1)
+&gt; * SSL re-using session ID
+&gt; * TLS 1.2 connection using TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+&gt; * Server certificate: beta.company
+&gt; * Server certificate: TrustAsia DV SSL CA - G5
+&gt; * Server certificate: VeriSign Class 3 Public Primary Certification Authority - G5
+50c56
+&lt; &lt; Date: Mon, 10 Apr 2017 05:06:43 GMT
+---
+&gt; &lt; Date: Mon, 10 Apr 2017 05:08:17 GMT
+52c58
+&lt; &lt; Connection: keep-alive
+---
+&gt; &lt; Connection: close
+</pre>
+
+<p>
+可以看到，开启了Keep alive的链接信息为 <b>re-useing existing connection</b> 而没有 keep alive 的话，则是 <b>Connected to</b> 。
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org9de6734" class="outline-2">
+<h2 id="org9de6734">方法二</h2>
+<div class="outline-text-2" id="text-org9de6734">
+<p>
+直接查看 Chrome 浏览器的调试中的请求头和响应头
+</p>
+
+<pre class="example">
+Request URL:https://beta.company/login
+Request Method:GET
+Status Code:200 OK
+Remote Address:127.0.0.1:443
+Referrer Policy:origin
+
+Response Headers
+Access-Control-Allow-Methods:POST, GET, OPTIONS
+Access-Control-Allow-Origin:*
+Access-Control-Max-Age:1000
+Connection:close
+Content-Encoding:gzip
+Content-Language:en-US
+Content-Type:text/html;charset=utf-8
+Date:Mon, 10 Apr 2017 05:00:39 GMT
+Server:nginx/1.9.3
+Transfer-Encoding:chunked
+Vary:Accept-Encoding
+
+
+Request Headers
+view source
+Accept:text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Accept-Encoding:gzip, deflate, sdch, br
+Accept-Language:en-US,en;q=0.8,zh-CN;q=0.6,zh;q=0.4
+Cache-Control:no-cache
+Connection:keep-alive
+</pre>
+
+
+<p>
+可以看到，客户端浏览器发送了 <b>Connection:keep-alive</b> 的请求头，但服务器响应却是 <b>Connection:close</b> 这表示服务器端不支持 http <code>keep-alive</code> 。如果服务器端开启支持的话，它返回的是 <b>Connection:keep-alive</b> 。
+</p>
+</div>
+</div>
+
+
+
+<div id="outline-container-org763a4ed" class="outline-2">
+<h2 id="org763a4ed">关于 http keey-alive 与 tcp keeyalive 的资料</h2>
+<div class="outline-text-2" id="text-org763a4ed">
+<ul class="org-ul">
+<li><a href="http://tldp.org/HOWTO/html_single/TCP-Keepalive-HOWTO/#overview">http://tldp.org/HOWTO/html_single/TCP-Keepalive-HOWTO/#overview</a></li>
+
+<li><a href="http://www.firefoxbug.com/index.php/archives/2805/">http://www.firefoxbug.com/index.php/archives/2805/</a></li>
+
+<li><a href="http://www.firefoxbug.com/index.php/archives/2806/">http://www.firefoxbug.com/index.php/archives/2806/</a></li>
+</ul>
+</div>
+</div>
 </div>
 <div id="postamble" class="status">
 <p class="author">&#20316;&#32773;: emacsist</p>
-<p class="date">Created: 2017-04-12 Wed 23:34</p>
+<p class="date">Created: 2017-04-12 Wed 22:53</p>
 <p class="validation"></p>
 </div>
 </body>

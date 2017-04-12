@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2017-04-12 Wed 23:34 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Golang 中的 channel 学习笔记</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="emacsist">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/emacsist/css/org-mode.css"/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="/emacsist/index.html"> UP </a>
+ |
+ <a accesskey="H" href="/emacsist/index.html"> HOME </a>
+</div><div id="content">
+<h1 class="title">Golang 中的 channel 学习笔记</h1>
+<p>
+<code>channel</code> 是典型的管道，可以通过 <code>channel</code> 操作符(<code>&lt;-</code>)来进行发送和接收值。它是有顺序的，先发送的数据，肯定会先出来。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go">c := <span style="color: #F92672;">make</span><span style="color: #AE81FF;">(</span><span style="color: #F92672;">chan</span> <span style="color: #66D9EF;">int</span><span style="color: #AE81FF;">)</span>
+</pre>
+</div>
+
+<p>
+非缓冲 <b>buffer</b> 。它会在发送端和接收端同时阻塞，直到另一方已经准备好了。
+</p>
+
+<p>
+详细点说两个情况
+</p>
+
+<ol class="org-ol">
+<li>发送端在发送时会一直阻塞，直到接收端已经接收了数据，否则会一直阻塞下去。</li>
+<li>接收端也会一直阻塞，直接发送端已经发送了数据，否则会一直阻塞下去。</li>
+</ol>
+
+<p>
+比如下面的代码，就不能正常进行，而会导致死锁:
+</p>
+
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #F92672;">package</span> main
+
+<span style="color: #F92672;">import</span> <span style="color: #AE81FF;">(</span>
+  <span style="color: #E6DB74;">"fmt"</span>
+<span style="color: #AE81FF;">)</span>
+
+<span style="color: #F92672;">func</span> <span style="color: #A6E22E;">main</span><span style="color: #AE81FF;">()</span> <span style="color: #AE81FF;">{</span>
+  hello := <span style="color: #F92672;">make</span><span style="color: #66D9EF;">(</span><span style="color: #F92672;">chan</span> <span style="color: #66D9EF;">string</span><span style="color: #66D9EF;">)</span>
+  hello &lt;- <span style="color: #E6DB74;">"hello world"</span>
+  fmt.<span style="color: #A6E22E;">Println</span><span style="color: #66D9EF;">(</span>&lt;-hello<span style="color: #66D9EF;">)</span>
+<span style="color: #AE81FF;">}</span>
+</pre>
+</div>
+
+<p>
+运行上面的代码，会报如下错误:
+</p>
+
+<pre class="example">
+[Running] go run "/Users/emacsist/go/src/test/main.go"
+fatal error: all goroutines are asleep - deadlock!
+
+goroutine 1 [chan send]:
+main.main()
+	/Users/emacsist/go/src/test/main.go:9 +0x78
+exit status 2
+</pre>
+
+<p>
+所以，一般来说，这种非缓冲channel一般用在如下情况:
+</p>
+
+<ul class="org-ul">
+<li><p>
+线程进行等待，直到channel准备好了数据。典型的情况是，在应用程序中，我们想程序一直运行，直到收到系统的 <b>kill</b> 信号。比如:
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #75715E;">// </span><span style="color: #75715E;">Handle SIGINT and SIGTERM.</span>
+ch := <span style="color: #F92672;">make</span><span style="color: #AE81FF;">(</span><span style="color: #F92672;">chan</span> <span style="color: #66D9EF;">os.Signal</span><span style="color: #AE81FF;">)</span>
+signal.<span style="color: #A6E22E;">Notify</span><span style="color: #AE81FF;">(</span>ch, syscall.SIGINT, syscall.SIGTERM<span style="color: #AE81FF;">)</span>
+log.<span style="color: #A6E22E;">Println</span><span style="color: #AE81FF;">(</span>&lt;-ch<span style="color: #AE81FF;">)</span>
+fmt.<span style="color: #A6E22E;">Println</span><span style="color: #AE81FF;">(</span><span style="color: #E6DB74;">"&#25910;&#21040;Kill&#20449;&#21495;&#65292;&#20851;&#38381;&#31243;&#24207;"</span><span style="color: #AE81FF;">)</span>
+</pre>
+</div></li>
+
+<li><p>
+一些第三方库，通过使用 channel 来发送事件通知。比如 golang 中的 rabbitmq 的代码，可以注册一个 Connection 关闭的通知：
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #75715E;">// </span><span style="color: #75715E;">Conn *amqp.Connection</span>
+<span style="color: #75715E;">// </span><span style="color: #75715E;">CloseEventChan chan *amqp.Error = make(chan *amqp.Error)</span>
+Conn.<span style="color: #A6E22E;">NotifyClose</span><span style="color: #AE81FF;">(</span>CloseEventChan<span style="color: #AE81FF;">)</span>
+</pre>
+</div>
+
+<p>
+以上的代码的意思，就是当 <code>Conn</code> 对象已经关闭时，就会发送一条消息到 <b>CloseEventChan</b> 这个 channel 里，然后我们自己写一条线程来监听这个事件，然后进行相应的逻辑，比如自动重连。
+</p></li>
+
+<li>其他的情况，可以自行想像一下。</li>
+</ul>
+
+<p>
+既然有 <b>non-buffered channel</b> ，那就会有相应的 <b>buffered channel</b> 。这种情况下，对于接收端和发送端也有两种情况:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go">c := <span style="color: #F92672;">make</span><span style="color: #AE81FF;">(</span><span style="color: #F92672;">chan</span> <span style="color: #66D9EF;">int</span>, <span style="color: #AE81FF;">10</span><span style="color: #AE81FF;">)</span>
+</pre>
+</div>
+
+<ol class="org-ol">
+<li>发送端，只会在缓冲的channel满了之后，才会阻塞。即 <b>len(c) == bufferSize</b> （即上面make方法中的第二个参数中的10），后面的数据再进行发送时就会阻塞。</li>
+<li>接收端，只有在缓冲的channel是空，即 len(c)==0 时才会阻塞。即读取时，它会一直阻塞，直到该 channel 上有数据后就可以继续接收数据并处理了。</li>
+</ol>
+
+<p>
+例子:
+</p>
+
+<p>
+## 例子1
+</p>
+
+<p>
+正常运行
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go">  <span style="color: #F92672;">func</span> <span style="color: #A6E22E;">main</span><span style="color: #AE81FF;">()</span> <span style="color: #AE81FF;">{</span>
+    hello := <span style="color: #F92672;">make</span><span style="color: #66D9EF;">(</span><span style="color: #F92672;">chan</span> <span style="color: #66D9EF;">string</span>, <span style="color: #AE81FF;">2</span><span style="color: #66D9EF;">)</span>
+    hello &lt;- <span style="color: #E6DB74;">"hello world"</span>
+    fmt.<span style="color: #A6E22E;">Println</span><span style="color: #66D9EF;">(</span>&lt;-hello<span style="color: #66D9EF;">)</span>
+  <span style="color: #AE81FF;">}</span>
+
+<span style="color: #AE81FF;">[</span>Running<span style="color: #AE81FF;">]</span> <span style="color: #F92672;">go</span> run <span style="color: #E6DB74;">"/Users/emacsist/go/src/test/main.go"</span>
+hello world
+</pre>
+</div>
+
+<p>
+## 例子2
+</p>
+
+<p>
+下面的会阻塞，但会导致死锁
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #F92672;">func</span> <span style="color: #A6E22E;">main</span><span style="color: #AE81FF;">()</span> <span style="color: #AE81FF;">{</span>
+  hello := <span style="color: #F92672;">make</span><span style="color: #66D9EF;">(</span><span style="color: #F92672;">chan</span> <span style="color: #66D9EF;">string</span>, <span style="color: #AE81FF;">2</span><span style="color: #66D9EF;">)</span>
+  hello &lt;- <span style="color: #E6DB74;">"hello world"</span>
+  fmt.<span style="color: #A6E22E;">Println</span><span style="color: #66D9EF;">(</span>&lt;-hello<span style="color: #66D9EF;">)</span>
+  fmt.<span style="color: #A6E22E;">Println</span><span style="color: #66D9EF;">(</span>&lt;-hello<span style="color: #66D9EF;">)</span>
+<span style="color: #AE81FF;">}</span>
+
+
+<span style="color: #AE81FF;">[</span>Running<span style="color: #AE81FF;">]</span> <span style="color: #F92672;">go</span> run <span style="color: #E6DB74;">"/Users/emacsist/go/src/test/main.go"</span>
+hello world
+fatal error: all goroutines are asleep - deadlock!
+
+goroutine <span style="color: #AE81FF;">1</span> <span style="color: #AE81FF;">[</span><span style="color: #F92672;">chan</span> <span style="color: #66D9EF;">receive</span><span style="color: #AE81FF;">]</span>:
+main.<span style="color: #A6E22E;">main</span><span style="color: #AE81FF;">()</span>
+/Users/emacsist/<span style="color: #F92672;">go</span>/src/test/main.<span style="color: #F92672;">go</span>:<span style="color: #AE81FF;">11</span> +<span style="color: #AE81FF;">0x155</span>
+exit status <span style="color: #AE81FF;">2</span>
+</pre>
+</div>
+
+<p>
+因为虽然缓冲的大小为2，但实际上的数据只有一条数据。所以，读取一次就没问题，但在主线程里读取第二次，就会导致死锁了。
+</p>
+
+<p>
+## 例子3
+</p>
+
+<p>
+关闭 channel 再读取:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go">  <span style="color: #F92672;">func</span> <span style="color: #A6E22E;">main</span><span style="color: #AE81FF;">()</span> <span style="color: #AE81FF;">{</span>
+    hello := <span style="color: #F92672;">make</span><span style="color: #66D9EF;">(</span><span style="color: #F92672;">chan</span> <span style="color: #66D9EF;">string</span>, <span style="color: #AE81FF;">2</span><span style="color: #66D9EF;">)</span>
+    hello &lt;- <span style="color: #E6DB74;">"hello world"</span>
+    <span style="color: #F92672;">close</span><span style="color: #66D9EF;">(</span>hello<span style="color: #66D9EF;">)</span>
+    fmt.<span style="color: #A6E22E;">Println</span><span style="color: #66D9EF;">(</span>&lt;-hello<span style="color: #66D9EF;">)</span>
+    fmt.<span style="color: #A6E22E;">Println</span><span style="color: #66D9EF;">(</span>&lt;-hello<span style="color: #66D9EF;">)</span>
+  <span style="color: #AE81FF;">}</span>
+
+<span style="color: #AE81FF;">[</span>Running<span style="color: #AE81FF;">]</span> <span style="color: #F92672;">go</span> run <span style="color: #E6DB74;">"/Users/emacsist/go/src/test/main.go"</span>
+<span style="color: #AE81FF;">1</span>==&gt;hello world
+<span style="color: #AE81FF;">2</span>==&gt;
+</pre>
+</div>
+
+<ul class="org-ul">
+<li>读取一个未关闭的 channel，会导致接收方会一直阻塞。</li>
+<li>读取一个已经关闭的 channel，它会收到该 channel 的数据类型的零值。</li>
+<li>千万要记得，关闭channel 的操作，要在发送端关闭。</li>
+<li>判断一个channel是否已经关闭
+<ol class="org-ol">
+<li>v, isClosed := &lt;- hello 。如果 <b>isClosed</b> 为 true，则表示已经关闭。</li>
+<li><p>
+使用for
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #F92672;">for</span> d := <span style="color: #F92672;">range</span> hello <span style="color: #AE81FF;">{</span>
+
+<span style="color: #AE81FF;">}</span>
+</pre>
+</div>
+<p>
+它会在 hello 关闭的时候，读取完所有数据后就会自动退出该 for 循环。
+</p></li>
+</ol></li>
+
+<li>千万不要向一个已经关闭的 channel 再发送数据，否则会报： panic: send on closed channel</li>
+</ul>
+
+<p>
+<code>select</code> 可以让一个 goroutine 在多个通信操作上等待。 <code>select</code> 语句会一直阻塞，直到其中的一个 <code>case</code> 可以运行，然后它就会执行这个 <code>case</code> 的代码；如果有多个都可以准备执行的话，那么 <code>select</code> 会随机选择其中的一个 <code>case</code> 来执行。
+</p>
+
+<p>
+注意， <code>select</code> 语句中的每个 <code>case</code> 的条件，必须是IO操作的。
+</p>
+
+<blockquote>
+<p>
+一般情况下，select 会和 for {} 这种死循环结合使用。
+</p>
+</blockquote>
+
+
+<p>
+## 一个比较完整的例子代码
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #F92672;">package</span> main
+
+<span style="color: #F92672;">import</span> <span style="color: #AE81FF;">(</span>
+  <span style="color: #E6DB74;">"fmt"</span>
+  <span style="color: #E6DB74;">"strconv"</span>
+  <span style="color: #E6DB74;">"sync"</span>
+  <span style="color: #E6DB74;">"time"</span>
+<span style="color: #AE81FF;">)</span>
+
+<span style="color: #F92672;">func</span> <span style="color: #A6E22E;">main</span><span style="color: #AE81FF;">()</span> <span style="color: #AE81FF;">{</span>
+  <span style="color: #F92672;">var</span> wg sync.WaitGroup
+  bufferSize := <span style="color: #AE81FF;">100000</span>
+  dataChannel := <span style="color: #F92672;">make</span><span style="color: #66D9EF;">(</span><span style="color: #F92672;">chan</span> <span style="color: #66D9EF;">string</span>, bufferSize<span style="color: #66D9EF;">)</span>
+  quitChannel := <span style="color: #F92672;">make</span><span style="color: #66D9EF;">(</span><span style="color: #F92672;">chan</span> <span style="color: #66D9EF;">bool</span><span style="color: #66D9EF;">)</span>
+  <span style="color: #F92672;">for</span> i := <span style="color: #AE81FF;">0</span>; i &lt; bufferSize; i++ <span style="color: #66D9EF;">{</span>
+    dataChannel &lt;- <span style="color: #E6DB74;">"hello"</span> + strconv.<span style="color: #A6E22E;">Itoa</span><span style="color: #A6E22E;">(</span>i<span style="color: #A6E22E;">)</span>
+  <span style="color: #66D9EF;">}</span>
+  <span style="color: #F92672;">close</span><span style="color: #66D9EF;">(</span>dataChannel<span style="color: #66D9EF;">)</span>
+  fmt.<span style="color: #A6E22E;">Println</span><span style="color: #66D9EF;">(</span><span style="color: #E6DB74;">"Hello world"</span><span style="color: #66D9EF;">)</span>
+  wg.<span style="color: #A6E22E;">Add</span><span style="color: #66D9EF;">(</span><span style="color: #AE81FF;">1</span><span style="color: #66D9EF;">)</span>
+  <span style="color: #F92672;">go</span> <span style="color: #A6E22E;">consumer</span><span style="color: #66D9EF;">(</span>dataChannel, quitChannel, &amp;wg<span style="color: #66D9EF;">)</span>
+  wg.<span style="color: #A6E22E;">Add</span><span style="color: #66D9EF;">(</span><span style="color: #AE81FF;">1</span><span style="color: #66D9EF;">)</span>
+  <span style="color: #F92672;">go</span> <span style="color: #A6E22E;">crond</span><span style="color: #66D9EF;">(</span>quitChannel, &amp;wg<span style="color: #66D9EF;">)</span>
+  wg.<span style="color: #A6E22E;">Wait</span><span style="color: #66D9EF;">()</span>
+  fmt.<span style="color: #A6E22E;">Println</span><span style="color: #66D9EF;">(</span><span style="color: #E6DB74;">"exit program."</span><span style="color: #66D9EF;">)</span>
+<span style="color: #AE81FF;">}</span>
+
+<span style="color: #F92672;">func</span> <span style="color: #A6E22E;">crond</span><span style="color: #AE81FF;">(</span>quitChannel <span style="color: #F92672;">chan</span>&lt;- <span style="color: #66D9EF;">bool</span>, wg *<span style="color: #66D9EF;">sync.WaitGroup</span><span style="color: #AE81FF;">)</span> <span style="color: #AE81FF;">{</span>
+  timeout := time.<span style="color: #A6E22E;">After</span><span style="color: #66D9EF;">(</span>time.Second * <span style="color: #AE81FF;">5</span><span style="color: #66D9EF;">)</span>
+  &lt;-timeout
+  <span style="color: #75715E;">//</span><span style="color: #75715E;">5&#31186;&#21518;&#65292;&#21457;&#36865;&#36864;&#20986;&#36890;&#30693;</span>
+  fmt.<span style="color: #A6E22E;">Println</span><span style="color: #66D9EF;">(</span><span style="color: #E6DB74;">"5&#31186;&#26102;&#38388;&#21040;&#65292;&#21457;&#36865;&#20934;&#22791;&#36864;&#20986;&#36890;&#30693;"</span><span style="color: #66D9EF;">)</span>
+  quitChannel &lt;- <span style="color: #AE81FF;">true</span>
+  <span style="color: #F92672;">close</span><span style="color: #66D9EF;">(</span>quitChannel<span style="color: #66D9EF;">)</span>
+  wg.<span style="color: #A6E22E;">Done</span><span style="color: #66D9EF;">()</span>
+<span style="color: #AE81FF;">}</span>
+
+<span style="color: #F92672;">func</span> <span style="color: #A6E22E;">consumer</span><span style="color: #AE81FF;">(</span>dataChannel &lt;-<span style="color: #F92672;">chan</span> <span style="color: #66D9EF;">string</span>, quitChannel &lt;-<span style="color: #F92672;">chan</span> <span style="color: #66D9EF;">bool</span>, wg *<span style="color: #66D9EF;">sync.WaitGroup</span><span style="color: #AE81FF;">)</span> <span style="color: #AE81FF;">{</span>
+  <span style="color: #F92672;">for</span> <span style="color: #66D9EF;">{</span>
+    <span style="color: #F92672;">select</span> <span style="color: #A6E22E;">{</span>
+    <span style="color: #F92672;">case</span> d := &lt;-dataChannel:
+      fmt.<span style="color: #A6E22E;">Printf</span><span style="color: #E6DB74;">(</span><span style="color: #E6DB74;">"consum data %v\n"</span>, d<span style="color: #E6DB74;">)</span>
+      time.<span style="color: #A6E22E;">Sleep</span><span style="color: #E6DB74;">(</span>time.Millisecond * <span style="color: #AE81FF;">700</span><span style="color: #E6DB74;">)</span>
+    <span style="color: #F92672;">case</span> &lt;-quitChannel:
+      fmt.<span style="color: #A6E22E;">Println</span><span style="color: #E6DB74;">(</span><span style="color: #E6DB74;">"&#25910;&#21040;&#36864;&#20986;&#30340;&#36890;&#30693;"</span><span style="color: #E6DB74;">)</span>
+      wg.<span style="color: #A6E22E;">Done</span><span style="color: #E6DB74;">()</span>
+      <span style="color: #F92672;">return</span>
+    <span style="color: #A6E22E;">}</span>
+  <span style="color: #66D9EF;">}</span>
+<span style="color: #AE81FF;">}</span>
+
+
+<span style="color: #AE81FF;">&#19979;&#38754;&#26159;&#36755;&#20986;&#30340;&#32467;&#26524;&#20363;&#23376;</span>:
+<span style="color: #AE81FF;">[</span>Running<span style="color: #AE81FF;">]</span> <span style="color: #F92672;">go</span> run <span style="color: #E6DB74;">"/Users/emacsist/go/src/test/main.go"</span>
+Hello world
+consum data hello0
+consum data hello1
+consum data hello2
+consum data hello3
+consum data hello4
+consum data hello5
+consum data hello6
+consum data hello7
+<span style="color: #AE81FF;">5&#31186;&#26102;&#38388;&#21040;&#65292;&#21457;&#36865;&#20934;&#22791;&#36864;&#20986;&#36890;&#30693;</span>
+consum data hello8
+&#25910;&#21040;&#36864;&#20986;&#30340;&#36890;&#30693;
+exit program.
+
+  <span style="color: #AE81FF;">[</span>Done<span style="color: #AE81FF;">]</span> exited with code=<span style="color: #AE81FF;">0</span> in <span style="color: #AE81FF;">6</span>.<span style="color: #AE81FF;">585</span> seconds
+</pre>
+</div>
+
+<p>
+可以注意到，什么时候该关闭channel，以及使用 <b>sync.WaitGroup</b> ，再结合 <b>for select</b> 的。
+</p>
+</div>
+<div id="postamble" class="status">
+<p class="author">&#20316;&#32773;: emacsist</p>
+<p class="date">Created: 2017-04-12 Wed 23:34</p>
+<p class="validation"></p>
+</div>
+</body>
+</html>
