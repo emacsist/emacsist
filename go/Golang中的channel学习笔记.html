@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2017-04-12 Wed 23:34 -->
+<!-- 2017-04-12 Wed 23:58 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Golang 中的 channel 学习笔记</title>
@@ -232,10 +232,38 @@ for the JavaScript code in this tag.
  <a accesskey="H" href="/emacsist/index.html"> HOME </a>
 </div><div id="content">
 <h1 class="title">Golang 中的 channel 学习笔记</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgc9a0523">channel</a></li>
+<li><a href="#orgfbefd31">non-buffered channel</a></li>
+<li><a href="#orge740d1b">buffered channel</a>
+<ul>
+<li><a href="#org9039001">例子1</a></li>
+<li><a href="#orgd48d47a">例子2</a></li>
+<li><a href="#org72722be">例子3</a></li>
+<li><a href="#org5825692">常用情况</a></li>
+</ul>
+</li>
+<li><a href="#org4556440">注意事项</a></li>
+<li><a href="#org86c2d7e">channel 结合 select</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc9a0523" class="outline-2">
+<h2 id="orgc9a0523">channel</h2>
+<div class="outline-text-2" id="text-orgc9a0523">
 <p>
 <code>channel</code> 是典型的管道，可以通过 <code>channel</code> 操作符(<code>&lt;-</code>)来进行发送和接收值。它是有顺序的，先发送的数据，肯定会先出来。
 </p>
+</div>
+</div>
 
+<div id="outline-container-orgfbefd31" class="outline-2">
+<h2 id="orgfbefd31">non-buffered channel</h2>
+<div class="outline-text-2" id="text-orgfbefd31">
 <div class="org-src-container">
 <pre class="src src-go">c := <span style="color: #F92672;">make</span><span style="color: #AE81FF;">(</span><span style="color: #F92672;">chan</span> <span style="color: #66D9EF;">int</span><span style="color: #AE81FF;">)</span>
 </pre>
@@ -321,7 +349,12 @@ Conn.<span style="color: #A6E22E;">NotifyClose</span><span style="color: #AE81FF
 
 <li>其他的情况，可以自行想像一下。</li>
 </ul>
+</div>
+</div>
 
+<div id="outline-container-orge740d1b" class="outline-2">
+<h2 id="orge740d1b">buffered channel</h2>
+<div class="outline-text-2" id="text-orge740d1b">
 <p>
 既然有 <b>non-buffered channel</b> ，那就会有相应的 <b>buffered channel</b> 。这种情况下，对于接收端和发送端也有两种情况:
 </p>
@@ -339,11 +372,11 @@ Conn.<span style="color: #A6E22E;">NotifyClose</span><span style="color: #AE81FF
 <p>
 例子:
 </p>
+</div>
 
-<p>
-## 例子1
-</p>
-
+<div id="outline-container-org9039001" class="outline-3">
+<h3 id="org9039001">例子1</h3>
+<div class="outline-text-3" id="text-org9039001">
 <p>
 正常运行
 </p>
@@ -359,11 +392,12 @@ Conn.<span style="color: #A6E22E;">NotifyClose</span><span style="color: #AE81FF
 hello world
 </pre>
 </div>
+</div>
+</div>
 
-<p>
-## 例子2
-</p>
-
+<div id="outline-container-orgd48d47a" class="outline-3">
+<h3 id="orgd48d47a">例子2</h3>
+<div class="outline-text-3" id="text-orgd48d47a">
 <p>
 下面的会阻塞，但会导致死锁
 </p>
@@ -391,11 +425,12 @@ exit status <span style="color: #AE81FF;">2</span>
 <p>
 因为虽然缓冲的大小为2，但实际上的数据只有一条数据。所以，读取一次就没问题，但在主线程里读取第二次，就会导致死锁了。
 </p>
+</div>
+</div>
 
-<p>
-## 例子3
-</p>
-
+<div id="outline-container-org72722be" class="outline-3">
+<h3 id="org72722be">例子3</h3>
+<div class="outline-text-3" id="text-org72722be">
 <p>
 关闭 channel 再读取:
 </p>
@@ -414,7 +449,49 @@ exit status <span style="color: #AE81FF;">2</span>
 <span style="color: #AE81FF;">2</span>==&gt;
 </pre>
 </div>
+</div>
+</div>
 
+<div id="outline-container-org5825692" class="outline-3">
+<h3 id="org5825692">常用情况</h3>
+<div class="outline-text-3" id="text-org5825692">
+<p>
+比如控制 生产-消费者 的缓冲大小。缓和生产者与消费者的速率。再具体一点的例子就是自己在产生环境中遇到的，DSP环境中，收到到 win 的事件通知对象，为了快速响应，我们使用了 channel 作为一个缓冲池，下面是示例代码:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #75715E;">// </span><span style="color: #75715E;">StartWinNoticeWorker : &#21551;&#21160;&#19968;&#20010;&#32447;&#31243;&#26469;&#22788;&#29702; win notice &#20219;&#21153;</span>
+<span style="color: #F92672;">func</span> <span style="color: #A6E22E;">StartWinNoticeWorker</span><span style="color: #AE81FF;">(</span>waitGroup *<span style="color: #66D9EF;">sync.WaitGroup</span><span style="color: #AE81FF;">)</span> <span style="color: #AE81FF;">{</span>
+ <span style="color: #F92672;">go</span> <span style="color: #F92672;">func</span><span style="color: #66D9EF;">()</span> <span style="color: #66D9EF;">{</span>
+   channel, err := service.Conn.<span style="color: #A6E22E;">Channel</span><span style="color: #A6E22E;">()</span>
+   <span style="color: #F92672;">if</span> err != <span style="color: #AE81FF;">nil</span> <span style="color: #A6E22E;">{</span>
+     <span style="color: #F92672;">panic</span><span style="color: #E6DB74;">(</span>err.<span style="color: #A6E22E;">Error</span><span style="color: #FD971F;">()</span><span style="color: #E6DB74;">)</span>
+   <span style="color: #A6E22E;">}</span>
+   <span style="color: #F92672;">defer</span> channel.<span style="color: #A6E22E;">Close</span><span style="color: #A6E22E;">()</span>
+   log.<span style="color: #A6E22E;">Infof</span><span style="color: #A6E22E;">(</span><span style="color: #E6DB74;">"start win notice worker ok...."</span><span style="color: #A6E22E;">)</span>
+   <span style="color: #F92672;">for</span> winLog := <span style="color: #F92672;">range</span> WinLogChannel <span style="color: #A6E22E;">{</span>
+     <span style="color: #F92672;">if</span> <span style="color: #F92672;">len</span><span style="color: #E6DB74;">(</span>winLog<span style="color: #E6DB74;">)</span> == <span style="color: #AE81FF;">0</span> <span style="color: #E6DB74;">{</span>
+       <span style="color: #F92672;">continue</span>
+     <span style="color: #E6DB74;">}</span>
+     service.<span style="color: #A6E22E;">PutMessageWithChannel</span><span style="color: #E6DB74;">(</span>channel, config.WinNoticeQueue, winLog<span style="color: #E6DB74;">)</span>
+   <span style="color: #A6E22E;">}</span>
+   waitGroup.<span style="color: #A6E22E;">Done</span><span style="color: #A6E22E;">()</span>
+   log.<span style="color: #A6E22E;">Infof</span><span style="color: #A6E22E;">(</span><span style="color: #E6DB74;">"win notice worker done."</span><span style="color: #A6E22E;">)</span>
+ <span style="color: #66D9EF;">}()</span>
+<span style="color: #AE81FF;">}</span>
+</pre>
+</div>
+
+<p>
+controller中将接收到的消息，放到缓冲channel的 WinLogChannel 对象中，即可立即返回，然后这个 worker 再进行实际的入队操作。（这里使用了 waitGroup 是为了在关闭应用时，优雅关闭，即等待缓冲channel的数据都落地了，才正式退出程序）
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4556440" class="outline-2">
+<h2 id="org4556440">注意事项</h2>
+<div class="outline-text-2" id="text-org4556440">
 <ul class="org-ul">
 <li>读取一个未关闭的 channel，会导致接收方会一直阻塞。</li>
 <li>读取一个已经关闭的 channel，它会收到该 channel 的数据类型的零值。</li>
@@ -438,7 +515,12 @@ exit status <span style="color: #AE81FF;">2</span>
 
 <li>千万不要向一个已经关闭的 channel 再发送数据，否则会报： panic: send on closed channel</li>
 </ul>
+</div>
+</div>
 
+<div id="outline-container-org86c2d7e" class="outline-2">
+<h2 id="org86c2d7e">channel 结合 select</h2>
+<div class="outline-text-2" id="text-org86c2d7e">
 <p>
 <code>select</code> 可以让一个 goroutine 在多个通信操作上等待。 <code>select</code> 语句会一直阻塞，直到其中的一个 <code>case</code> 可以运行，然后它就会执行这个 <code>case</code> 的代码；如果有多个都可以准备执行的话，那么 <code>select</code> 会随机选择其中的一个 <code>case</code> 来执行。
 </p>
@@ -535,9 +617,11 @@ exit program.
 可以注意到，什么时候该关闭channel，以及使用 <b>sync.WaitGroup</b> ，再结合 <b>for select</b> 的。
 </p>
 </div>
+</div>
+</div>
 <div id="postamble" class="status">
 <p class="author">&#20316;&#32773;: emacsist</p>
-<p class="date">Created: 2017-04-12 Wed 23:34</p>
+<p class="date">Created: 2017-04-12 Wed 23:58</p>
 <p class="validation"></p>
 </div>
 </body>
